@@ -1,0 +1,15 @@
+*{}
+pre{background:#efefef;border:#ddd solid 1px;padding:10px;}
+.clear{clear:both;}
+.M4keyworrd,.M4function,.M4op, .M4boolean, .M4m4tween{font-weight:bold;}
+.M4keyword,.M4string{color:#AA00ff;font-style:italic;}
+.M4string, .M4string .M4keyword, .M4string .M4function, .M4string .M4op{color:#2a00ff;font-weight:normal;}
+.M4api{color:#0000FF;}
+.M4m4tween{color:#0000aa;}
+.M4op{color:#000000;}
+.M4xml{color:#38a8a8;}
+.M4php, .M4php .M4xml{color:#ff0000;}
+.M4commentaires{color:#888;}
+button{display:block;}
+.element{float:left;width: 100px;height:90px;border-radius:50px;border:#aa9999 solid 2px;background-color: #ffff88;color:#444;font-size:16px;text-align: center;padding-top:10px;cursor:default;font-weight: bold;}
+.bubble{float:left;height:30px;background:#ffffff;margin-top:-15px;width:200px;border:#555 solid 1px;border-radius:30px;border-bottom-left-radius: 0;padding:10px;}

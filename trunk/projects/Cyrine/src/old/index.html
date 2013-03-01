@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="fr">
+	<head>
+		<title>Cyrine MALEK - Webdesigner</title>
+		<link href="css/style.css" rel="stylesheet"/>
+	</head>
+	<body id="home">
+		<menu class="second">
+			<li><a href="#home"><span class="over"></span><span class="pic"></span></a></li>
+			<li><a href="#about"><span class="over"></span><span class="pic"></span></a></li>
+			<li><a href="#portfolio"><span class="over"></span><span class="pic"></span></a></li>
+			<li><a href="#contact"><span class="over"></span><span class="pic"></span></a></li>
+		</menu>
+		<header>
+			<div>
+				<menu>
+					<li><a href="#home">Accueil</a></li>
+					<li><a href="#about">A Propos</a></li>
+					<li class="logo"></li>
+					<li><a href="#portfolio">Portfolio</a></li>
+					<li><a href="#contact">Contact</a></li>
+				</menu>
+			</div>
+		</header>
+		<div class="scene scrolldown">
+			<div class="a1"></div>
+			<div class="a2"></div>
+			<div class="background"></div>
+		</div>
+		<div class="scene skills">
+			<div class="lvl_3 even"><div class="little_top"></div><div class="little_right"></div>Illustrateur</div>
+			<div class="lvl_5"><div class="big_top"></div><div class="little_top"></div><div class="little_left"></div>Graphiste</div>
+			<div class="lvl_4 even"><div class="big_right"></div><div class="little_left"></div>Webdesigner</div>
+			<div class="lvl_2"><div class="little_top"></div><div class="little_right"></div>Motion designer</div>
+			<div class="lvl_1 even"><div class="little_top"></div><div class="little_left"></div>Photographe</div>
+		</div>
+		<div id="about" class="scene about">
+			<h3>à Propos de Moi</h3>
+			<div class="brigitte">
+				<div class="arrow a1 above"></div>
+				<div class="arrow a1 below"></div>
+				<div class="arrow a2 above"></div>
+				<div class="arrow a2 below"></div>
+				<div class="arrow a3 above"></div>
+				<div class="arrow a3 below"></div>
+				<div class="arrow a4 above"></div>
+				<div class="arrow a4 below"></div>
+				<div class="arrow a5 above"></div>
+				<div class="arrow a5 below"></div>
+				<div class="arrow a6 above"></div>
+				<div class="arrow a6 below"></div>
+				<div class="arrow a7 above"></div>
+				<div class="arrow a7 below"></div>
+				<div class="arrow a8 above"></div>
+				<div class="arrow a8 below"></div>
+			</div>
+			<div class="content">
+				<p>Lorem Ipsum has been the industry's dum my text ever since the 15, when an unknown took a galley of type and it to ma ke a type book. It has sur vived not only five centur. Dum my text ever since the 15, when an. Dum my text ever since the 15, when an.</p>
+				<span>Lorem Ipsum has been the industry's dum my text ever since the 15, when an unknown took a galley of type and it to ma ke a type book. It has sur vived not only five centur.</span>
+				<div class="cv">
+					<button type="submit">
+						<span>Curriculum Vitae</span>
+					</button>
+					<button type="submit">
+						<span>CV Canadien</span>
+					</button>
+				</div>
+			</div>
+
+		</div>
+		<div class="scene portfolio">
+			<div class="spikes"></div>
+			<div class="content">
+				<h3 id="portfolio">Mes Travaux</h3>
+				<div>
+					<h4>Charte Graphique - Print</h4>
+					<div class="mask">
+						<div class="frame">
+							<ul>
+								<li></li>
+							</ul>
+							<ul>
+								<li class="current">&nbsp;</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+				<div>
+					<h4>Design</h4>
+					<div class="mask">
+						<div class="frame">
+							<ul>
+								<li></li>
+							</ul>
+							<ul>
+								<li class="current">&nbsp;</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+
+				<div>
+					<h4>Motion design</h4>
+					<div class="mask">
+						<div class="frame">
+							<ul>
+								<li></li>
+							</ul>
+							<ul>
+								<li class="current">&nbsp;</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+
+				<div>
+					<h4>Créations personnelles</h4>
+					<div class="mask">
+						<div class="frame">
+							<ul>
+								<li></li>
+							</ul>
+							<ul>
+								<li class="current">&nbsp;</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="scene contact">
+			<div class="dotted"></div>
+			<h4 id="contact"></h4>
+			<h3>Contactez-moi !</h3>
+			<p>Remplissez ce formulaire et je reviendrais vers vous dès que possible.</p>
+			<p class="form">
+				<label for="contact[name]">Nom</label>
+				<input type="text" id="contact[name]">
+				<label for="contact[email]">Email</label>
+				<input type="text" id="contact[email]">
+				<label for="contact[subject]">Objet</label>
+				<input type="text" id="contact[subject]">
+				<label for="contact[message]">Message</label>
+				<textarea type="text" id="contact[message]"></textarea>
+				<button type="submit">
+					<span>Envoyer</span>
+				</button>
+			</p>
+			<a href="#home" class="top"></a>
+		</div>
+		<script>
+			NodeList.prototype.each = Array.prototype.forEach;
+			var Scroll =
+			{
+				__offsets:[],
+				__scrollHandler:function(e)
+				{
+					var o, currentHash;
+					for(var i = 0, max = Scroll.__offsets.length;i<max;i++)
+					{
+						o = Scroll.__offsets[i];
+						if(o.offset <= window.scrollY && o.offset+50 >= window.scrollY)
+							currentHash = o.href;
+					}
+//					if(currentHash)
+//						window.location.hash = currentHash;
+				},
+				setup:function()
+				{
+					window.addEventListener("scroll", Scroll.__scrollHandler, false);
+					document.querySelectorAll('a[href^="#"]').each(function(a)
+					{
+						Scroll.__offsets.push({href:a.getAttribute("href"), offset:Scroll.offsetTop(document.querySelector(a.getAttribute("href")))});
+						a.addEventListener("click", function(e){
+							e.preventDefault();
+							e.stopPropagation();
+							var t = e.target.getAttribute("href") ? e.target : e.target.parentNode;
+							M4.addClassName(t, "current");
+							Scroll.to(document.querySelector(t.getAttribute("href"))).onComplete(function(){
+								window.location.hash = t.getAttribute("href").replace("#", "");
+								document.querySelectorAll('a.current')
+										.each(function(a)
+										{
+											if(a == t)
+												return;
+											M4.removeClassName(a, "current");
+										});
+								document.querySelectorAll('a[href^="'+t.getAttribute("href")+'"]')
+										.each(function(a)
+										{
+											M4.addClassName(a, "current");
+										});
+							});
+						}, false);
+					});
+					Scroll.__offsets.sort(function(a, b)
+					{
+						if(a.offset < b.offset)
+							return -1;
+						else if(a.offset > b.offset)
+							return 1;
+						return 0;
+					});
+				},
+				prepareAll:function(pSelector)
+				{
+					var els = document.querySelectorAll(pSelector);
+					els.each(function(pEl){pEl.setAttribute("data-scrollTop", Scroll.offsetTop(pEl));});
+				},
+				to:function(pElement, pTime)
+				{
+					pTime = pTime||.5;
+					var st = Number(pElement.getAttribute("data-scrollTop")||Scroll.offsetTop(pElement));
+					var t = document.documentElement.scrollTop ? document.documentElement:document.body;
+					M4Tween.killTweensOf(t);
+					return M4Tween.to(t, pTime, {useStyle:false, scrollTop:st});
+				},
+				offsetTop:function(pElement)
+				{
+					var v = 0;
+					var o = pElement.offsetParent;
+					while(o)
+					{
+						v += o.offsetTop;
+						o = o.offsetParent;
+					}
+					if(!v)
+						v += pElement.offsetTop;
+					return v;
+				}
+			};
+			var ScrollAnimator =
+			{
+				elements:[],
+				add:function(pSelector)
+				{
+					var el = new SEl(pSelector);
+					ScrollAnimator.elements.push(el);
+					return el;
+				},
+				register:function()
+				{
+					window.addEventListener("scroll", ScrollAnimator._animateHandler, false);
+					ScrollAnimator._animateHandler();
+				},
+				_animateHandler:function()
+				{
+					var c, info, el, prop, diff;
+					for(var i = 0, max = ScrollAnimator.elements.length;i<max;i++)
+					{
+						info = ScrollAnimator.elements[i];
+						info.from = info.from||0;
+						c = Math.max(0, Math.min(1, (window.scrollY-info.from)/(info.to-info.from)));
+						if(info.to == 0)
+							c = 1;
+						el = document.querySelector(info.selector);
+						if(!el)
+							continue;
+						for(var k = 0, maxk = info.props.length;k<maxk;k++)
+						{
+							prop = info.props[k];
+							diff = prop.to - prop.from;
+							el.style[prop.name] = (prop.from + (diff * c))+prop.unit;
+						}
+					}
+				}
+			};
+			function SEl(pSelector)
+			{
+				this.selector = pSelector;
+				this.from = 0;
+				this.to = 0;
+				this.props = [];
+			}
+			SEl.prototype =
+			{
+				animateFrom:function(pValue){this.from = pValue;return this;},
+				animateTo:function(pValue){this.to = pValue;return this;},
+				addProp:function(pName, pUnit, pFrom, pTo){this.props.push(new SProp(pName, pUnit, pFrom, pTo));return this;}
+			};
+			function SProp(pName, pUnit, pFrom, pTo)
+			{
+				this.name = pName;
+				this.unit = pUnit||"";
+				this.from = pFrom||0;
+				this.to = pTo||0;
+			}
+			var cm =
+			{
+				init:function()
+				{
+					var stage = new Stage(180, 180, "header menu li.logo");
+					var l = new Logo();
+					l.x = 90;
+					l.y = 90;
+					stage.addChild(l);
+					l.helloWorld();
+
+					stage = new Stage(180, 180, ".scene.contact .top");
+					var t = new Top();
+					t.x = 90;
+					t.y = 90;
+					stage.addChild(t);
+					t.helloWorld();
+
+					Scroll.prepareAll(".portfolio h4");
+					document.querySelectorAll(".portfolio h4").each(function(pH4)
+					{
+						pH4.addEventListener("click", cm.portfolio.h4clickHandler, false);
+					});
+					document.querySelector(".portfolio .content>div").setAttribute("class", "open");
+					Scroll.setup();
+					ScrollAnimator.register();
+				},
+				resizeHandler:function()
+				{
+//					console.log(window.innerHeight);
+				},
+				portfolio:
+				{
+					h4clickHandler:function(e)
+					{
+						e.preventDefault();
+						e.stopPropagation();
+						document.querySelectorAll(".portfolio .open").each(function(d)
+						{
+							d.removeAttribute("class");
+						});
+						e.currentTarget.parentNode.setAttribute("class", "open");
+						Scroll.to(e.currentTarget);
+					}
+				},
+				utils:
+				{
+
+				}
+			};
+
+			ScrollAnimator.add(".scene.scrolldown").animateFrom(50).animateTo(150).addProp("top", "px", 290, 100);
+			ScrollAnimator.add(".scene.scrolldown .a1").animateFrom(50).animateTo(150).addProp("top", "px", 391, 303);
+			ScrollAnimator.add(".scene.scrolldown .a2").animateFrom(50).animateTo(150).addProp("top", "px", 405, 290);
+
+			/**
+			 * Skills Arrow and shit
+			 */
+			var trigger = [151, 251, 351, 451, 551];
+			ScrollAnimator.add(".scene.skills>div.lvl_3.even").animateFrom(trigger[0]).animateTo(trigger[0]).addProp("paddingRight", "px", 306, 336).addProp("opacity", null, 0, 1);
+			ScrollAnimator.add(".scene.skills>div.lvl_3.even>div.little_top").animateFrom(trigger[0]).animateTo(trigger[0]).addProp("top", "px", 40, 60);
+			ScrollAnimator.add(".scene.skills>div.lvl_3.even>div.little_right").animateFrom(trigger[0]).animateTo(trigger[0]).addProp("marginLeft", "px", 23, 3);
+			ScrollAnimator.add(".scene.skills>div.lvl_5").animateFrom(trigger[1]).animateTo(trigger[1]).addProp("paddingLeft", "px", 186, 276).addProp("opacity", null, 0, 1);
+			ScrollAnimator.add(".scene.skills>div.lvl_5>div.little_top").animateFrom(trigger[1]).animateTo(trigger[1]).addProp("top", "px", 40, 60);
+			ScrollAnimator.add(".scene.skills>div.lvl_5>div.little_left").animateFrom(trigger[1]).animateTo(trigger[1]).addProp("marginLeft", "px", -36, -16);
+			ScrollAnimator.add(".scene.skills>div.lvl_5>div.big_top").animateFrom(trigger[1]).animateTo(trigger[1]).addProp("top", "px", -20, 21);
+			ScrollAnimator.add(".scene.skills>div.lvl_4.even").animateFrom(trigger[2]).animateTo(trigger[2]).addProp("paddingRight", "px", 140, 240).addProp("opacity", null, 0, 1);
+			ScrollAnimator.add(".scene.skills>div.lvl_4.even>div.big_right").animateFrom(trigger[2]).animateTo(trigger[2]).addProp("marginLeft", "px", 44, 3);
+			ScrollAnimator.add(".scene.skills>div.lvl_4.even>div.little_left").animateFrom(trigger[2]).animateTo(trigger[2]).addProp("marginLeft", "px", -36, -16);
+			ScrollAnimator.add(".scene.skills>div.lvl_2").animateFrom(trigger[3]).animateTo(trigger[3]).addProp("paddingLeft", "px", 196, 316).addProp("opacity", null, 0, 1);
+			ScrollAnimator.add(".scene.skills>div.lvl_2>div.little_right").animateFrom(trigger[3]).animateTo(trigger[3]).addProp("marginLeft", "px", 23, 1);
+			ScrollAnimator.add(".scene.skills>div.lvl_2>div.little_top").animateFrom(trigger[3]).animateTo(trigger[3]).addProp("top", "px", 40, 60);
+			ScrollAnimator.add(".scene.skills>div.lvl_1.even").animateFrom(trigger[4]).animateTo(trigger[4]).addProp("paddingRight", "px", 186, 346).addProp("opacity", null, 0, 1);
+			ScrollAnimator.add(".scene.skills>div.lvl_1.even>div.little_left").animateFrom(trigger[4]).animateTo(trigger[4]).addProp("marginLeft", "px", -36, -16);
+			ScrollAnimator.add(".scene.skills>div.lvl_1.even>div.little_top").animateFrom(trigger[4]).animateTo(trigger[4]).addProp("top", "px", 40, 60);
+			ScrollAnimator.add(".scene.skills").animateTo(651).addProp("height", "px", 0, 806);
+
+			/**
+			 * About Brigritte and co
+			 */
+			var above = {from:1200, to:1300};
+			var below = {from:1000, to:1200};
+			ScrollAnimator.add("#about h3").animateFrom(700).animateTo(900).addProp("top", "px", 250, 0);
+			ScrollAnimator.add("#about .brigitte").animateFrom(900).animateTo(1100).addProp("height", "px", 1090, 740);
+			ScrollAnimator.add("#about>div.content").animateFrom(900).animateTo(1100).addProp("top", "px", 505, 175);
+			ScrollAnimator.add("#about .a1.below").animateFrom(below.from).animateTo(below.to).addProp("left", "px", -100, -60).addProp("top", "px", 250, 220);
+			ScrollAnimator.add("#about .a1.above").animateFrom(above.from).animateTo(above.to).addProp("left", "px", -100, -60).addProp("top", "px", 250, 220);
+			ScrollAnimator.add("#about .a2.below").animateFrom(below.from).animateTo(below.to).addProp("left", "px", -110, -80).addProp("top", "px", 136, 156);
+			ScrollAnimator.add("#about .a2.above").animateFrom(above.from).animateTo(above.to).addProp("left", "px", -110, -80).addProp("top", "px", 140, 160);
+			ScrollAnimator.add("#about .a3.below").animateFrom(below.from).animateTo(below.to).addProp("left", "px", -56, -26).addProp("top", "px", 0, 30);
+			ScrollAnimator.add("#about .a3.above").animateFrom(above.from).animateTo(above.to).addProp("left", "px", -60, -30).addProp("top", "px", 0, 30);
+			ScrollAnimator.add("#about .a4.below").animateFrom(below.from).animateTo(below.to).addProp("left", "px", 46, 51).addProp("top", "px", 10, 40);
+			ScrollAnimator.add("#about .a4.above").animateFrom(above.from).animateTo(above.to).addProp("left", "px", 45, 50).addProp("top", "px", 10, 40);
+			ScrollAnimator.add("#about .a5.below").animateFrom(below.from).animateTo(below.to).addProp("left", "px", 112, 92).addProp("top", "px", -10, 10);
+			ScrollAnimator.add("#about .a5.above").animateFrom(above.from).animateTo(above.to).addProp("left", "px", 110, 90).addProp("top", "px", -6, 14);
+				ScrollAnimator.add("#about .a6.below").animateFrom(below.from).animateTo(below.to).addProp("left", "px", 159, 129).addProp("top", "px", 21, 51);
+				ScrollAnimator.add("#about .a6.above").animateFrom(above.from).animateTo(above.to).addProp("left", "px", 155, 125).addProp("top", "px", 24, 54);
+			ScrollAnimator.add("#about .a7.below").animateFrom(below.from).animateTo(below.to).addProp("left", "px", 165, 135).addProp("top", "px", 150, 154);
+			ScrollAnimator.add("#about .a7.above").animateFrom(above.from).animateTo(above.to).addProp("left", "px", 165, 135).addProp("top", "px", 150, 154);
+			ScrollAnimator.add("#about .a8.below").animateFrom(below.from).animateTo(below.to).addProp("left", "px", 155, 125).addProp("top", "px", 250, 220);
+			ScrollAnimator.add("#about .a8.above").animateFrom(above.from).animateTo(above.to).addProp("left", "px", 155, 125).addProp("top", "px", 250, 220);
+
+			/**
+			 * Pf top only
+			 */
+			ScrollAnimator.add(".scene.portfolio").animateFrom(1600).animateTo(1840).addProp("top", "px", 2200, 1900);
+
+			/**
+			 * Right menu
+			 */
+			ScrollAnimator.add('menu.second').animateFrom(150).animateTo(200).addProp("top", "%", 40, 50).addProp("opacity", null, 0, 1);
+
+			/**
+			 * Contact and stuff
+			 */
+			ScrollAnimator.add("#contact").animateFrom(3100).animateTo(3430).addProp("margin-top", "px", 300, 0);
+			ScrollAnimator.add(".scene.contact .dotted").animateFrom(2970).animateTo(3330).addProp("height", "px", 0, 290);
+
+			window.onresize = cm.resizeHandler;
+
+			cm.init();
+
+		</script>
+	</body>
+</html>

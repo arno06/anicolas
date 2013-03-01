@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Stage.js - Documentation</title>
+		<script type="text/javascript" src="../../CodeFormater/src/CodeFormater.js"></script>
+		<script type="text/javascript">
+			window.addEventListener("load", init, false);
+
+			function init()
+			{
+				document.querySelectorAll("pre").forEach(M4SynthaxColor.of);
+			}
+
+			/**
+			 * CHEAT OMG
+			 */
+			NodeList.prototype.forEach = Array.prototype.forEach;
+		</script>
+		<link href="../../common/docs.css" type="text/css" rel="stylesheet"/>
+	</head>
+	<body>
+		<h1>Stage.js</h1>
+		<hr>
+		<h2>Introduction</h2>
+		<p>
+			low dependencies, lightweight or maybe not, fast or maybe not, fun, feeder, no skill, Diablo III lover...
+		</p>
+		<h2>Code Samples</h2>
+		<h3>The basics</h3>
+		<p>
+			Librairy for canvas manipulation. It support an AS3 API like (Please Adobe do not sue me)
+		</p>
+		<pre>
+var stage = new Stage(800, 600);
+var shape = new Shape();
+shape.beginFill("rgb(255, 0, 0)");
+shape.drawRectangle(-50, -50, 100, 100);
+shape.endFill();
+stage.addChild(shape);</pre>
+		<p>
+			Features :
+		</p>
+		<ul>
+			<li>EventDispatcher</li>
+			<li>Event</li>
+			<li>MouseEvent</li>
+			<li>DisplayObject</li>
+			<li>Container</li>
+			<li>RequestAnim shim layer (thanks to Paul Irish)</li>
+			<li>Drawing API (beginFill, drawRectangle, drawCircle, moveTo, lineTo...)</li>
+			<li>FPS Meter</li>
+			<li>Extensible</li>
+		</ul>
+		<h3>One element, one Tween, as many properties as you could imagine</h3>
+		<p>
+			Possibility to stack animation on differents properties during one Tween only
+		</p>
+		<pre>
+/**
+ * The result should be awsome, i can't wait to see it running :o
+ **/
+M4Tween.to(element, 1, {marginLeft:"10px", paddingLeft:"10px", color:"#ff0000", backgroundColor:"#0000ff"});</pre>
+
+		<footer>
+			&copy; arno06@gmail.com | 2009 - 2013
+		</footer>
+	</body>
+</html>
