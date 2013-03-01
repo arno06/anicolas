@@ -1,0 +1,175 @@
+{
+	"name":"Groslay - Dipl&ocirc;me le plus &eacute;lev&eacute; de la population non scolaris&eacute;e de 15 ans ou plus",
+	"1999":
+	[
+		{
+			"label":"Dipl&ocirc;me de niveau sup&eacute;rieur &agrave; bac + 2",
+			"value":11.1,
+			"color":"rgb(191, 0, 191)"
+		},
+		{
+			"label":"Dipl&ocirc;me de niveau bac + 2",
+			"value":11.2,
+			"color":"rgb(0, 0, 191)"
+		},
+		{
+			"label":"Baccalaur&eacute;at ou brevet professionnel",
+			"value":13.1,
+			"color":"rgb(0, 111, 191)"
+		},
+		{
+			"label":"CAP ou BEP",
+			"value":25.1,
+			"color":"rgb(0, 191, 191)"
+		},
+		{
+			"label":"BEPC, brevet des coll&egrave;ges",
+			"value":9.7,
+			"color":"rgb(0, 191, 0)"
+		},
+		{
+			"label":"Certificat d'&eacute;tudes primaires",
+			"value":12.9,
+			"color":"rgb(191, 191, 0)"
+		},
+		{
+			"label":"Aucun dipl&ocirc;me",
+			"value":16.8,
+			"color":"rgb(191, 0, 0)"
+		}
+	],
+	"2008":
+	[
+		{
+			"label":"Dipl&ocirc;me de niveau sup&eacute;rieur &agrave; bac + 2",
+			"value":14.6,
+			"color":"rgb(191, 0, 191)",
+			"parite":
+			[
+				{
+					"label":"Homme",
+					"value":49.5,
+					"color":"rgb(55, 55, 55)"
+				},
+				{
+					"label":"Femme",
+					"value":50.5,
+					"color":"rgb(200, 200, 200)"
+				}
+			]
+		},
+		{
+			"label":"Dipl&ocirc;me de niveau bac + 2",
+			"value":15.1,
+			"color":"rgb(0, 0, 191)",
+			"parite":
+			[
+				{
+					"label":"Homme",
+					"value":38.7,
+					"color":"rgb(55, 55, 55)"
+				},
+				{
+					"label":"Femme",
+					"value":61.3,
+					"color":"rgb(200, 200, 200)"
+				}
+			]
+		},
+		{
+			"label":"Baccalaur&eacute;at ou brevet professionnel",
+			"value":17.0,
+			"color":"rgb(0, 111, 191)",
+				"parite":
+				[
+					{
+						"label":"Homme",
+						"value":46,
+						"color":"rgb(55, 55, 55)"
+					},
+					{
+						"label":"Femme",
+						"value":54,
+						"color":"rgb(200, 200, 200)"
+					}
+				]
+		},
+		{
+			"label":"CAP ou BEP",
+			"value":22.8,
+			"color":"rgb(0, 191, 191)",
+				"parite":
+				[
+					{
+						"label":"Homme",
+						"value":55.5,
+						"color":"rgb(55, 55, 55)"
+					},
+					{
+						"label":"Femme",
+						"value":44.5,
+						"color":"rgb(200, 200, 200)"
+					}
+				]
+		},
+		{
+			"label":"BEPC, brevet des coll&egrave;ges",
+			"value":4.9,
+			"color":"rgb(0, 191, 0)",
+				"parite":
+				[
+					{
+						"label":"Homme",
+						"value":44.3,
+						"color":"rgb(55, 55, 55)"
+					},
+					{
+						"label":"Femme",
+						"value":55.7,
+						"color":"rgb(200, 200, 200)"
+					}
+				]
+		},
+		{
+			"label":"Certificat d'&eacute;tudes primaires",
+			"value":6.6,
+			"color":"rgb(191, 191, 0)",
+				"parite":
+				[
+					{
+						"label":"Homme",
+						"value":40,
+						"color":"rgb(55, 55, 55)"
+					},
+					{
+						"label":"Femme",
+						"value":60,
+						"color":"rgb(200, 200, 200)"
+					}
+				]
+		},
+		{
+			"label":"Aucun dipl&ocirc;me",
+			"value":19.0,
+			"color":"rgb(191, 0, 0)",
+				"parite":
+				[
+					{
+						"label":"Homme",
+						"value":51.8,
+						"color":"rgb(55, 55, 55)"
+					},
+					{
+						"label":"Femme",
+						"value":48.2,
+						"color":"rgb(200, 200, 200)"
+					}
+				]
+		}
+	]
+
+}
+
+
+
+

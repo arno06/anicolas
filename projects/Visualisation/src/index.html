@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" Content="text/html; charset=ISO-8859-15"/>
+		<title>Data Visualization - Stage.js</title>
+		<script type="text/javascript" src="js/Minuit4/M4.js"></script>
+		<script type="text/javascript" src="js/Minuit4/M4Tween.js"></script>
+		<script type="text/javascript" src="js/Minuit4/Stage.js"></script>
+		<style type="text/css">
+			@font-face {font-family: 'FranKleinBold';font-style: normal; font-weight: bold;src: url('font/FranKleinBold.ttf') format('truetype');}
+			*{font-size:12px;font-weight: normal;font-family: FranKleinBold, sans-serif;padding: 0;margin: 0;color:#666;}
+			*::selection{background-color:#099096;color:#fafafa;}
+			body{background:rgb(227, 227, 255);}
+			h1,h2,h3{display:inline;font-size:14px;color:#000;}
+			h2{font-size:14px;}
+			canvas{position: absolute;left:50%;margin-left:-400px;top:50px;background: #eeeeff;}
+		</style>
+		<script type="text/javascript">
+			window.addEventListener("load", init, false);
+
+			var _stage;
+
+			function init()
+			{
+				M4Tween.useStyle = false;
+				Request.load("data/etudes.json").onComplete(datasCompleteHandler);
+			}
+
+			function datasCompleteHandler(e)
+			{
+				_stage = new Stage(800, 600);
+				var div = M4.createElement("div");
+				var g = _stage.createRadialGradient(400, 300, 0, 400, 300, 200);
+				g.addColor("rgb(227, 227, 255)", 1).addColor("rgb(255, 255, 255)", 0);
+				_stage.beginFill(g);
+				_stage.drawRect(0, 0, _stage.width, _stage.height);
+				_stage.endFill();
+
+				_stage.setFont("FranKleinBold", "16px", "rgb(75, 75, 75)");
+				var l = e.responseJSON["name"].html_entity_decode();
+				var w = _stage.measureText(l, "FranKleinBold", "16px");
+				_stage.drawText(l, (800-w)>>1, 100);
+
+				createVisualization(e.responseJSON["1999"], "1999", 200, 290);
+				createVisualization(e.responseJSON["2008"], "2008", 600, 290);
+
+				var d = e.responseJSON["1999"];
+				var curX = 270;
+				var curY = 450;
+				for(var i = 0, max = d.length;i<max;i++)
+				{
+					_stage.beginFill(d[i].color);
+					_stage.drawCircle(curX, curY, 5);
+					_stage.setFont("FranKleinBold", "11px", "rgb(75, 75, 75)");
+					_stage.drawText(d[i].label.html_entity_decode(), curX + 10, curY - 5);
+					_stage.endFill();
+					curY += 15;
+				}
+
+				_stage.addChild(new FPS());
+			}
+
+
+			function createVisualization(pData, pName, pX, pY)
+			{
+				var a = 0;
+				var s, ca;
+				s = new Shape();
+				_stage.addChild(s);
+				s.clear();
+				s.setFont("FranKleinBold", "15px", "rgb(45, 45, 45)");
+				var w = s.measureText(pName, "FranKleinBold", "15px");
+				s.drawText(pName, -w>>1);
+				s.y = pY - 130;
+				s.x = pX;
+				var c = new PieChart(pData, 70, pName, "FranKleinBold", "15px", "parite");
+				c.x = pX;
+				c.y = pY;
+				_stage.addChild(c);
+			}
+
+			function PieChart(pDatas, pMinRadius, pLabel, pFont, pSizeFont, pSubPartName)
+			{
+				this.reset();
+				this.datas = pDatas;
+				this.minRadius = pMinRadius||70;
+				this.label = pLabel||"";
+				this.fontName = pFont||"Arial";
+				this.sizeName = pSizeFont||"12px";
+				this.subPartName = pSubPartName||"";
+				this.addEventListener(Event.ADDED_TO_STAGE, M4.proxy(this, this.drawDatas));
+			}
+
+			Class.define(PieChart, [Container],
+			{
+				drawDatas:function()
+				{
+					this.removeChildren();
+					var item, chartPart, itemRadius, itemAngle, totalAngle = 0;
+					for(var i = 0, max = this.datas.length; i<max;i++)
+					{
+						item = this.datas[i];
+						itemAngle = item.value * 3.6;
+						itemRadius = this.minRadius + item.value;
+						chartPart = new PieChartPart(itemAngle, itemRadius, item.label, item.value, item.color, item[this.subPartName]);
+						chartPart.rotation = totalAngle;
+						this.addChild(chartPart);
+						totalAngle += itemAngle;
+					}
+				}
+			});
+
+			function PieChartPart(pAngle, pRadius, pLabel, pValue, pColor, pSubPart)
+			{
+				this.reset();
+				this.mouseEnabled = true;
+				this.color = pColor || "rgb(255, 0, 0)";
+				this.value = pValue||0;
+				this.label = pLabel ||"";
+				this.angle = pAngle;
+				this.radius = pRadius;
+				this.subPart = pSubPart||false;
+				this.addEventListener(Event.ADDED_TO_STAGE, M4.proxy(this, this.drawPart));
+			}
+
+			Class.define(PieChartPart, [Container],
+			{
+				_over:null,
+				_overHandler:function()
+				{
+					M4Tween.killTweensOf(this._over);
+					M4Tween.to(this._over, .4, {alpha:.3});
+				},
+				_outHandler:function()
+				{
+					M4Tween.killTweensOf(this._over);
+					M4Tween.to(this._over, .4, {alpha:0});
+				},
+				drawPart:function()
+				{
+					this.clear();
+					this.beginFill(this.color);
+					this.moveTo(0, 0);
+					this.drawArc(0, 0, this.radius, 0, this.angle);
+					this.endFill();
+					if(this.subPart)
+					{
+						var subItem, previousAngle;
+						this._over = new Shape();
+						this.addEventListener(MouseEvent.MOUSE_OVER, M4.proxy(this, this._overHandler));
+						this.addEventListener(MouseEvent.MOUSE_OUT, M4.proxy(this, this._outHandler));
+						this._over.alpha = 0;
+						this.addChild(this._over);
+						for(var i = 0, max = this.subPart.length; i<max; i++)
+						{
+							previousAngle = 0;
+							subItem = this.subPart[i];
+							this._over.beginFill(subItem.color);
+							if(i == 0)
+							{
+								this._over.moveTo(0, 0);
+							}
+							else
+							{
+								previousAngle = this.radius * (this.subPart[i-1].value / 100);
+								this._over.drawArc(0, 0, previousAngle, this.angle, 0, true);
+							}
+							this._over.drawArc(0, 0, previousAngle + (this.radius * (subItem.value / 100)), 0, this.angle);
+							this._over.endFill();
+						}
+					}
+				}
+			});
+		</script>
+	</head>
+	<body>
+		<h2>Data Visualization</h2> using <h1>Stage.js</h1>
+	</body>
+</html>

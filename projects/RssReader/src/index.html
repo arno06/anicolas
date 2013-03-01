@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta name="viewport" content="width=device-width, user-scalable=no" />
+		<style>
+			*{margin:0;padding:0;font-family:Arial,sans-serif;color:#eeeeee;cursor:default; }
+			body{background:#000; outline:none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); }
+			.clear{clear:both; }
+			#bt_reload{box-shadow:0 -2px 5px rgba(0, 0, 0, .4);background:#777 url(imgs/reload.png) no-repeat 90% center;text-align:center;position:fixed;bottom: 0;margin-top:-40px;height:30px;display:block;width:100%;padding-top:10px;border-top:1px solid #aaa;}
+			#bt_reload:hover{background-color:#999;}
+			#article_list{padding-bottom: 40px;}
+			#article_list article{border-top: solid 1px #999;clear:both;padding:10px 0;}
+			#article_list article:hover{background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #444), color-stop(100%, #000000));}
+			#article_list article img{float:left;width:30%;}
+			#article_list article div.details{float:right;margin-left:2%;width:68%;}
+			#article_list article div.details h3{font-weight: normal;font-size:16px;}
+			#article_list article div.details span.time{display:block;margin-top:10px;font-size:12px;font-style: italic;}
+			#article_list article p{overflow:hidden;margin-top:10px;background:#fff;color:#000;width:90%;padding:0 5%;font-size:14px;height:0;}
+			#loading{position: fixed;width:100%;height:100%;background: #000 url(imgs/loading.gif) no-repeat center center;}
+		</style>
+		<script type="text/javascript" src="./js/M4.js"></script>
+		<script type="text/javascript" src="./js/M4Tween.js"></script>
+		<script type="text/javascript">
+			window.addEventListener("load", initMain, false);
+
+			function initMain()
+			{
+				reload();
+			}
+
+			function reload()
+			{
+				fadeIn(document.querySelector("#loading"),.3);
+				Request.load("php/route.php", false)
+					.onComplete(function(pResponse)
+					{
+						parseArticles(pResponse.responseXML);
+						fadeOut(document.querySelector("#loading"),.3);
+					});
+			}
+
+			function parseArticles(pXML)
+			{
+				var currentTime = new Date().getTime();
+				var list = M4.createElement("div", {id:"article_list"});
+				var items = pXML.querySelectorAll("item");
+				for(var i = 0, max = items.length;i<max;i++)
+				{
+					console.log(items[i].querySelector("pubDate"));
+//					var item = items[i];
+//					var time = currentTime - new Date(item.querySelector("pubDate").firstChild.nodeValue).getTime();
+//					time = Math.round(time/60000);
+//					if(time>=60)
+//					{
+//						time = Math.round(time/60);
+//						if(time>=24)
+//						{
+//							time = Math.round(time/24);
+//							if(time>1)
+//								time = "Il y a "+time+" jours";
+//							else
+//								time = "Il y a "+time+" jour";
+//						}
+//						else
+//							time = "Il y a "+time+" heures";
+//					}
+//					else
+//						time = "Il y a "+time+" minutes";
+//					var article = M4.createElement("article", {"onclick":"toggleArticle(this);"});
+//					var details = M4.createElement("div", {"class":"details"});
+//					var img = M4.createElement("img", {src:item.querySelector("image>url").firstChild.nodeValue});
+//					var titre = M4.createElement("h3", {text:item.querySelector("title").firstChild.nodeValue});
+//					var date = M4.createElement("span", {text:time, "class":"time"});
+//					var p = M4.createElement("p", {text:item.querySelector("description").firstChild.nodeValue});
+//					details.appendChild(titre);
+//					details.appendChild(date);
+//					article.appendChild(img);
+//					article.appendChild(details);
+//					article.appendChild(M4.createElement("div", {"class":"clear"}));
+//					article.appendChild(p);
+//					list.appendChild(article);
+				}
+//				document.body.appendChild(list);
+			}
+
+			function toggleArticle(pTarget)
+			{
+				var cn = pTarget.getAttribute("class");
+				var t=pTarget.querySelector("p");
+				var obj = {};
+				if(cn == "open")
+				{
+					obj.paddingTop = "0px";
+					obj.paddingBottom = "0px";
+					obj.height = "0px";
+					pTarget.removeAttribute("class");
+				}
+				else
+				{
+					obj.paddingTop = "5px";
+					obj.paddingBottom = "5px";
+					var h = t.offsetHeight;
+					t.style.height ="auto";
+					var toh= t.offsetHeight;
+					t.style.height = h+"px";
+					obj.height = toh+"px";
+					pTarget.setAttribute("class", "open");
+				}
+				M4Tween.to(t,.3,obj);
+			}
+
+			function fadeIn(pElement, pTime, pComplete){M4Tween.killTweensOf(pElement, false);pElement.style.display = "block";M4Tween.to(pElement, pTime, {opacity:1}).onComplete(pComplete);}
+			function fadeOut(pElement, pTime, pComplete){var c = function(){if(pComplete){pComplete();}pElement.style.display="none";};if(pElement.style.opacity==0){c();return;}M4Tween.to(pElement, pTime, {opacity:0}).onComplete(c);}
+
+			function toast()
+			{
+				Android.showToast("thing");
+				return false;
+			}
+		</script>
+	</head>
+	<body>
+		<a id="bt_reload" onclick="reload();return false;">Recharger le flux</a>
+		<div id="loading"></div>
+	</body>
+</html>

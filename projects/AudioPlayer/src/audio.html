@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Audio Player</title>
+		<script type="text/javascript" src="js/Minuit4/M4.js"></script>
+		<script type="text/javascript" src="js/Minuit4/M4Tween.js"></script>
+		<style type="text/css">
+			*{margin:0;padding: 0;font-family: Arial, serif;font-weight:normal;font-size:12px;}
+			body{background: #efefef;overflow: hidden;padding-top:10px;height:100%;}
+			#progressBar{top:0;z-index:99;position:absolute;width:100%;height:10px;background:#DDD;border-bottom: 1px solid #fff;opacity:1;cursor:pointer;}
+			#time{height:100%;background: #aaa;width:50%;float:left;border-bottom:1px solid #fefefe;}
+			#cursor{height:100%;width:1px;float:left;background: #eee;}
+			#playList{position:absolute;width:490px;left:50%;margin-left:-245px;list-style: none;background: #000;font-weight: bold;color:#444;}
+			#playList li{padding: 5px;background: #ececec;margin-bottom: 1px;cursor: pointer;}
+			#playList li span.duration{float:right;color:#999;font-weight: normal;}
+			#dropzone{position:absolute;z-index:-1;top:0;left:0;width:100%;height:100%;background: #aaffaa;opacity: 0;}
+		</style>
+	</head>
+	<body>
+		<script type="text/javascript">
+			var _player;
+			window.addEventListener("load", init, false);
+			function init()
+			{
+				_player = new M4Player();
+				_player.addEventListener(M4Player.METADATA, metaDataReady, false);
+				initProgressBar();
+				initDragAndDropHandlers();
+				setInterval(progressHandler, 1000/30);
+			}
+
+			function initProgressBar()
+			{
+				$("progressBar").addEventListener("mouseover", function(e)
+				{
+					M4Tween.to(e.currentTarget, .2, {height:"30px", opacity:.8});
+				}, false);
+				$("progressBar").addEventListener("mouseout", function(e)
+				{
+					M4Tween.to(e.currentTarget, .3, {height:"10px", opacity:1});
+				}, false);
+				$("progressBar").addEventListener("click", function(e)
+				{
+					_player.seek(_player.getCurrentDuration() * (e.clientX/e.currentTarget.offsetWidth));
+				}, false);
+			}
+
+			function metaDataReady(e)
+			{
+				var c = $(_player.getCurrentId()+"").children;
+				var m = Math.floor(_player.getCurrentDuration() / 60);
+				if(m<10)
+					m = "0"+m.toString();
+				var s = Math.round(_player.getCurrentDuration() - (m*60));
+				if(s<10)
+					s = "0"+s.toString();
+				for(var i = 0, max = c.length;i<max;i++)
+				{
+					if(c[i].nodeName.toLowerCase()=="span")
+					{
+						c[i].innerHTML = m+":"+s;
+					}
+				}
+			}
+
+			function progressHandler()
+			{
+				if(!_player||!_player.getCurrentDuration())
+					return;
+				$("time").style.width = ((_player.getCurrentTime()/_player.getCurrentDuration())*100)+"%";
+			}
+
+			function initDragAndDropHandlers()
+			{
+				var enter = function(e)
+				{
+	                e.stopPropagation();
+	                e.preventDefault();
+					M4Tween.to(e.currentTarget, .2, {opacity:1});
+				};
+				var leave = function(e)
+				{
+					e.stopPropagation();
+					e.preventDefault();
+					M4Tween.to(e.currentTarget, .3, {opacity:0});
+				};
+                $("dropzone").addEventListener('dragover', enter, false);
+				$("dropzone").addEventListener("drop", function(e)
+				{
+					leave(e);
+					handleFiles(e.dataTransfer.files);
+				}, false);
+
+				$("dropzone").addEventListener("dragenter", enter, false);
+				$("dropzone").addEventListener("dragleave", leave, false);
+			}
+
+			function initPlayList()
+			{
+				$("playList").innerHTML = "";
+				var pl = _player.getPlayList();
+				for(var i = 0, max = pl.length; i<max;i++)
+					$("playList").appendChild(addItem(pl[i].name, "00:00", i));
+				var li = $("playList").children;
+				for(i = 0, max = li.length;i<max;i++)
+				{
+					li[i].addEventListener("mouseout", function(e)
+					{
+						M4Tween.to(e.currentTarget, .3, {backgroundColor:"#ececec", color:"#444444"});
+					}, false);
+					li[i].addEventListener("mouseover", function(e)
+					{
+						M4Tween.to(e.currentTarget, .2, {backgroundColor:"#f8f8f8", color:"#000000"});
+					}, false);
+					li[i].addEventListener("click", liClickHandler, false);
+				}
+			}
+
+			function liClickHandler(e)
+			{
+				_player.play(e.currentTarget.id);
+			}
+
+			function handleFiles(pFiles)
+			{
+				var pl = [];
+				for(var i = 0, max = pFiles.length; i<max;i++)
+				{
+					if(pFiles[i].type.indexOf("audio/")===-1)
+						continue;
+					pl.push(pFiles[i]);
+				}
+				_player.setPlayList(pl);
+				initPlayList();
+			}
+
+			function addItem(pLabel, pDuration, pRel)
+			{
+				var li = M4.createElement("li", {"text":pLabel, "id":pRel});
+				var span = M4.createElement("span", {"class":"duration", "text":pDuration});
+				li.appendChild(span);
+				return li;
+			}
+
+			function M4Player()
+			{
+				this.__sound = new Audio();
+				this.__sound.addEventListener("loadedmetadata", M4.proxy(this, this.__metaDataReady), false);
+				this.__sound.addEventListener("ended", M4.proxy(this, this.__trackEnded), false);
+				this.__sound.autoplay = false;
+				this.__sound.preload = "metadata";
+				this.__sound.loop = false;
+			}
+
+			M4Player.PLAY = "play";
+			M4Player.PAUSE = "pause";
+			M4Player.STOP = "stop";
+			M4Player.NEXT = "next";
+			M4Player.PREVIOUS = "previous";
+			M4Player.METADATA = "metadata";
+			M4Player.SEEKING = "seek";
+
+			Class.define(M4Player, [EventDispatcher], {
+				random:false,
+				loop:true,
+				playing:false,
+				__sound:null,
+				__fileReader:null,
+				__playList:null,
+				__current:null,
+				getCurrentTime:function()
+				{
+					return this.__sound.currentTime;
+				},
+				getCurrentDuration:function()
+				{
+					return this.__sound.duration;
+				},
+				getCurrentId:function()
+				{
+					return this.__current;
+				},
+				setPlayList:function(pList)
+				{
+					this.__playList = pList;
+				},
+				getPlayList:function()
+				{
+					return this.__playList;
+				},
+				next:function()
+				{
+					this.dispatchEvent(new Event(M4Player.NEXT, false));
+					var to=(this.__current+1==this.__playList.length)?0:this.__current+1;
+					this.play(to);
+				},
+				previous:function()
+				{
+					this.dispatchEvent(new Event(M4Player.PREVIOUS, false));
+					var to = (this.__current-1==-1)?this.__playList.length-1:this.__current-1;
+					this.play(to);
+				},
+				play:function(pId)
+				{
+					if(this.playing&&(!pId||pId==this.__current))
+						return;
+					if(!this.playing&&!pId)
+					{
+						this.__sound.play();
+						return;
+					}
+					if(!pId)
+						pId = 0;
+					var ref = this;
+					this.__current = Number(pId);
+					this.__fileReader = new FileReader();
+					this.__fileReader.onload = function(e)
+					{
+						ref.__sound.src = "data:audio/mpeg;base64,"+btoa(e.target.result);
+						ref.__sound.play();
+					};
+					this.__fileReader.readAsBinaryString(this.__playList[this.__current]);
+					this.playing = true;
+					this.dispatchEvent(new Event(M4Player.PLAY, false));
+				},
+				pause:function()
+				{
+					this.playing = false;
+					this.__sound.pause();
+				},
+				stop:function()
+				{
+					this.playing = false;
+					this.__sound.pause();
+				},
+				seek:function(pTime)
+				{
+					if(!this.__sound)
+						return;
+					this.__sound.currentTime = pTime;
+				},
+				__metaDataReady:function()
+				{
+					trace(this.__sound.duration);
+					this.dispatchEvent(new Event(M4Player.METADATA, false));
+				},
+				__trackEnded:function()
+				{
+					trace("track ended " + (this.__current+1==this.__playList.length)+" "+this.loop);
+					this.dispatchEvent(new Event(Event.COMPLETE, false));
+					this.playing = false;
+					if((this.__current+1==this.__playList.length)&&!this.loop)
+						return;
+					this.next();
+				}
+			});
+
+			function $(pId){return document.getElementById(pId);}
+			M4.addClassName = function(pEl, pClass)
+			{
+				var c = pEl.getAttribute("class")||"";
+				pEl.setAttribute("class", c+" "+pClass);
+			};
+			M4.removeClassName = function(pEl, pClass)
+			{
+				var c = pEl.getAttribute("class");
+				if(c.indexOf(pClass)==-1)
+					return;
+				pEl.setAttribute("class", c.replace(new RegExp(pClass, "gi"), ""));
+			};
+		</script>
+	<input type="file" id="selector" multiple onchange="handleFiles(this.files)" style="display:none;">
+	<div id="progressBar">
+		<div id="time"></div>
+		<div id="cursor"></div>
+	</div>
+	<ul id="playList"></ul>
+	<div id="dropzone"></div>
+	</body>
+</html>

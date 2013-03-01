@@ -1,0 +1,10 @@
+{
+  "name": "Audio Player",
+  "description": "THE ULTIMATE PLAYER AUDIO IN HTML5 LOLILOL",
+  "version": "1",
+  "app": {
+    "launch": {
+      "local_path": "audio.html"
+    }
+  }
+}

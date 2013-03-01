@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="fr">
+	<head>
+		<title>Cyrine MALEK - Graphiste - Logo</title>
+		<script src="js/M4.js"></script>
+		<script src="js/M4Tween.js"></script>
+		<script src="js/Stage.js"></script>
+		<script src="js/StageCyrine.js"></script>
+		<style>
+			@font-face{font-family: 'DinReg';font-style: normal;font-weight: normal;src: url('../font/DINPro-Regular.otf') format('opentype');}
+			@font-face{font-family: 'DinMed';font-style: normal;font-weight: normal;src: url('../font/DINPro-Medium.otf') format('opentype');}
+			@font-face{font-family: 'DinBold';font-style: normal;font-weight: bold;src: url('../font/DINPro-Bold.otf') format('opentype');}
+			@font-face{font-family: 'Pacifico';font-style: normal;font-weight: normal;src: url('../font/Pacifico.ttf') format('truetype');}
+			body{background:#ffffff;}
+			canvas{background:#ffffff;}
+		</style>
+	</head>
+	<body onload="init()">
+		<script>
+
+			function CyrineSB()
+			{
+				this.setup("rgba(0, 0, 0)");
+			}
+
+			Class.define(CyrineSB, [Sprite],
+			{
+				setup:function(pColor)
+				{
+					this.reset();
+					this._color = pColor;
+					this._mainRadius = 0;
+					this._coefLines = [];
+					this._coefPoints = [];
+					this._internPointsRadius = 0;
+					this._coefCenterLine = 0;
+					this._rotationCenterLine = 0;
+					this._max = 360 / CyrineSB.LINE_ANGLE;
+					for(var i = 0;i<this._max;i++)
+					{
+						this._coefPoints.push({value:0});
+						this._coefLines.push({value:0});
+					}
+					this.addEventListener(Event.ADDED_TO_STAGE, M4.proxy(this, this.__addedHandler));
+				},
+				__addedHandler:function(e)
+				{
+					this.stage.addEventListener(Event.ENTER_FRAME, M4.proxy(this, this.__frameHandler));
+				},
+				__frameHandler:function(e)
+				{
+					this._draw();
+				},
+				_drawMainCircle:function()
+				{
+					this.beginFill(this._color+"1)");
+					this.drawCircle(0, 0, this._mainRadius);
+					this.endFill();
+				},
+				_drawDetails:function()
+				{
+					var angle, from, to, c, s, i;
+
+
+					for(i = 0;i<this._max;i++)
+					{
+						angle = M4.geom.DEGREE_TO_RADIAN * (i*CyrineSB.LINE_ANGLE);
+						c = Math.cos(angle);
+						s = Math.sin(angle);
+						to = {cos:c * (CyrineSB.INTER_POINT_RADIUS), sin:s * (CyrineSB.INTER_POINT_RADIUS)};
+						this.beginFill("rgb(243, 237, 236)");
+						this.drawCircle(to.cos, to.sin,this._internPointsRadius);
+						this.endFill();
+					}
+
+					if(this._coefLines[0].value)
+					{
+						for(i = 0;i<this._max;i++)
+						{
+							angle = M4.geom.DEGREE_TO_RADIAN * (i*CyrineSB.LINE_ANGLE);
+							c = Math.cos(angle);
+							s = Math.sin(angle);
+							from = {cos:c * CyrineSB.MAIN_RADIUS, sin:s * CyrineSB.MAIN_RADIUS};
+							to = {cos:c * (CyrineSB.MAIN_RADIUS + (this._coefLines[i].value * CyrineSB.LINE_SIZE)), sin:s * (CyrineSB.MAIN_RADIUS + (this._coefLines[i].value  * CyrineSB.LINE_SIZE))};
+
+							this.setLineStyle(1, this._color+"1)");
+							this.moveTo(from.cos, from.sin);
+							this.lineTo(to.cos, to.sin);
+							this.setLineStyle(null);
+						}
+						for(i = this._max-1,j = 0;i>=0;i--,j++)
+						{
+							angle = M4.geom.DEGREE_TO_RADIAN * (i*CyrineSB.LINE_ANGLE);
+							c = Math.cos(angle);
+							s = Math.sin(angle);
+							to = {cos:c * (CyrineSB.EXTERN_POINT_RADIUS), sin:s * (CyrineSB.EXTERN_POINT_RADIUS)};
+							this.beginFill(this._color+this._coefPoints[j].value+")");
+							this.drawCircle(to.cos, to.sin, CyrineSB.EXTERN_POINT_SIZE);
+							this.endFill();
+						}
+					}
+				},
+				_draw:function()
+				{
+					this.clear();
+					this._drawMainCircle();
+					this._drawDetails();
+				}
+			});
+
+			CyrineSB.CENTER_LINE_SIZE = 41;
+			CyrineSB.LINE_ANGLE = 7.2;
+			CyrineSB.MAIN_RADIUS = 59;
+			CyrineSB.LINE_SIZE = 17;
+			CyrineSB.EXTERN_POINT_RADIUS = 83;
+			CyrineSB.INTER_POINT_RADIUS = 54;
+			CyrineSB.EXTERN_POINT_SIZE = 1.4;
+			CyrineSB.INTERN_POINT_SIZE = 1.3;
+
+			function Logo()
+			{
+				this.setup("rgba(230, 116, 95,");
+				this._coefCenterLine = 0;
+				this._rotationCenterLine = 0;
+				this._linePositionCoef = 0;
+				this._imgAlpha = 0;
+				this.img = document.querySelector("#head");
+				this._textInfos = {alpha:0, cw:{from:-45, distance:15}, mg:{from:34, distance:-15}};
+			}
+
+			Class.define(Logo, [CyrineSB],
+			{
+				_draw:function()
+				{
+					this.clear();
+					this._drawMainCircle();
+					this._drawDetails();
+
+					if(this._coefCenterLine)
+					{
+						var x = -(this.img.width>>1);
+						var y = -(this.img.height>>1);
+						this.drawImage(this.img, new Rectangle(0, 0, this.img.width, this.img.height), new Rectangle(x, y, this.img.width, this.img.height));
+
+						this.beginFill(this._color+(1-this._imgAlpha)+")");
+						this.drawCircle(0, 0, 30);
+						this.endFill();
+
+						var angle, distance = 360 / 90;
+						for(i = 0;i<distance;i++)
+						{
+							angle = M4.geom.DEGREE_TO_RADIAN * ((this._rotationCenterLine-45)+(i * 90));
+							c = Math.cos(angle);
+							s = Math.sin(angle);
+							this.setLineStyle(2, "rgb(243, 237, 236)");
+							this.moveTo(c * (this._linePositionCoef * 20), s * (this._linePositionCoef * 20));
+							this.lineTo(c * (this._coefCenterLine * CyrineSBV1.CENTER_LINE_SIZE), s*(this._coefCenterLine * CyrineSBV1.CENTER_LINE_SIZE));
+						}
+					}
+
+					if(this._textInfos.alpha)
+					{
+						var a = this._textInfos.alpha;
+						this.setFont("DinReg", 11, "rgba(243, 237, 236, "+a+")");
+						this.drawText("C", -5, this._textInfos.cw.from + (this._textInfos.cw.distance * a));
+						this.drawText("M", this._textInfos.mg.from + (this._textInfos.mg.distance * a), -5);
+						this.drawText("G", -5, this._textInfos.mg.from + (this._textInfos.mg.distance * a));
+						this.drawText("W", this._textInfos.cw.from + (this._textInfos.cw.distance * a), -5);
+					}
+				},
+				helloWorld:function()
+				{
+					var f, t;
+					var ref = this;
+					M4Tween.killTweensOf(this);
+					M4Tween.to(this,.6, {useStyle:false, _mainRadius:CyrineSBV1.MAIN_RADIUS})
+					.onComplete(function()
+					{
+						for(var i = 0;i<ref._max;i++)
+						{
+							if(i==20)
+								f = M4Tween.to(ref._coefLines[i],.3, {useStyle:false, value:1, delay:i *0.01});
+							else
+								t = M4Tween.to(ref._coefLines[i],.3, {useStyle:false, value:1, delay:i *0.01});
+						}
+						f.onComplete(function()
+						{
+							for(var j = 0;j<ref._max;j++)
+							{
+								var r = M4Tween.to(ref._coefPoints[j],.3, {useStyle:false, value:1, delay:j *0.01});
+								if(j==ref._max-1)
+								{
+									r.onComplete(function()
+									{
+										ref.stage.pause();
+									});
+								}
+							}
+						});
+						M4Tween.to(ref,.4, {useStyle:false, _coefCenterLine:1, _internPointsRadius:CyrineSB.INTERN_POINT_SIZE}).onComplete(function()
+						{
+							M4Tween.to(ref,.3, {useStyle:false, _rotationCenterLine:90, _linePositionCoef:1})
+							.onComplete(function()
+							{
+								M4Tween.to(ref,.3, {useStyle:false, _imgAlpha:1});
+								M4Tween.to(ref._textInfos,.3, {useStyle:false, alpha:1});
+							});
+						});
+					});
+				}
+			});
+
+
+			function init()
+			{
+				var stage = new Stage(180, 180);
+				var l = new LogoV1();
+				l.x = 90;
+				l.y = 90;
+				stage.addChild(l);
+
+				l.helloWorld();
+
+
+				stage = new Stage(180, 180);
+				l = new TopV1();
+				l.x = 90;
+				l.y = 90;
+				stage.addChild(l);
+
+				l.helloWorld();
+
+				stage=  new Stage(180, 180);
+				l = new Logo();
+				l.x = 90;
+				l.y = 90;
+				stage.addChild(l);
+
+				l.helloWorld();
+			}
+
+		</script>
+	<img src="imgs/logo_head.png" alt="" style="display:none;" id="head"/>
+	</body>
+</html>
