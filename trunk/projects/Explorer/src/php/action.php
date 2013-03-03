@@ -1,5 +1,5 @@
 <?php
-$Filters = array('');
+$blacklist = array('/^\.$/','/^\.svn$/', '/^\.idea$/');
 define("FOLDER", "svn");
 define("BASE_DIR", "./../");
 
@@ -22,6 +22,8 @@ function roundSize($pSize, $pPrecision = 2)
 function listDir($pDirectory)
 {
 	global $server_url;
+	global $blacklist;
+
 	$folder = BASE_DIR.FOLDER.$pDirectory;
 	$baseDir = realpath($folder)."\\";
 	if(!is_dir($folder))
@@ -31,9 +33,15 @@ function listDir($pDirectory)
 	$dirs = array();
 	while($d = array_shift($f))
 	{
+		$mustEscape = false;
 		if($pDirectory == "/" && $d =="..")
 			continue;
-		if($d == ".")
+		foreach($blacklist as $regExp)
+		{
+			if(preg_match($regExp, $d, $matches))
+				$mustEscape = true;
+		}
+		if($mustEscape)
 			continue;
 		$time = filemtime($baseDir.$d);
 		$isFile = is_file($baseDir.$d);
