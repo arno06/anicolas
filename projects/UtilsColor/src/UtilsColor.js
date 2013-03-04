@@ -8,7 +8,7 @@ function HSLColor(pR, pG, pB, pAlpha)
 	this._r = pR||0;
 	this._g = pG||0;
 	this._b = pB||0;
-	this._alpha = pAlpha;
+	this._alpha = pAlpha||1;
 
 	var d = HSLColor.RGBtoHSL(this._r, this._g, this._b);
 	this._h = d.h;
@@ -91,7 +91,7 @@ HSLColor.RGBtoHSL = function(pR, pG, pB)
 				h = db - dg;
 			break;
 			case g:
-				h = (1 / 3) + dr - db;
+				h = (1 / 3) + (dr - db);
 			break;
 			case b:
 				h = (2 / 3) + dg / dr;
