@@ -56,6 +56,9 @@ var M4 =
 		{
 			switch(i)
 			{
+				case "parentNode":
+					pProperties[i].appendChild(e);
+					break;
 				case "text":
 					e.appendChild(document.createTextNode(pProperties[i]));
 				break;

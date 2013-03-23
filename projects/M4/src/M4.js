@@ -326,11 +326,16 @@ function Request(pTarget, pParams)
     		try {this.xhr_object = new ActiveXObject(t[i]);}catch(e){}
     }
 	if(!this.xhr_object)
-		return null;
+		return;
 	var ref = this, v = "", j = 0;
 	for(i in pParams)
 		v += (j++>0?"&":"")+i+"="+pParams[i];
 	this.xhr_object.open("POST", pTarget, true);
+	this.xhr_object.onprogress = function(pEvent)
+	{
+		if(ref.onProgressHandler)
+			ref.onProgressHandler(pEvent);
+	};
 	this.xhr_object.onreadystatechange=function()
 	{
 		if(ref.xhr_object.readyState==4)
@@ -357,13 +362,17 @@ function Request(pTarget, pParams)
 	
 	this.xhr_object.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded;charset:ISO-8859-1');
 	this.xhr_object.send(v);
-	return this;
 }
 Class.define(Request, [Class], {
 	xhr_object:null,
 	onComplete:function(pFunction)
 	{
 		this.onCompleteHandler = pFunction;
+		return this;
+	},
+	onProgress:function(pFunction)
+	{
+		this.onProgressHandler = pFunction;
 		return this;
 	},
 	onError:function(pFunction)

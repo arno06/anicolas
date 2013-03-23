@@ -1,0 +1,30 @@
+@charset "UTF-8";
+
+@font-face{ font-family: 'icons_font'; src: url("../font/icons_font.eot?68292015"); src: url("../font/icons_font.eot?68292015#iefix") format('embedded-opentype'), url("../font/icons_font.woff?68292015") format('woff'), url("../font/icons_font.ttf?68292015") format('truetype'), url("../font/icons_font.svg?68292015#icons_font") format('svg');font-weight: normal; font-style: normal;}
+
+*{margin:0;padding:0;font-family: Arial,sans-serif;}
+
+[class^="icon-"]:before,
+[class*=" icon-"]:before { font-family: 'icons_font', sans-serif; font-style: normal; font-weight: normal; speak: none; display: inline-block; text-decoration: inherit;width: 1em;margin-right: 0.2em; text-align: center; font-variant: normal; text-transform: none; line-height: 1em; margin-left: 0.2em;}
+
+.icon-reddit:before { content: '\3e'; } /* '&gt;' */
+.icon-info:before { content: '\2139'; } /* '?' */
+.icon-check:before { content: '\2713'; } /* '?' */
+.icon-cancel:before { content: '\2715'; } /* '?' */
+.icon-up:before { content: '\2b06'; } /* '?' */
+.icon-down:before { content: '\2b07'; } /* '?' */
+.icon-up-circled:before { content: '\f0aa'; } /* '?' */
+.icon-down-circled:before { content: '\f0ab'; } /* '?' */
+.icon-link:before { content: '?'; } /* '\1f517' */
+
+#reddit{width:830px;}
+
+#reddit .element{width:160px;height:169px;float:left;border:solid 1px #aaaaaa;position:relative;margin:0 0 10px 10px;}
+#reddit .element .link{position:absolute;right:0;display:none;}
+#reddit .element:hover .link{display:block;}
+#reddit .element .link a{display:block;padding:5px;background:#444444;color:#eeeeee;text-decoration: none;float:left;}
+#reddit .element .link a:hover{background:#666666;}
+#reddit .element .img{width:150px;height:150px;overflow: hidden;margin:0 auto;}
+#reddit .element .img img{width:140px;margin:0 auto;display:block;}
+#reddit .element .vote .icon-up{color:#fe4f03;}
+#reddit .element .vote .icon-down{color:#0385fe;text-align: right;}

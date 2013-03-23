@@ -2,10 +2,14 @@
 <html lang="fr">
 	<head>
 		<title>Cyrine MALEK - Webdesigner</title>
-		<link href="css/style.css" rel="stylesheet"/>
-		<script type="text/javascript" src="js/anicolas/M4.js"></script>
-		<script type="text/javascript" src="js/anicolas/M4Tween.js"></script>
-		<script type="text/javascript" src="js/anicolas/Stage.js"></script>
+		<link rel="shortcut icon" type="image/png" href="favicon.png" />
+		<link href='http://fonts.googleapis.com/css?family=Dosis' rel='stylesheet' type='text/css'>
+		<link href="css/style.css" rel="stylesheet">
+		<script src="js/anicolas/M4.js"></script>
+		<script src="js/anicolas/M4Tween.js"></script>
+		<script src="js/anicolas/Slider.js"></script>
+		<script src="js/anicolas/Stage.js"></script>
+		<script src="js/cmalek/main.js"></script>
 	</head>
 	<body id="home">
 		<!--<menu class="second">
@@ -19,7 +23,7 @@
 				<li class="separator"></li>
 				<li><a href="#home">Accueil</a></li>
 				<li class="separator"></li>
-				<li><a href="#about">A Propos</a></li>
+				<li><a href="#about">à Propos</a></li>
 				<li class="separator"></li>
 				<li class="logo">&nbsp;</li>
 				<li class="separator"></li>
@@ -55,14 +59,28 @@
 				<div class="arrow a8 below"></div>
 			</div>
 			<div class="content">
-				<p>Lorem Ipsum has been the industry's dum my text ever since the 15, when an unknown took a galley of type and it to ma ke a type book. It has sur vived not only five centur. Dum my text ever since the 15, when an. Dum my text ever since the 15, when an.</p>
-				<span>Lorem Ipsum has been the industry's dum my text ever since the 15, when an unknown took a galley of type and it to ma ke a type book. It has sur vived not only five centur.</span>
+				<h1>Cyrine Malek,</h1>
+				<h4>designer graphique de 24 ans,</h4>
+				<h4 class="current">actuellement à la recherche d'un poste.</h4>
+				<p>Après un Baccalauréat en communication graphique,<br>
+				j'ai continué mes études en alternance avec un BTS en communication<br>
+				visuelle et une Licence Professionnelle en Multimédia.</p>
+				<p>A travers mes études je suis toujours restée fidèle au graphisme en<br>
+				travaillant avec différents médias : le print, le web et le motion design.</p>
+				<p>Mes compétences incluent la création d'identité visuelle, le logotype,<br>
+				la conception de support papier tels que : plaquettes, brochures,<br>
+				dossier de presse, flyer, mais aussi le design web et les applications<br>
+				tablettes et mobiles.</p>
+				<div id="skills">
+					<div class="skill" data-value="85" data-name="Photoshop" data-color="rgba(74, 136, 166, 1)"></div>
+					<div class="skill" data-value="80" data-name="Illustrator" data-color="rgba(215, 152, 53, 1)"></div>
+					<div class="skill" data-value="75" data-name="Indesign" data-color="rgba(206, 91, 131, 1)"></div>
+					<div class="skill" data-value="60" data-name="AfterEffect" data-color="rgba(71, 71, 71, 1)"></div>
+					<div class="skill" data-value="55" data-name="Flash" data-color="rgba(212, 81, 81, 1)"></div>
+				</div>
 				<div class="cv">
 					<button type="submit">
 						<span>Curriculum Vitae</span>
-					</button>
-					<button type="submit">
-						<span>CV Canadien</span>
 					</button>
 				</div>
 			</div>
@@ -72,9 +90,42 @@
 			<div class="spikes"></div>
 			<div class="content">
 				<h3 id="portfolio">Mes Travaux</h3>
-				<div>
-					<h4>Charte Graphique - Print</h4>
+				<div class="open" id="crea_graph">
+					<h4>Création graphique</h4>
 					<div class="mask">
+						<div class="arrows">
+							<div class="previous">&lt;</div>
+							<div class="next">&gt;</div>
+						</div>
+						<div class="frame">
+							<ul>
+								<li class="current"><img src="works/crea_graphique/ecran-1.png" alt=""></li>
+								<li><img src="works/crea_graphique/ecran-2.png" alt=""></li>
+								<li><img src="works/crea_graphique/ecran-3.png" alt=""></li>
+								<li><img src="works/crea_graphique/ecran-4.png" alt=""></li>
+								<li><img src="works/crea_graphique/ecran-5.png" alt=""></li>
+								<li><img src="works/crea_graphique/ecran-6.png" alt=""></li>
+								<li><img src="works/crea_graphique/ecran-7.png" alt=""></li>
+							</ul>
+							<ul>
+								<li rel="0" class="current">&nbsp;</li>
+								<li rel="1">&nbsp;</li>
+								<li rel="2">&nbsp;</li>
+								<li rel="3">&nbsp;</li>
+								<li rel="4">&nbsp;</li>
+								<li rel="5">&nbsp;</li>
+								<li rel="6">&nbsp;</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+				<div>
+					<h4>Motion Design</h4>
+					<div class="mask">
+						<div class="arrows">
+							<div class="previous">&lt;</div>
+							<div class="next">&gt;</div>
+						</div>
 						<div class="frame">
 							<ul>
 								<li></li>
@@ -85,42 +136,24 @@
 						</div>
 					</div>
 				</div>
-				<div>
-					<h4>Design</h4>
-					<div class="mask">
-						<div class="frame">
-							<ul>
-								<li></li>
-							</ul>
-							<ul>
-								<li class="current">&nbsp;</li>
-							</ul>
-						</div>
-					</div>
-				</div>
-
-				<div>
-					<h4>Motion design</h4>
-					<div class="mask">
-						<div class="frame">
-							<ul>
-								<li></li>
-							</ul>
-							<ul>
-								<li class="current">&nbsp;</li>
-							</ul>
-						</div>
-					</div>
-				</div>
-
 				<div>
 					<h4>Créations personnelles</h4>
 					<div class="mask">
+						<div class="arrows">
+							<div class="previous">&lt;</div>
+							<div class="next">&gt;</div>
+						</div>
 						<div class="frame">
 							<ul>
-								<li></li>
+								<li class="current"><img src="works/crea_perso/ecran-1.jpg" alt=""></li>
+								<li><img src="works/crea_perso/ecran-2.jpg" alt=""></li>
+								<li><img src="works/crea_perso/ecran-3.jpg" alt=""></li>
+								<li><img src="works/crea_perso/ecran-4.jpg" alt=""></li>
 							</ul>
 							<ul>
+								<li class="current">&nbsp;</li>
+								<li class="current">&nbsp;</li>
+								<li class="current">&nbsp;</li>
 								<li class="current">&nbsp;</li>
 							</ul>
 						</div>
@@ -147,6 +180,9 @@
 				</button>
 			</p>
 			<a href="#home" class="top"></a>
+		</div>
+		<div id="cache">
+			<img src="imgs/logo_head.png" id="head" alt="">
 		</div>
 	</body>
 </html>

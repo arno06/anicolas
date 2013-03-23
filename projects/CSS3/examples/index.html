@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title></title>
+		<style type="text/css">
+			.element{width:100px;height:100px;background:#aaaaee;font-size:2px;}
+		</style>
+		<script src="../src/CSS3.js"></script>
+		<script>
+
+			NodeList.prototype.forEach = Array.prototype.forEach;
+
+			function init()
+			{
+				document.querySelectorAll("button").forEach(function(element)
+				{
+					element.addEventListener("click", function()
+					{
+						eval(element.getAttribute("name"))();
+					});
+				});
+			}
+
+			function sample_1()
+			{
+				CSS3.Tween.to("#e1",.5, {width:"200px", "background":"#ff9999", "font-size":"32px"});
+			}
+
+			function sample_2()
+			{
+				CSS3.Tween.to("#e2", 10, {width:"200px", "background":"#ff9999", "font-size":"32px"});
+			}
+
+			function sample_2_kill()
+			{
+				CSS3.Tween.killTweensOf("#e2", false);
+			}
+		</script>
+	</head>
+	<body onload="init();">
+		<h1>CSS3 samples</h1>
+		<div class="sample">
+			<h2>Simple</h2>
+			<button name="sample_1">Start</button>
+			<div class="element" id="e1">test</div>
+		</div>
+		<hr>
+		<div class="sample">
+			<h2>killTweensOf</h2>
+			<button name="sample_2">Start</button><br>
+			<a href="javascript:sample_2_kill();">CSS3.Tween.killTweensOf</a>
+			<div class="element" id="e2">test</div>
+		</div>
+	</body>
+</html>
