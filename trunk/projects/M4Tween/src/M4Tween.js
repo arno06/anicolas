@@ -76,8 +76,10 @@ M4Tween.prototype =
 			f.extractStartValue(t, this.useStyle);
 			f = f.next;
 		}
-		if(typeof(this.startHandler)=="function")
+		if(this.startHandler)
+		{
 			this.startHandler();
+		}
 	},
 	update:function(pDt)
 	{

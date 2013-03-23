@@ -5,14 +5,14 @@
 		<script type="text/javascript" src="js/minuit4/M4.js"></script>
 		<script type="text/javascript" src="js/minuit4/M4Tween.js"></script>
 		<style type="text/css">
-			@font-face {font-family: 'visitor';font-style: normal; font-weight: normal;src: url('font/visitor2.ttf') format('truetype');}
-			*{margin:0;padding: 0;font-family: visitor, Arial, sans-serif;font-weight:normal;font-size:11px;}
+			*{margin:0;padding: 0;font-weight:normal;font-size:11px;}
 			body{background: rgb(192, 192, 192);overflow: hidden;}
 			canvas{width:600px;height:600px;position:absolute;left:50%;top:50%;margin-top:-300px;margin-left:-300px;background: rgb(192, 192, 192);}
 			Button{border-top:#fff 2px solid;border-left:#fff 2px solid;border-bottom: rgb(160,160,160) 2px solid;}
 		</style>
 	</head>
 	<body oncontextmenu="return false;">
+	<h1>Minesweeper - Stage.js</h1>
 		<script type="text/javascript">
 			M4Tween.useStyle = false;
 			M4.need("js/minuit4/Stage.js",
@@ -30,16 +30,6 @@
 				_stage.addChild(_minesweeperGame);
 				_minesweeperGame.x = (600 - _minesweeperGame.width)>>1;
 				_minesweeperGame.y = (600 - _minesweeperGame.height)>>1;
-
-				var _button = new SettingButton();
-				_button.x = 600 - 30;
-				_stage.addChild(_button);
-
-
-				var _play = new MineButton("Play");
-				_play.y = 50;
-				_play.x = 50;
-				_stage.addChild(_play);
 
 			}
 		</script>

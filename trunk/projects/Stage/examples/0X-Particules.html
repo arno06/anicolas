@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Stage.js - Example</title>
+		<script type="text/javascript" src="../../M4/src/M4.js"></script>
+		<script type="text/javascript" src="../src/Stage.js"></script>
+		<script type="text/javascript">
+			window.addEventListener("load", init, false);
+			var stage;
+
+			var p = [];
+
+			function init()
+			{
+				stage = new Stage(800, 600, document.querySelector("#stage"));
+//				stage.addEventListener(Event.ENTER_FRAME, frameHandler);
+
+
+				for(var i = 0, max = 3;i<max;i++)
+				{
+					var pp = new Particule();
+					pp.x = Math.round(Math.random() * 700);
+					pp.y = Math.round(Math.random() * 500);
+					p.push(pp);
+					stage.addChild(pp);
+				}
+
+				frameHandler(null);
+
+				stage.addChild(new FPS());
+			}
+
+			function Particule()
+			{
+				this.reset();
+				this.resetFriends();
+				this.addEventListener(Event.ADDED_TO_STAGE, M4.proxy(this, this._addedHandler));
+			}
+
+			Class.define(Particule, [Sprite],
+			{
+				_friends:[],
+				_addedHandler:function()
+				{
+					this.clear();
+					this.beginFill("rgba(132, 32, 110, 1)");
+					this.drawCircle(0, 0, 15);
+					this.endFill();
+				},
+				resetFriends:function()
+				{
+					this._friends = [];
+				}
+			});
+
+			function frameHandler(e)
+			{
+				stage.clear();
+				p.forEach(function(particule)
+				{
+					particule.resetFriends();
+				});
+				p.forEach(function(particule)
+				{
+					particule.resetFriends();
+				});
+			}
+
+			/**
+			 * CHEAT OMG
+			 */
+			NodeList.prototype.forEach = Array.prototype.forEach;
+		</script>
+		<link href="../../common/example/example.css" type="text/css" rel="stylesheet"/>
+	</head>
+	<body>
+		<h1>Stage.js</h1>
+		<div id="stage">
+
+		</div>
+		<footer>
+			&copy; arno06@gmail.com | 2009 - 2013
+		</footer>
+	</body>
+</html>

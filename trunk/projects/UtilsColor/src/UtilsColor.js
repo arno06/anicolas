@@ -139,3 +139,34 @@ HSLColor.HuetoRGB=function(pT1, pT2, pH)
 		return (pT1 + (pT2 - pT1) * ((2 / 3) - pH) * 6);
 	return pT1;
 };
+
+function HexaColor(){}
+
+HexaColor.HexatoRGB = function(pValue)
+{
+	var value = Number(pValue);
+	var r = (this.finalValue&parseInt("FF0000", 16))>>16;
+	var g = (this.finalValue&parseInt("00FF00", 16))>>8;
+	var b = this.finalValue&parseInt("0000FF", 16);
+};
+
+HexaColor.RGBtoHexa = function()
+{
+
+};
+
+function RGBAColor(pR, pG, pB, pAlpha)
+{
+	this.r = pR||0;
+	this.g = pG||0;
+	this.b = pB||0;
+	this.alpha = pAlpha||1;
+}
+
+Class.define(RGBAColor, [Class],
+{
+	toString:function()
+	{
+		return "rgba("+this.r+", "+this.g+", "+this.b+", "+this.alpha+")";
+	}
+});

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>UtilsColor.js - QUnit.js tests</title>
+		<link href="../../common/qunit/qunit-1.11.0.css" rel="stylesheet">
+		<script src="../../common/qunit/qunit-1.11.0.js"></script>
+		<script src="../../M4/src/M4.js"></script>
+		<script src="../src/M4Tween.js"></script>
+
+		<script>
+			asyncTest( "M4Tween callback", 2, function() {
+				M4Tween.useStyle = false;
+				var o = {value:0};
+				var init = function(){console.log("ok");ok(true, "Init");};
+				var update = function(){ok(true, "Update");};
+				var complete = function(){ok(true, "Complete");start();};
+				M4Tween.to(o, 1, {value:1, delay:1}).onStart(init).onUpdate(update).onComplete(complete);
+			});
+		</script>
+	</head>
+	<body>
+		<div id="qunit"></div>
+        <div id="qunit-fixture"></div>
+	</body>
+</html>
