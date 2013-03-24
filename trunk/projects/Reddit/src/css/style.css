@@ -17,9 +17,9 @@
 .icon-down-circled:before { content: '\f0ab'; } /* '?' */
 .icon-link:before { content: '?'; } /* '\1f517' */
 
-#reddit{width:830px;}
+#reddit{width:850px;margin: 0 auto;}
 
-#reddit .element{width:160px;height:169px;float:left;border:solid 1px #aaaaaa;position:relative;margin:0 0 10px 10px;}
+#reddit .element{width:158px;height:169px;float:left;border:solid 1px #aaaaaa;position:relative;margin:0 0 10px 10px;}
 #reddit .element .link{position:absolute;right:0;display:none;}
 #reddit .element:hover .link{display:block;}
 #reddit .element .link a{display:block;padding:5px;background:#444444;color:#eeeeee;text-decoration: none;float:left;}
