@@ -39,7 +39,8 @@
 			.field .square[rel="empty_6"]{background:url(imgs/minesweeper.png) no-repeat -88px -71px;}
 			.field .square[rel="empty_7"]{background:url(imgs/minesweeper.png) no-repeat -105px -71px;}
 			.field .square[rel="empty_8"]{background:url(imgs/minesweeper.png) no-repeat -122px -71px;}
-			.field .square[rel="mine"]{background:url(imgs/minesweeper.png) no-repeat -122px -71px;}
+			.field .square[rel="mine"]{background:url(imgs/minesweeper.png) no-repeat -88px -54px;}
+			.field .square[rel="triggered_mine"]{background:url(imgs/minesweeper.png) no-repeat -105px -54px;}
 			.field .square:active,
 			.field .square[rel="empty_0"],
 			.field .square[rel="empty_1"],
@@ -49,7 +50,9 @@
 			.field .square[rel="empty_5"],
 			.field .square[rel="empty_6"],
 			.field .square[rel="empty_7"],
-			.field .square[rel="empty_8"]{width:15px;height:15px;border-left:solid 1px rgb(128, 128, 128);border-top:solid 1px rgb(128, 128, 128);border-bottom:none;border-right: none;}
+			.field .square[rel="empty_8"],
+			.field .square[rel="mine"],
+			.field .square[rel="triggered_mine"]{width:15px;height:15px;border-left:solid 1px rgb(128, 128, 128);border-top:solid 1px rgb(128, 128, 128);border-bottom:none;border-right: none;}
 		</style>
 	</head>
 	<body oncontextmenu="return false;" onload="init()">
@@ -73,7 +76,7 @@
 				this.setup(this.$.parent.dataset.cols, this.$.parent.dataset.rows, this.$.parent.dataset.mines);
 			}
 
-			Class.define(MineSweeper, [Class],
+			Class.define(MineSweeper, [EventDispatcher],
 			{
 				setup:function(pCols, pRows, pMines)
 				{
@@ -109,7 +112,7 @@
 						for(var i = 0;i<ref.field.x;i++)
 						{
 							line[i] = new Square(ref.$.field);
-//							line[i].addEventListener(MineSweeper.EVT_EXPLODING, M4.proxy(this, this._explode));
+							line[i].addEventListener(MineSweeper.EVT_EXPLODING, M4.proxy(ref, ref._explode));
 						}
 						M4.createElement("div", {parentNode:ref.$.field, "class":"lb"});//Line breaker
 					});
@@ -170,7 +173,7 @@
 						for(j = 0, maxj = this.field.x; j<maxj;j++)
 							this.squares[i][j].explode();
 					}
-					this.dispatchEvent(new Event(Minesweeper.GAME_OVER, false));
+					this.dispatchEvent(new Event(MineSweeper.GAME_OVER, false));
 				},
 				startGame:function()
 				{
@@ -250,7 +253,7 @@
 					if(this.isMine)
 						this.dispatchEvent(new Event(MineSweeper.EVT_EXPLODING, false));
 
-					var rel = this.isMine ? "mine":"empty_"+this.dangerousNeighbors;
+					var rel = this.isMine ? "triggered_mine":"empty_"+this.dangerousNeighbors;
 					this.$.element.setAttribute("rel", rel);
 					this.$.element.removeEventListener("mouseup", this._anoUpHandler);
 
@@ -280,6 +283,17 @@
 				trigger:function()
 				{
 					this._upHandler({button:0});
+				},
+				explode:function()
+				{
+					this.removeAllEventListeners();
+					if(!this.isMine||this.currentState == "triggered_mine")
+						return;
+					this.$.element.setAttribute("rel", "mine");
+				},
+				removeAllEventListeners:function()
+				{
+					this.$.element.removeEventListener("mouseup", this._anoUpHandler);
 				}
 			});
 

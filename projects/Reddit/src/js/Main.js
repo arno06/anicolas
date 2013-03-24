@@ -22,13 +22,13 @@ Class.define(Main, [EventDispatcher],
 	},
 	dataUpdatedHandler:function(pResponse)
 	{
-		console.log("Main.js : Main.dataUdpatedHandler - Données-à-jours");
+		console.log("Main.js : Main.dataUdpatedHandler - DonnÃ©es-Ã -jours");
 		this.datas = pResponse.responseJSON.data;
 		this.dispatchEvent(new Event(Main.EVT_DATA_UPADTED, false));
 	},
 	dataErrorHandler:function()
 	{
-		console.log("Main.js : Main.dataErrorHandler - Une erreur est apparue lors du chargement des données");
+		console.log("Main.js : Main.dataErrorHandler - Une erreur est apparue lors du chargement des donnÃ©es");
 	},
 	dataProgressHandler:function(pEvent)
 	{
@@ -55,7 +55,7 @@ Class.define(Main, [EventDispatcher],
 			M4.createElement("span", {"class":"icon-up", parentNode:voteContainer});
 			M4.createElement("span", {"class":"icon-down", parentNode:voteContainer});
 
-			var re = /\.(jpg|jpeg)([?a-z0-9\=]*)$/i;
+			var re = /\.(jpg|jpeg|png|gif)([?a-z0-9\=]*)$/i;
 			if(re.test(item.url))
 				img.setAttribute("src", item.url);
 			else
@@ -64,6 +64,9 @@ Class.define(Main, [EventDispatcher],
 				{
 					case "imgur.com":
 						img.setAttribute("src", Main.PROXY_IMGUR_URL+"?url="+item.url);
+						break;
+					default:
+						console.log(item.domain+" "+item.url);
 						break;
 				}
 			}
