@@ -43,6 +43,7 @@ Class.define(Main, [EventDispatcher],
 				if(col[i])
 					continue;
 				col[i] = new Square(colContainer, Main.utils.randomColor());
+				col[i].addEventListener(Main.event.RESET_COEF, M4.proxy(ref, ref._resetCoef));
 				col[i].addEventListener(Main.event.EXPLODING, M4.proxy(ref, ref._explode));
 				col[i].addEventListener(Main.event.REQUEST_SUPPRESION, M4.proxy(ref, ref._requestSuppressionHandler));
 			}
@@ -95,14 +96,29 @@ Class.define(Main, [EventDispatcher],
 		this.squares = sqrs;
 		this.suppressionPool = [];
 		this._prepareField();
+		this.multiplier *= 1.1;
+		this.multiplier = Math.min(50, this.multiplier);
+		this.score += this.multiplier * (e.target.count * 25);
+		this.updateUI();
+	},
+	_resetCoef:function(e)
+	{
+		this.multiplier = 1;
+		this.updateUI();
 	},
 	_requestSuppressionHandler:function(e)
 	{
 		this.suppressionPool.push(e.target);
 	},
+	updateUI:function()
+	{
+		console.log("Multiplier : "+this.multiplier);
+		console.log("Score : "+this.score);
+	},
 	startGame:function()
 	{
-
+		this.multiplier = 1;
+		this.score = 0;
 	}
 });
 Main.utils = {_types:["first", "second", "third", "fourth"]};
@@ -118,6 +134,7 @@ Main.config.MIN_LENGH_CHAIN = 3;
 Main.event = {};
 Main.event.EXPLODING = "evt_exploding";
 Main.event.REQUEST_SUPPRESION = "evt_request_suppression";
+Main.event.RESET_COEF = "evt_reset_coef";
 Main.event.clickEvent = (function(){return "ontouchend" in document?"touchend":"click"})();
 
 function Square(pContainer, pType)
@@ -149,6 +166,7 @@ Class.define(Square, [EventDispatcher],
 		if(this.count < Main.config.MIN_LENGH_CHAIN)
 		{
 			console.log("Chain not long enough");
+			this.dispatchEvent(new Event(Main.event.RESET_COEF));
 			return;
 		}
 		this.requestSuppression();
