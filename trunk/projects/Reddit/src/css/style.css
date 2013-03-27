@@ -20,11 +20,32 @@
 #reddit{width:850px;margin: 0 auto;}
 
 #reddit .element{width:158px;height:169px;float:left;border:solid 1px #aaaaaa;position:relative;margin:0 0 10px 10px;}
-#reddit .element .link{position:absolute;right:0;display:none;}
-#reddit .element:hover .link{display:block;}
+#reddit .element .link{position:absolute;right:0;opacity:0;-webkit-transition:opacity .5s;}
+#reddit .element:hover .link{opacity:1;}
 #reddit .element .link a{display:block;padding:5px;background:#444444;color:#eeeeee;text-decoration: none;float:left;}
 #reddit .element .link a:hover{background:#666666;}
 #reddit .element .img{width:150px;height:150px;overflow: hidden;margin:0 auto;}
 #reddit .element .img img{width:140px;margin:0 auto;display:block;}
-#reddit .element .vote .icon-up{color:#fe4f03;}
-#reddit .element .vote .icon-down{color:#0385fe;text-align: right;}
+#reddit .element .vote {height:20px;}
+#reddit .element .vote .icon-up{color:#fe4f03;display:block;float:left;}
+#reddit .element .vote .trend{width:113px;float:left;padding-top:5px;}
+#reddit .element .vote .trend span{display:block;float:left;height:10px;width:50%;}
+#reddit .element .vote .trend span.up{background:#fe4f03;background: #ff3019; /* Old browsers */
+background: -moz-linear-gradient(top,  #ff3019 0%, #cf0404 100%); /* FF3.6+ */
+background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ff3019), color-stop(100%,#cf0404)); /* Chrome,Safari4+ */
+background: -webkit-linear-gradient(top,  #ff3019 0%,#cf0404 100%); /* Chrome10+,Safari5.1+ */
+background: -o-linear-gradient(top,  #ff3019 0%,#cf0404 100%); /* Opera 11.10+ */
+background: -ms-linear-gradient(top,  #ff3019 0%,#cf0404 100%); /* IE10+ */
+background: linear-gradient(to bottom,  #ff3019 0%,#cf0404 100%); /* W3C */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ff3019', endColorstr='#cf0404',GradientType=0 ); /* IE6-9 */
+}
+#reddit .element .vote .trend span.down{background:#0385fe;background: #00b7ea; /* Old browsers */
+background: -moz-linear-gradient(top,  #00b7ea 0%, #009ec3 100%); /* FF3.6+ */
+background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#00b7ea), color-stop(100%,#009ec3)); /* Chrome,Safari4+ */
+background: -webkit-linear-gradient(top,  #00b7ea 0%,#009ec3 100%); /* Chrome10+,Safari5.1+ */
+background: -o-linear-gradient(top,  #00b7ea 0%,#009ec3 100%); /* Opera 11.10+ */
+background: -ms-linear-gradient(top,  #00b7ea 0%,#009ec3 100%); /* IE10+ */
+background: linear-gradient(to bottom,  #00b7ea 0%,#009ec3 100%); /* W3C */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00b7ea', endColorstr='#009ec3',GradientType=0 ); /* IE6-9 */
+}
+#reddit .element .vote .icon-down{color:#0385fe;text-align: right;display:block;float:right;}

@@ -22,13 +22,13 @@ Class.define(Main, [EventDispatcher],
 	},
 	dataUpdatedHandler:function(pResponse)
 	{
-		console.log("Main.js : Main.dataUdpatedHandler - DonnÃ©es-Ã -jours");
+		console.log("Main.js : Main.dataUdpatedHandler - Données-à-jours");
 		this.datas = pResponse.responseJSON.data;
 		this.dispatchEvent(new Event(Main.EVT_DATA_UPADTED, false));
 	},
 	dataErrorHandler:function()
 	{
-		console.log("Main.js : Main.dataErrorHandler - Une erreur est apparue lors du chargement des donnÃ©es");
+		console.log("Main.js : Main.dataErrorHandler - Une erreur est apparue lors du chargement des données");
 	},
 	dataProgressHandler:function(pEvent)
 	{
@@ -41,18 +41,26 @@ Class.define(Main, [EventDispatcher],
 		this.container.innerHTML = "";
 		var children = this.datas.children;
 		var item;
-		var element, imgContainer, img, linkContainer, voteContainer;
+		var element, imgContainer, img, linkContainer, voteContainer, trendContainer;
 		for(var i = 0, max = children.length;i<max;i++)
 		{
 			item = children[i].data;
+			console.log(item);
+			var ups = item.ups;
+			var downs = item.downs;
+			ups = Math.round((ups/(ups+downs)) * 100);
+			downs = 100 - ups;
 			element = M4.createElement("div", {class:"element", parentNode:this.container});
 			linkContainer = M4.createElement("div", {"class":"link", parentNode:element});
 			M4.createElement("a", {"href":"", "class":"icon-info", parentNode:linkContainer});
-			M4.createElement("a", {"href":"", "class":"icon-reddit", parentNode:linkContainer});
+			M4.createElement("a", {"href":"http://www.reddit.com"+item.permalink, "class":"icon-reddit", parentNode:linkContainer});
 			imgContainer = M4.createElement("div", {"class":"img", parentNode:element});
 			img = M4.createElement("img", {"alt":item.title, parentNode:imgContainer});
 			voteContainer = M4.createElement("div", {class:"vote", parentNode:element});
 			M4.createElement("span", {"class":"icon-up", parentNode:voteContainer});
+			trendContainer = M4.createElement("div", {"class":"trend", parentNode:voteContainer});
+			M4.createElement("span", {"class":"up", parentNode:trendContainer, "style":{width:ups+"%"}});
+			M4.createElement("span", {"class":"down", parentNode:trendContainer, "style":{width:downs+"%"}});
 			M4.createElement("span", {"class":"icon-down", parentNode:voteContainer});
 
 			var re = /\.(jpg|jpeg|png|gif)([?a-z0-9\=]*)$/i;
