@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title></title>
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<style type="text/css">
+			body{background:#999999;}
+			#field{padding:10px;width:245px;height:350px;margin:0 auto;-webkit-transform: rotate(-180deg);overflow: hidden;background:#444444;border-radius:5px;box-shadow: 0 0 4px rgba(0, 0, 0, .5);}
+			#field .col{width:35px;float:right;}
+			#field .square{width:33px;height:33px;border-radius:5px;margin:2px 0 0 2px;}
+			#field .square:active{opacity: .7;}
+			#field .square.first{background: #2adaff;}
+			#field .square.second{background: #ffec46;}
+			#field .square.third{background: #ff3748;}
+			#field .square.fourth{background: #8fff2c;}
+		</style>
+		<script src="../../M4/src/M4.js"></script>
+		<script>
+			M4.need("../../M4Tween/src/M4Tween.js","./js/Main.js").addEventListener(Event.COMPLETE, init);
+
+			function init()
+			{
+				new Main(document.getElementById("field"));
+			}
+		</script>
+	</head>
+	<body>
+		<div id="field" data-cols="7" data-lines="10"></div>
+	</body>
+</html>

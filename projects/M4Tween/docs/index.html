@@ -21,58 +21,12 @@
 				document.querySelectorAll("pre").forEach(M4SynthaxColor.of);
 
 			}
-
-			function rollDemo()
-			{
-				var pButton = document.querySelector("button.roll");
-				var element = document.querySelector("div.element.roll");
-				M4Tween.killTweensOf(element);
-				var options = {marginLeft:"500px", rotate:"360deg"};
-				if(pButton.getAttribute("rel") == "clicked")
-				{
-					options.marginLeft= "0px";
-					options.rotate = "0deg";
-					pButton.removeAttribute("rel");
-					pButton.innerHTML = "Run";
-				}
-				else
-				{
-					pButton.setAttribute("rel", "clicked");
-					pButton.innerHTML = "Run back";
-				}
-				pButton.disabled = true;
-				M4Tween.to(element, 1.5, options).onComplete(function(){pButton.disabled = false;});
-			}
-
-			function runDemo()
-			{
-				var messages = ["omg !", "HELP ME !", "DO SOMETHING... PLZ", "STOP WATCHING ME !!", "I'm gonna kill u.", "F*** this shit !"];
-				var bubble = document.querySelector(".bubble.run");
-				var pButton = document.querySelector("button.run");
-				var element = document.querySelector("div.element.run");
-				M4Tween.killTweensOf(element);
-				if(pButton.getAttribute("disabled") == "disabled")
-				{
-					bubble.style.display = "none";
-					pButton.setAttribute("rel", "run");
-					pButton.innerHTML = "Run";
-					pButton.disabled = false;
-					return;
-				}
-				bubble.style.display = "block";
-				bubble.innerHTML = messages[Math.round(Math.random()*(messages.length-1))];
-				pButton.setAttribute("disabled", "disabled");
-				M4Tween.to(element, 1.5, {marginLeft:"500px", rotate:"360deg"})
-						.then(element, 1.5, {marginLeft:"0px", rotate:"0deg"})
-						.onComplete(runDemo);
-			}
-
 			/**
 			 * CHEAT OMG
 			 */
 			NodeList.prototype.forEach = Array.prototype.forEach;
 		</script>
-		<link href="../../common/docs.css" type="text/css" rel="stylesheet"/>
+		<link href="../../common/docs/docs.css" type="text/css" rel="stylesheet"/>
 	</head>
 	<body>
 		<h1>M4Tween</h1>
