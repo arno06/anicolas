@@ -15,9 +15,9 @@ var M4 =
 			SAFARI:ua.indexOf("AppleWebKit")>-1&&ua.indexOf("Chrome")===-1
 		};
 	})(),
-	need:function()
+	need:function(pFiles)
 	{
-		return new JSLoader(arguments);
+		return new JSLoader(arguments.length>1?arguments:pFiles);
 	},
 	proxy:function(pInstance, pMethod){return function(){pMethod.apply(pInstance, arguments)};},
 	decorate:function(e){
@@ -88,19 +88,7 @@ var M4 =
 			RADIAN_TO_DEGREE:180/Math.PI,
 			DEGREE_TO_RADIAN:Math.PI/180
 		};
-	}()),
-	addClassName:function(pEl, pClass)
-	{
-		var c = pEl.getAttribute("class")||"";
-		pEl.setAttribute("class", c+" "+pClass);
-	},
-	removeClassName:function(pEl, pClass)
-	{
-		var c = pEl.getAttribute("class")||"";
-		if(c.indexOf(pClass)==-1)
-			return;
-		pEl.setAttribute("class", c.replace(new RegExp("\\s*"+pClass+"", "gi"), ""));
-	}
+	}())
 };
 
 function Class(){}
@@ -133,19 +121,6 @@ Class.define = function(pTarget, pExtends, pPrototype)
 	for(var k in pPrototype)
 		pTarget.prototype[k] = pPrototype[k];
 };
-
-
-function trace(pV){console.log((typeof(pV)=="object"&&typeof(pV["toString"])=="function")?pV.toString():pV);}
-function trace_r(pV)
-{
-	var s = "";
-	for(var i in pV)
-	{
-		s += i+ " " + typeof(pV[i])+"\r\n";
-
-	}
-	console.log(s);
-}
 
 function Event(pType, pBubbles)
 {
@@ -299,14 +274,7 @@ Class.define(EventDispatcher, [Class], {
 	}
 });
 
-
-Array.prototype.each = function(pHandler)
-{
-	if(typeof(pHandler)!="function" || !this.length)
-		return;
-	for(var i = 0, max = this.length; i<max;i++)
-		pHandler(this[i]);
-};
+NodeList.prototype.forEach = Array.prototype.forEach;
 
 String.prototype.html_entity_decode = function()
 {
@@ -414,6 +382,7 @@ Class.define(MassLoader, [EventDispatcher], {
 		type = type[type.length-1];
 		switch(type.toLowerCase())
 		{
+			case "wav":
 			case "mp3":
 			case "ogg":
 				l = new Audio();
@@ -471,7 +440,7 @@ function JSLoader(pJS)
 	};
 	document.onreadystatechange();
 }
-Class.define(JSLoader, [MassLoader], null);
+Class.define(JSLoader, [MassLoader], {ready:function(pHandler){this.addEventListener(Event.COMPLETE, pHandler);return this;}});
 
 function Color(){}
 Color.HexaToRGB = function(pValue){return (new HexaColor(pValue)).toRGB();};
