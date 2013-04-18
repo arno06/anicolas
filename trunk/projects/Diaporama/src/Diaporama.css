@@ -1,0 +1,6 @@
+.diaporama{-webkit-transform: translateZ(0);}
+.diaporama ul{list-style: none;padding:0;margin:0;overflow: hidden;position: relative;}
+.diaporama .viewer{float:left;position: relative;}
+.diaporama .viewer li{position:absolute;top:0;left:0;}
+.diaporama .controls{float:right;}
+.diaporama .controls li{display:block;overflow: hidden;position:absolute;top:0;left:0;}

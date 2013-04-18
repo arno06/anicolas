@@ -1,8 +1,9 @@
-function Main(pElement)
+function Main(pElement, pExplodeSound)
 {
 	this.removeAllEventListener();
 	this.$ = {};
 	this.$.parent = pElement;
+	this.$.explodeSound = pExplodeSound;
 	this.setup(this.$.parent.dataset.cols, this.$.parent.dataset.lines);
 	this.suppressionPool = [];
 }
@@ -28,7 +29,11 @@ Class.define(Main, [EventDispatcher],
 	},
 	_prepareUI:function()
 	{
-
+		if(this.$.scoreContainer)
+			return;
+		this.$.scoreContainer = M4.createElement("div", {parentNode:this.$.parent, class:"score_container"});
+		this.$.multiplier = M4.createElement("div", {parentNode:this.$.scoreContainer, class:"multiplier", "text":"50"});
+		this.$.score = M4.createElement("div", {parentNode:this.$.scoreContainer, class:"score", "text":"9999999999"});
 	},
 	_prepareField:function()
 	{
@@ -97,8 +102,9 @@ Class.define(Main, [EventDispatcher],
 		this.suppressionPool = [];
 		this._prepareField();
 		this.multiplier *= 1.1;
-		this.multiplier = Math.min(50, this.multiplier);
-		this.score += this.multiplier * (e.target.count * 25);
+		this.multiplier = Math.round(Math.min(50, this.multiplier)*10)/10;
+		this.score += Math.round(this.multiplier * (e.target.count * 25));
+		this.$.explodeSound.play();
 		this.updateUI();
 	},
 	_resetCoef:function(e)
@@ -112,13 +118,17 @@ Class.define(Main, [EventDispatcher],
 	},
 	updateUI:function()
 	{
-		console.log("Multiplier : "+this.multiplier);
-		console.log("Score : "+this.score);
+		var s = this.score.toString();
+		while(s.length<=9)
+			s = "0"+s;
+		this.$.score.innerHTML = s;
+		this.$.multiplier.innerHTML = "x"+this.multiplier;
 	},
 	startGame:function()
 	{
 		this.multiplier = 1;
 		this.score = 0;
+		this.updateUI();
 	}
 });
 Main.utils = {_types:["first", "second", "third", "fourth"]};

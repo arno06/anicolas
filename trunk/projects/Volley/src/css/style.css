@@ -1,0 +1,73 @@
+*{margin:0;padding:0;font-family: Arial, sans-serif;font-weight: normal;font-size: 12px;}
+html, body{width:100%;height:100%;outline: none;-webkit-tap-highlight-color:rgba(0, 0, 0, 0);}
+
+#container{position:absolute;top:0;left:0;padding-top:40px;background: -webkit-radial-gradient(center, ellipse cover, #ffffff 0%,rgb(238, 238, 238) 100%) fixed;width:100%;overflow: auto;}
+
+menu{width:100%;height:40px;background:#999;border-bottom:1px solid #ffffff;position:fixed;z-index:50;box-shadow: 0 1px 4px rgba(0, 0, 0, .3);}
+menu button{opacity: .3;margin-left:6%;width:25%;padding:2px 0;height:40px;border:none;border-bottom:#fff solid 1px;float:left;background-image: -webkit-linear-gradient(bottom, rgb(238,238,238) 6%, rgb(255,255,255) 50%);border-top-left-radius: 10px;border-top-right-radius: 10px;}
+menu button:last-child{float:right;margin-right:6%;}
+menu button.current{opacity: 1;border-bottom:rgb(238,238,238) solid 1px;}
+
+.clear{clear:both;}
+#loader, #box{width:100%;height:100%;position:fixed;top:0;left:0;color:#000000;z-index: 99;}
+#loader{background: #fff;background: -webkit-radial-gradient(center, ellipse cover, #ffffff 0%,#cccccc 100%);}
+#loader>div{position:absolute;top:50%;height:10px;width:80%;margin:-5px 10% 10px;background:#444444;border:solid 1px #222222;border-bottom:1px solid #888888;padding:1px;border-radius:5px;}
+#loader>div>div{height:10px;background:#258dc8;width:0;border-radius:4px;}
+#box{background: rgba(0,0,0, .5);z-index:55;}
+#box>div{width:98%;height:98%;position:absolute;border-radius:5px;box-shadow: 0 0 5px rgba(0,0,0,.5);left:1%;top:1%;background:#fff;}
+#box>div .name{text-align: center;font-size:16px;font-weight: bold;color:#333;padding-top:10px;}
+#box>div .matches{padding-left:15px;}
+
+#box>div .matches .sets, #box>div .matches .points{width:40%;height:30px;float:left;margin-top:10px;}
+#box>div .matches .sets h3, #box>div .matches .points h3{text-align: center;}
+#box>div .matches .sets .won,
+#box>div .matches .sets .lost,
+#box>div .matches .points .won,
+#box>div .matches .points .lost
+{height:30px;padding-top:18px;font-weight: bold;overflow: hidden;font-weight: bold;text-align: center;}
+#box>div .matches .sets .won, #box>div .matches .points .won{color: #007700;background: #d2ffc0;float:left;text-align: center;border-top-left-radius: 5px;border-bottom-left-radius: 5px;}
+#box>div .matches .sets .lost, #box>div .matches .points .lost{color: #780000;background: #f7bbc0;float:right;text-align: center;border-top-right-radius: 5px;border-bottom-right-radius: 5px;}
+
+#box>div .matches .points{float:right;margin-right:15px;}
+
+#box>div .matches .match{margin:2px 0;}
+#box>div .matches .match span{font-weight: bold;}
+#box>div .matches .match .won{color: #00b400;}
+#box>div .matches .match .lost{color: #b40000;}
+#box>div .matches .match .score{color:#888888;}
+
+#ranking{}
+#ranking .entry{padding: 10px 0;border-top: #eee solid 1px;border-bottom: #fff solid 1px;background: rgb(238,238,238);}
+#ranking .entry.odd{background: rgb(255,255,255);}
+#ranking .entry .rank{width:30px;text-align:right;float:left;margin-right:10px;font-weight: bold;font-size:22px;}
+#ranking #entry_0.entry .rank{color:#FFD600;}
+#ranking #entry_1.entry .rank{color:#aaa;}
+#ranking #entry_2.entry .rank{color:#E09000;}
+#ranking .entry .name{float:left;font-size:20px;padding-top:1px;}
+#ranking .entry .champ_points, #ranking .entry .day{float:right;font-size:22px;text-align: right;}
+#ranking .entry>div>span.units{color:#999;font-size:14px;}
+#ranking .entry .champ_points{width:100px;}
+#ranking .entry .day{width:50px;}
+#ranking .entry .extra{display:none;}
+
+#agenda{background:#eee;}
+#agenda .entry{padding:10px 5px;}
+#agenda .entry h2{font-size:18px;font-weight: bold;}
+#agenda .entry h2 span{font-size:14px;font-weight: normal;}
+#agenda .entry .match{padding:10px;border:1px dashed #999;margin:5px;background:#fff;position:relative;}
+#agenda .entry .match .home{}
+#agenda .entry .match .vs{text-align: center;}
+#agenda .entry .match .guest{text-align: right;}
+#agenda .entry .match .home_set, #agenda .entry .match .guest_set{top:0;left:0;font-weight: bold;width:50%;position:absolute;text-align: center;font-size: 18px;}
+#agenda .entry .match .home_set{padding-top:30px;}
+#agenda .entry .match .guest_set{padding-top:10px;left:50%;}
+#agenda .entry .match .date{color: #deffeb;font-style:italic;width:70px;height:30px;position:absolute;top:50%;left:50%;margin-left:-35px;margin-top:-15px;background: rgb(153, 216, 185);text-align: center;box-shadow: 0 1px 3px rgba(0, 0, 0, .3);}
+#agenda .entry .match .date span{font-weight:bold;color: #fff;}
+#agenda .entry .match .date small{display:block;font-size:8px;line-height: 8px;}
+
+#agenda .entry .match.home_won .home, #agenda .entry .match.guest_won .guest{color: #00b400;}
+#agenda .entry .match.home_won .guest,#agenda .entry .match.guest_won .home{color: #b40000;}
+
+.legend{width:300px;margin:5px auto;}
+.legend .element{}
+.legend .element div:first-child{margin-top:2px;margin-right:5px;}

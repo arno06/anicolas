@@ -1,36 +1,187 @@
+/**
+ * @author Arnaud NICOLAS - arno06@gmail.com
+ * http://code.google.com/p/anicolas/
+ * main.js
+ */
 var Main =
 {
+	logo:null,
+	scene:{width:0, height:0},
 	slider:null,
+	sliders:{
+		"crea_graph":{},
+		"motion_des":{},
+		"crea_perso":{}
+	},
+	skills:[],
 	init:function()
 	{
+
+		var loader = document.querySelector("#loader");
+		Main.scene.width = loader.offsetWidth;
+		Main.scene.height = loader.offsetHeight;
+
+		Scroll.setup();
 		var logoStage =  new Stage(136, 136, document.querySelector("header menu li.logo"));
-		var logo = new Logo();
-		logo.x = 68;
-		logo.y = 68;
-		logoStage.addChild(logo);
-		logo.helloWorld();
-		document.querySelectorAll(".skill").forEach(function(element){new Skill(element);});
-		Main.slider = new Slider("#crea_graph .frame ul:first-child li", null, {transitionTime:.5});
-		Main.slider.addControls("#crea_graph .frame ul:last-child li", "current");
-		document.querySelectorAll("#crea_graph .arrows div").forEach(function(el)
+		Main.logo = new Logo();
+		Main.logo.x = 68;
+		Main.logo.y = 68;
+		logoStage.addChild(Main.logo);
+
+		var topStage = new Stage(180, 210, document.querySelector(".scene.contact .top"));
+		topStage.addEventListener("click", function(e){Scroll.to(document.querySelector("#home"));}, false);
+		Main.top = new Top();
+		Main.top.x = 90;
+		Main.top.y = 120;
+		topStage.addChild(Main.top);
+
+		document.querySelectorAll(".skill").forEach(function(element){Main.skills.push(new Skill(element));});
+
+		var s;
+		for(var i in Main.sliders)
 		{
-			el.addEventListener("click", function()
+			Main.sliders[i] = new Slider("#"+i+" .frame>div img", "Touch", {transitionTime:.5});
+			s = Main.sliders[i];
+			s.addControls("#"+i+" .frame ul li", "current");
+			document.querySelectorAll("#"+i+" .arrows div").forEach(function(el)
 			{
-				switch(el.className)
+				el.dataset.referrer = i;
+				el.addEventListener("click", function(e)
 				{
-					case "next":
-						Main.slider.next();
-						break;
-					case "previous":
-						Main.slider.previous();
-						break;
-				}
-			}, false);
-		});
+					var ref = e.currentTarget.dataset.referrer;
+					var slider = Main.sliders[ref];
+					switch(el.className)
+					{
+						case "next":
+							slider.next();
+							break;
+						case "previous":
+							slider.previous();
+							break;
+					}
+				}, false);
+			});
+		}
+		Scroll.prepareAll(".portfolio h4");
 		document.querySelectorAll(".portfolio h4").each(function(pH4)
 		{
 			pH4.addEventListener("click", Main.portfolio.h4ClickHandler, false);
 		});
+
+		document.querySelector("#crea_graph").classList.add("open");
+		Main.slider = Main.sliders.crea_graph;
+		window.addEventListener("keydown", Main.keyDownHandler, false);
+
+
+		ScrollAnimator.add(".scene.scrolldown").animateFrom(90).animateTo(220).addProp("top", "px", 290, 100);
+		ScrollAnimator.add(".scene.scrolldown .a1").animateFrom(90).animateTo(220).addProp("top", "px", 391, 291);
+		ScrollAnimator.add(".scene.scrolldown .a2").animateFrom(90).animateTo(220).addProp("top", "px", 405, 280);
+
+		/**
+		 * Skills Arrow and shit
+		 */
+		var trigger = [151, 251, 351, 451, 551];
+		ScrollAnimator.add(".scene.skills>div.lvl_3.even").animateFrom(trigger[0]).animateTo(trigger[0]).addProp("paddingRight", "px", 306, 371).addProp("opacity", null, 0, 1);
+		ScrollAnimator.add(".scene.skills>div.lvl_3.even>div.little_top").animateFrom(trigger[0]).animateTo(trigger[0]).addProp("top", "px", 40, 60);
+		ScrollAnimator.add(".scene.skills>div.lvl_3.even>div.little_right").animateFrom(trigger[0]).animateTo(trigger[0]).addProp("marginLeft", "px", 23, 3);
+		ScrollAnimator.add(".scene.skills>div.lvl_5").animateFrom(trigger[1]).animateTo(trigger[1]).addProp("paddingLeft", "px", 256, 321).addProp("opacity", null, 0, 1);
+		ScrollAnimator.add(".scene.skills>div.lvl_5>div.little_top").animateFrom(trigger[1]).animateTo(trigger[1]).addProp("top", "px", 40, 60);
+		ScrollAnimator.add(".scene.skills>div.lvl_5>div.little_left").animateFrom(trigger[1]).animateTo(trigger[1]).addProp("marginLeft", "px", -36, -16);
+		ScrollAnimator.add(".scene.skills>div.lvl_5>div.big_top").animateFrom(trigger[1]).animateTo(trigger[1]).addProp("top", "px", -20, 21);
+		ScrollAnimator.add(".scene.skills>div.lvl_4.even").animateFrom(trigger[2]).animateTo(trigger[2]).addProp("paddingRight", "px", 207, 272).addProp("opacity", null, 0, 1);
+		ScrollAnimator.add(".scene.skills>div.lvl_4.even>div.big_right").animateFrom(trigger[2]).animateTo(trigger[2]).addProp("marginLeft", "px", 44, 3);
+		ScrollAnimator.add(".scene.skills>div.lvl_4.even>div.little_left").animateFrom(trigger[2]).animateTo(trigger[2]).addProp("marginLeft", "px", -36, -16);
+		ScrollAnimator.add(".scene.skills>div.lvl_2").animateFrom(trigger[3]).animateTo(trigger[3]).addProp("paddingLeft", "px", 327, 382).addProp("opacity", null, 0, 1);
+		ScrollAnimator.add(".scene.skills>div.lvl_2>div.little_right").animateFrom(trigger[3]).animateTo(trigger[3]).addProp("marginLeft", "px", 23, 1);
+		ScrollAnimator.add(".scene.skills>div.lvl_2>div.little_top").animateFrom(trigger[3]).animateTo(trigger[3]).addProp("top", "px", 40, 60);
+		ScrollAnimator.add(".scene.skills>div.lvl_1.even").animateFrom(trigger[4]).animateTo(trigger[4]).addProp("paddingRight", "px", 361, 437).addProp("opacity", null, 0, 1);
+		ScrollAnimator.add(".scene.skills>div.lvl_1.even>div.little_left").animateFrom(trigger[4]).animateTo(trigger[4]).addProp("marginLeft", "px", -36, -16);
+		ScrollAnimator.add(".scene.skills>div.lvl_1.even>div.little_top").animateFrom(trigger[4]).animateTo(trigger[4]).addProp("top", "px", 40, 60);
+		ScrollAnimator.add(".scene.skills").animateTo(651).addProp("height", "px", 0, 956);
+
+		/**
+		 * About Brigritte and co
+		 */
+		var above = {from:1000, to:1100};
+		var below = {from:900, to:1000};
+		ScrollAnimator.add("#about h3").animateFrom(700).animateTo(900).addProp("top", "px", 250, 0);
+		ScrollAnimator.add("#about menu.social").animateFrom(800).animateTo(1000).addProp("top", "px", 358, 68).addProp("right", "px", 100, 0).addProp("opacity", "", 0, 1);
+		ScrollAnimator.add("#about menu.social li a.pinterest").animateFrom(800).animateTo(1000).addProp("marginLeft", "px", 112, 12);
+		ScrollAnimator.add("#about menu.social li a.linkedin").animateFrom(800).animateTo(1000).addProp("marginLeft", "px", 112, 12);
+		ScrollAnimator.add("#about menu.social li a.viadeo").animateFrom(800).animateTo(1000).addProp("marginLeft", "px", 112, 12);
+		ScrollAnimator.add("#about menu.social li a.flicker").animateFrom(800).animateTo(1000).addProp("marginLeft", "px", 112, 12);
+		ScrollAnimator.add("#about .brigitte").animateFrom(900).animateTo(1100).addProp("height", "px", 1090, 740);
+		ScrollAnimator.add("#about>div.content").animateFrom(900).animateTo(1100).addProp("top", "px", 505, 115);
+		ScrollAnimator.add("#about>div.content h1").animateFrom(900).animateTo(1100).addProp("marginBottom", "px", 250, 0);
+		ScrollAnimator.add("#about>div.content h4.current").animateFrom(900).animateTo(1100).addProp("marginBottom", "px", 250, 30);
+		ScrollAnimator.add("#about .a1.below").animateFrom(below.from).animateTo(below.to).addProp("left", "px", -100, -60).addProp("top", "px", 250, 220).addProp("opacity", "", 0, 1);
+		ScrollAnimator.add("#about .a1.above").animateFrom(above.from).animateTo(above.to).addProp("left", "px", -100, -60).addProp("top", "px", 250, 220).addProp("opacity", "", 0, 1);
+		ScrollAnimator.add("#about .a2.below").animateFrom(below.from).animateTo(below.to).addProp("left", "px", -110, -80).addProp("top", "px", 136, 156).addProp("opacity", "", 0, 1);
+		ScrollAnimator.add("#about .a2.above").animateFrom(above.from).animateTo(above.to).addProp("left", "px", -110, -80).addProp("top", "px", 140, 160).addProp("opacity", "", 0, 1);
+		ScrollAnimator.add("#about .a3.below").animateFrom(below.from).animateTo(below.to).addProp("left", "px", -56, -26).addProp("top", "px", 0, 30).addProp("opacity", "", 0, 1);
+		ScrollAnimator.add("#about .a3.above").animateFrom(above.from).animateTo(above.to).addProp("left", "px", -60, -30).addProp("top", "px", 0, 30).addProp("opacity", "", 0, 1);
+		ScrollAnimator.add("#about .a4.below").animateFrom(below.from).animateTo(below.to).addProp("left", "px", 46, 51).addProp("top", "px", 10, 40).addProp("opacity", "", 0, 1);
+		ScrollAnimator.add("#about .a4.above").animateFrom(above.from).animateTo(above.to).addProp("left", "px", 45, 50).addProp("top", "px", 10, 40).addProp("opacity", "", 0, 1);
+		ScrollAnimator.add("#about .a5.below").animateFrom(below.from).animateTo(below.to).addProp("left", "px", 112, 92).addProp("top", "px", -10, 10).addProp("opacity", "", 0, 1);
+		ScrollAnimator.add("#about .a5.above").animateFrom(above.from).animateTo(above.to).addProp("left", "px", 110, 90).addProp("top", "px", -6, 14).addProp("opacity", "", 0, 1);
+		ScrollAnimator.add("#about .a6.below").animateFrom(below.from).animateTo(below.to).addProp("left", "px", 159, 129).addProp("top", "px", 21, 51).addProp("opacity", "", 0, 1);
+		ScrollAnimator.add("#about .a6.above").animateFrom(above.from).animateTo(above.to).addProp("left", "px", 155, 125).addProp("top", "px", 24, 54).addProp("opacity", "", 0, 1);
+		ScrollAnimator.add("#about .a7.below").animateFrom(below.from).animateTo(below.to).addProp("left", "px", 165, 135).addProp("top", "px", 150, 154).addProp("opacity", "", 0, 1);
+		ScrollAnimator.add("#about .a7.above").animateFrom(above.from).animateTo(above.to).addProp("left", "px", 165, 135).addProp("top", "px", 150, 154).addProp("opacity", "", 0, 1);
+		ScrollAnimator.add("#about .a8.below").animateFrom(below.from).animateTo(below.to).addProp("left", "px", 155, 125).addProp("top", "px", 250, 220).addProp("opacity", "", 0, 1);
+		ScrollAnimator.add("#about .a8.above").animateFrom(above.from).animateTo(above.to).addProp("left", "px", 155, 125).addProp("top", "px", 250, 220).addProp("opacity", "", 0, 1);
+
+		ScrollAnimator.observe(1400, function()
+		{
+			for(var i = 0, max = Main.skills.length;i<max;i++)
+				Main.skills[i].helloWorld();
+		});
+
+		/**
+		 * Contact and stuff
+		 */
+		ScrollAnimator.add("#contact").animateFrom(3100).animateTo(3630).addProp("margin-top", "px", 300, 0);
+		ScrollAnimator.add(".scene.contact .dotted").animateFrom(3070).animateTo(3630).addProp("height", "px", 0, 590);
+
+		ScrollAnimator.observe(3800, function()
+		{
+			Main.top.helloWorld();
+		});
+		/**
+		 * Right menu
+		 */
+		ScrollAnimator.add('menu.second').animateFrom(150).animateTo(200).addProp("top", "%", 40, 50).addProp("opacity", null, 0, 1);
+
+
+		ScrollAnimator.register();
+
+		M4Tween.to(loader,1, {opacity:0}).onComplete(Main.start);
+
+	},
+	start:function()
+	{
+		document.body.style.overflowY = "auto";
+		document.querySelector("#loader").style.display = "none";
+		Main.logo.helloWorld();
+	},
+	keyDownHandler:function(e)
+	{
+		switch(e.keyCode)
+		{
+			case 37:
+			case 38:
+				e.preventDefault();
+				Main.slider.previous();
+				break;
+			case 39:
+			case 40:
+				e.preventDefault();
+				Main.slider.next();
+				break;
+			default:
+
+				break;
+		}
 	},
 	portfolio:
 	{
@@ -43,6 +194,8 @@ var Main =
 				d.removeAttribute("class");
 			});
 			e.currentTarget.parentNode.setAttribute("class", "open");
+			Main.slider = Main.sliders[e.currentTarget.parentNode.getAttribute("id")];
+			Scroll.to(e.currentTarget);
 		}
 	}
 };
@@ -92,7 +245,7 @@ Class.define(SpriteCM, [Sprite],
 	},
 	_drawDetails:function()
 	{
-		var angle, from, to, c, s, i;
+		var angle, from, to, c, s, i, j;
 
 
 		for(i = 0;i<this._max;i++)
@@ -180,8 +333,8 @@ Class.define(Logo, [SpriteCM],
 			this.drawCircle(0, 0, 30);
 			this.endFill();
 
-			var angle, distance = 360 / 90;
-			for(i = 0;i<distance;i++)
+			var angle, distance = 360 / 90, c, s;
+			for(var i = 0;i<distance;i++)
 			{
 				angle = M4.geom.DEGREE_TO_RADIAN * ((this._rotationCenterLine-45)+(i * 90));
 				c = Math.cos(angle);
@@ -244,6 +397,83 @@ Class.define(Logo, [SpriteCM],
 	}
 });
 
+function Top()
+{
+	this.setup("rgba(80, 182, 158,");
+	this._coefTopLines = 0;
+}
+
+Class.define(Top, [SpriteCM],
+{
+	_draw:function()
+	{
+		this.clear();
+
+		SpriteCM.LINE_ANGLE = 360/72;
+		SpriteCM.MAIN_RADIUS = 63;
+		SpriteCM.LINE_SIZE = 15;
+		SpriteCM.EXTERN_POINT_RADIUS = 84;
+
+		this._drawMainCircle();
+		this._drawDetails();
+
+		SpriteCM.LINE_ANGLE = 360/72;
+		SpriteCM.MAIN_RADIUS = 50;
+		SpriteCM.LINE_SIZE = 12;
+		SpriteCM.EXTERN_POINT_RADIUS = 66;
+		if(this._coefTopLines)
+		{
+			var topLaneYCoef = this._coefTopLines * 20;
+			this.setLineStyle(2.5, this._color+this._coefTopLines+")");
+			this.beginFill("rgba(0, 0, 0, 0)");
+			this.moveTo(-15, -77 - topLaneYCoef);
+			this.lineTo(0, -93 - topLaneYCoef);
+			this.lineTo(15, -77 - topLaneYCoef);
+
+			var secondLaneYCoef = this._coefTopLines * 15;
+			this.setLineStyle(2, this._color+this._coefTopLines+")");
+			this.moveTo(-10, -76 - secondLaneYCoef);
+			this.lineTo(0, -86 - secondLaneYCoef);
+			this.lineTo(10, -76 - secondLaneYCoef);
+
+			var textYCoef = this._coefTopLines * 25;
+			this.setFont("Dosis", "700 32px", "rgba(237, 237, 237, "+this._coefTopLines+")");
+			this.drawText("TOP", -25, -45 + textYCoef);
+		}
+	},
+	helloWorld:function()
+	{
+		var f, t;
+		var ref = this;
+		M4Tween.killTweensOf(this);
+		M4Tween.to(this,.6, {useStyle:false, _mainRadius:63})
+		.onComplete(function()
+		{
+			for(var i = 0;i<ref._max;i++)
+			{
+				if(i==20)
+					f = M4Tween.to(ref._coefLines[i],.3, {useStyle:false, value:1, delay:i *0.01});
+				else
+					t = M4Tween.to(ref._coefLines[i],.3, {useStyle:false, value:1, delay:i *0.01});
+			}
+			f.onComplete(function()
+			{
+				for(var j = 0;j<ref._max;j++)
+				{
+					var r = M4Tween.to(ref._coefPoints[j],.3, {useStyle:false, value:1, delay:j *0.01});
+					if(j==ref._max-1)
+					{
+						r.onComplete(function()
+						{
+							ref.stage.pause();
+						});
+					}
+				}
+			});
+			M4Tween.to(ref,.7, {useStyle:false, _coefTopLines:1});
+		});
+	}
+});
 
 function Skill(pEl)
 {
@@ -266,8 +496,6 @@ function Skill(pEl)
 	this.parent.appendChild(this.htmlName);
 
 	this.draw();
-
-	this.helloWorld();
 }
 
 Class.define(Skill, [Class],
@@ -291,7 +519,7 @@ Class.define(Skill, [Class],
 		this.stage.drawArc(center.x, center.y, Skill.INSIDE_RADIUS, currentAngle + this.startAngle, this.startAngle, true);
 		this.stage.endFill();
 		this.htmlValue.innerHTML = Math.round(this.coef * this.value)+"<span>%</span>";
-		if(this.coef === 1)
+		if(this.coef == 1)
 			this.stage.pause();
 	},
 	helloWorld:function()
@@ -305,3 +533,4 @@ Skill.OUTSIDE_RADIUS = 56;
 Skill.INSIDE_RADIUS = 48;
 Skill.THIRDPOINT_ANGLE = 4;
 Skill.BACKGROUND_COLOR = "rgb(191, 191, 191)";
+

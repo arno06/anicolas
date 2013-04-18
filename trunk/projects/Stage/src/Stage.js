@@ -425,7 +425,7 @@ Class.define(Container, [Sprite], {
 	},
 	removeChildren:function()
 	{
-		this.displayList.each(function(pTarget)
+		this.displayList.forEach(function(pTarget)
 		{
 			pTarget.dispatchEvent(new Event(Event.REMOVED_FROM_STAGE, false));
 		});
@@ -443,7 +443,7 @@ Class.define(Container, [Sprite], {
 		this.context.save();
 		this.__transform();
 		this.__draw();
-		this.displayList.each(function(pTarget)
+		this.displayList.forEach(function(pTarget)
 		{
 			pTarget.draw();
 		});

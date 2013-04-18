@@ -1,23 +1,29 @@
 <!DOCTYPE html>
 <html lang="fr">
 	<head>
+		<!-- Hi there -->
 		<title>Cyrine MALEK - Webdesigner</title>
 		<link rel="shortcut icon" type="image/png" href="favicon.png" />
-		<link href='http://fonts.googleapis.com/css?family=Dosis' rel='stylesheet' type='text/css'>
+		<link href='http://fonts.googleapis.com/css?family=Dosis:400,700' rel='stylesheet' type='text/css'>
 		<link href="css/style.css" rel="stylesheet">
-		<script src="js/anicolas/M4.js"></script>
-		<script src="js/anicolas/M4Tween.js"></script>
-		<script src="js/anicolas/Slider.js"></script>
-		<script src="js/anicolas/Stage.js"></script>
+		<script src="../../M4/src/M4.js"></script>
+		<script src="../../M4Tween/src/M4Tween.js"></script>
+		<script src="../../M4Tween/src/Scroll.js"></script>
+		<script src="../../Slider/src/Slider.js"></script>
+		<script src="../../Stage/src/Stage.js"></script>
+		<script src="js/cmalek/ScrollAnimator.js"></script>
 		<script src="js/cmalek/main.js"></script>
 	</head>
 	<body id="home">
-		<!--<menu class="second">
+		<div id="loader">
+
+		</div>
+		<menu class="second">
 			<li><a href="#home"><span class="over"></span><span class="pic"></span></a></li>
 			<li><a href="#about"><span class="over"></span><span class="pic"></span></a></li>
 			<li><a href="#portfolio"><span class="over"></span><span class="pic"></span></a></li>
 			<li><a href="#contact"><span class="over"></span><span class="pic"></span></a></li>
-		</menu>-->
+		</menu>
 		<header>
 			<menu>
 				<li class="separator"></li>
@@ -37,6 +43,13 @@
 			<div class="a1"></div>
 			<div class="a2"></div>
 			<div class="background"></div>
+		</div>
+		<div class="scene skills">
+			<div class="lvl_3 even"><div class="little_top"></div><div class="little_right"></div>Illustrateur</div>
+			<div class="lvl_5"><div class="big_top"></div><div class="little_top"></div><div class="little_left"></div>Graphiste</div>
+			<div class="lvl_4 even"><div class="big_right"></div><div class="little_left"></div>Webdesigner</div>
+			<div class="lvl_2"><div class="little_top"></div><div class="little_right"></div>Motion designer</div>
+			<div class="lvl_1 even"><div class="little_top"></div><div class="little_left"></div>Photographe</div>
 		</div>
 		<div id="about" class="scene about">
 			<h3>à Propos de Moi</h3>
@@ -58,6 +71,12 @@
 				<div class="arrow a8 above"></div>
 				<div class="arrow a8 below"></div>
 			</div>
+			<menu class="social">
+				<li><a target="_blank" href="http://pinterest.com/cyrinem/" class="pinterest"><span class="over"></span><span class="pic"></span></a></li>
+				<li><a target="_blank" href="http://fr.linkedin.com/pub/cyrine-malek/54/279/b39" class="linkedin"><span class="over"></span><span class="pic"></span></a></li>
+				<li><a target="_blank" href="http://fr.viadeo.com/fr/profile/cyrine.malek" class="viadeo"><span class="over"></span><span class="pic"></span></a></li>
+				<li><a target="_blank" href="http://www.flickr.com/people/qtlm/" class="flicker"><span class="over"></span><span class="pic"></span></a></li>
+			</menu>
 			<div class="content">
 				<h1>Cyrine Malek,</h1>
 				<h4>designer graphique de 24 ans,</h4>
@@ -82,6 +101,9 @@
 					<button type="submit">
 						<span>Curriculum Vitae</span>
 					</button>
+					<button type="submit">
+						<span>CV Canadien</span>
+					</button>
 				</div>
 			</div>
 
@@ -90,23 +112,24 @@
 			<div class="spikes"></div>
 			<div class="content">
 				<h3 id="portfolio">Mes Travaux</h3>
-				<div class="open" id="crea_graph">
+				<div id="crea_graph">
 					<h4>Création graphique</h4>
 					<div class="mask">
 						<div class="arrows">
-							<div class="previous">&lt;</div>
-							<div class="next">&gt;</div>
+							<div class="previous"></div>
+							<div class="next"></div>
 						</div>
 						<div class="frame">
-							<ul>
-								<li class="current"><img src="works/crea_graphique/ecran-1.png" alt=""></li>
-								<li><img src="works/crea_graphique/ecran-2.png" alt=""></li>
-								<li><img src="works/crea_graphique/ecran-3.png" alt=""></li>
-								<li><img src="works/crea_graphique/ecran-4.png" alt=""></li>
-								<li><img src="works/crea_graphique/ecran-5.png" alt=""></li>
-								<li><img src="works/crea_graphique/ecran-6.png" alt=""></li>
-								<li><img src="works/crea_graphique/ecran-7.png" alt=""></li>
-							</ul>
+							<div>
+								<img src="works/crea_graphique/ecran-1.png" alt="">
+								<img src="works/crea_graphique/ecran-2.png" alt="">
+								<img src="works/crea_graphique/ecran-3.png" alt="">
+								<img src="works/crea_graphique/ecran-4.png" alt="">
+								<img src="works/crea_graphique/ecran-5.png" alt="">
+								<img src="works/crea_graphique/ecran-6.png" alt="">
+								<img src="works/crea_graphique/ecran-7.png" alt="">
+								<img src="works/crea_graphique/ecran-8.png" alt="">
+							</div>
 							<ul>
 								<li rel="0" class="current">&nbsp;</li>
 								<li rel="1">&nbsp;</li>
@@ -115,46 +138,51 @@
 								<li rel="4">&nbsp;</li>
 								<li rel="5">&nbsp;</li>
 								<li rel="6">&nbsp;</li>
+								<li rel="7">&nbsp;</li>
 							</ul>
 						</div>
 					</div>
 				</div>
-				<div>
+				<div id="motion_des">
 					<h4>Motion Design</h4>
 					<div class="mask">
 						<div class="arrows">
-							<div class="previous">&lt;</div>
-							<div class="next">&gt;</div>
+							<div class="previous"></div>
+							<div class="next"></div>
 						</div>
 						<div class="frame">
+							<div>
+								<img src="works/motion_design/ecran-1.png" alt="">
+								<img src="works/motion_design/ecran-2.png" alt="">
+								<img src="works/motion_design/ecran-3.png" alt="">
+							</div>
 							<ul>
-								<li></li>
-							</ul>
-							<ul>
-								<li class="current">&nbsp;</li>
+								<li rel="0" class="current">&nbsp;</li>
+								<li rel="1">&nbsp;</li>
+								<li rel="2">&nbsp;</li>
 							</ul>
 						</div>
 					</div>
 				</div>
-				<div>
+				<div id="crea_perso">
 					<h4>Créations personnelles</h4>
 					<div class="mask">
 						<div class="arrows">
-							<div class="previous">&lt;</div>
-							<div class="next">&gt;</div>
+							<div class="previous"></div>
+							<div class="next"></div>
 						</div>
 						<div class="frame">
+							<div>
+								<img src="works/crea_perso/ecran-1.jpg" alt="">
+								<img src="works/crea_perso/ecran-2.jpg" alt="">
+								<img src="works/crea_perso/ecran-3.jpg" alt="">
+								<img src="works/crea_perso/ecran-4.jpg" alt="">
+							</div>
 							<ul>
-								<li class="current"><img src="works/crea_perso/ecran-1.jpg" alt=""></li>
-								<li><img src="works/crea_perso/ecran-2.jpg" alt=""></li>
-								<li><img src="works/crea_perso/ecran-3.jpg" alt=""></li>
-								<li><img src="works/crea_perso/ecran-4.jpg" alt=""></li>
-							</ul>
-							<ul>
-								<li class="current">&nbsp;</li>
-								<li class="current">&nbsp;</li>
-								<li class="current">&nbsp;</li>
-								<li class="current">&nbsp;</li>
+								<li rel="0" class="current">&nbsp;</li>
+								<li rel="1">&nbsp;</li>
+								<li rel="2">&nbsp;</li>
+								<li rel="3">&nbsp;</li>
 							</ul>
 						</div>
 					</div>
