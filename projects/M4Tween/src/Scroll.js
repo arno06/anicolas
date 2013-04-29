@@ -14,7 +14,7 @@ var Scroll =
 	setup:function()
 	{
 		window.addEventListener("scroll", Scroll.__scrollHandler, false);
-		document.querySelectorAll('a[href^="#"]').each(function(a)
+		document.querySelectorAll('a[href^="#"]').forEach(function(a)
 		{
 			Scroll.__offsets.push({href:a.getAttribute("href"), offset:Scroll.offsetTop(document.querySelector(a.getAttribute("href")))});
 			a.addEventListener("click", function(e){
@@ -25,14 +25,14 @@ var Scroll =
 				Scroll.to(document.querySelector(t.getAttribute("href"))).onComplete(function(){
 					window.location.hash = t.getAttribute("href").replace("#", "");
 					document.querySelectorAll('a.current')
-							.each(function(a)
+							.forEach(function(a)
 							{
 								if(a == t)
 									return;
 								a.classList.remove("current");
 							});
 					document.querySelectorAll('a[href^="'+t.getAttribute("href")+'"]')
-							.each(function(a)
+							.forEach(function(a)
 							{
 								a.classList.add("current");
 							});
@@ -51,7 +51,7 @@ var Scroll =
 	prepareAll:function(pSelector)
 	{
 		var els = document.querySelectorAll(pSelector);
-		els.each(function(pEl){pEl.setAttribute("data-scrollTop", Scroll.offsetTop(pEl));});
+		els.forEach(function(pEl){pEl.setAttribute("data-scrollTop", Scroll.offsetTop(pEl));});
 	},
 	to:function(pElement, pTime)
 	{
@@ -75,5 +75,3 @@ var Scroll =
 		return v;
 	}
 };
-
-NodeList.prototype.each = Array.prototype.each;

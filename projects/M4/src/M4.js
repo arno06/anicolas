@@ -93,6 +93,21 @@ var M4 =
 
 function Class(){}
 Class.prototype = {
+	super:function(pMethodName)
+	{
+		pMethodName = pMethodName||"constructor";
+		if(!this.__SUPER__||!this.__SUPER__[pMethodName])
+			throw new Error("Method '"+pMethodName+"' undefined");
+		var args = [];
+		for(var i = 1, max = arguments.length;i<max;i++)
+			args.push(arguments[i]);
+		var func;
+		if(this[pMethodName]&&this[pMethodName]==this.__SUPER__[pMethodName])
+			func = M4.proxy(this, this.__SUPER__.__SUPER__[pMethodName]);
+		else
+			func = M4.proxy(this, this.__SUPER__[pMethodName])
+		return func.apply(this, args);
+	},
 	toString : function()
 	{
 		return this.formatToString();
@@ -109,7 +124,10 @@ Class.prototype = {
 Class.extend = function(pTarget, pClassParent)
 {
 	for(var i in pClassParent.prototype)
+	{
 		pTarget.prototype[i] = pClassParent.prototype[i];
+	}
+	pTarget.prototype.__SUPER__ = pClassParent.prototype;
 };
 Class.define = function(pTarget, pExtends, pPrototype)
 {
@@ -155,8 +173,7 @@ function MouseEvent(pType, pBubbles, pMouseX, pMouseY, pButton)
 	this.localX = pMouseX||0;
 	this.localY = pMouseY||0;
 	this.button = pButton||0;
-	this.bubbles = pBubbles||false;
-	this.eventPhase = Event.AT_TARGET;
+	this.super("constructor", pType, pBubbles);
 }
 Class.define(MouseEvent, [Event], {
 	localX:0,
@@ -388,7 +405,7 @@ Class.define(MassLoader, [EventDispatcher], {
 				l = new Audio();
 				l.addEventListener("loadeddata", M4.proxy(this, this.loadNext), false);
 				l.autoplay = false;
-				l.preload = true;
+				l.preload = "auto";
 				l.src = f;
 			break;
 			case "png":

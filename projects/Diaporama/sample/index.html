@@ -4,22 +4,32 @@
 		<title>Diaporama Sample</title>
 		<link rel="stylesheet" href="../src/Diaporama.css" media="screen">
 		<link rel="stylesheet" href="css/style.css" media="screen">
-		<script src="../../M4Tween/src/M4Tween.min.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/prototype/1.7.1.0/prototype.js"></script>
+		<script src="../../M4Tween/src/M4Tween.js"></script>
 		<script src="../src/Diaporama.js"></script>
+		<!--[if IE]>
+		   <style type="text/css">
+			   .diaporama .viewer li div {
+		       background:transparent;
+		       filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#bb000000,endColorstr=#bb000000);
+		       zoom: 1;
+		    }
+		    </style>
+		<![endif]-->
 	</head>
 	<body>
 		<div id="my_diaporama" class="diaporama">
 			<ul class="viewer">
-				<li><a href=""><img src="imgs/Malaise_Vagaljpg.jpg" alt="NEOSYNEPHRINE AP-HP 5 mg/ml solution injectable : arrêt de commercialisation à compter de juin 2013"></a></li>
-				<li><a href=""><img src="imgs/Pédiatre.jpg" alt="Antituberculeux standards chez l'enfant : révision des posologies"></a></li>
-				<li><a href=""><img src="imgs/masque_grippe.jpg" alt="Virus H7N9 : pas de transmission inter-humaine, mais une vigilance nécessaire"></a></li>
-				<li><a href=""><img src="imgs/HTA.jpg" alt="Traitement de l'hypertension artérielle essentielle : point d'information de l'ANSM"></a></li>
+				<li><a href=""><img src="imgs/Malaise_Vagaljpg.jpg" alt="NEOSYNEPHRINE AP-HP 5 mg/ml solution injectable : arr&ecirc;t de commercialisation &agrave; compter de juin 2013"></a></li>
+				<li><a href=""><img src="imgs/Pediatre.jpg" alt="Antituberculeux standards chez l'enfant : r&eacute;vision des posologies"></a></li>
+				<li><a href=""><img src="imgs/masque_grippe.jpg" alt="Virus H7N9 : pas de transmission inter-humaine, mais une vigilance n&eacute;cessaire"></a></li>
+				<li><a href=""><img src="imgs/HTA.jpg" alt="Traitement de l'hypertension art&eacute;rielle essentielle : point d'information de l'ANSM"></a></li>
 			</ul>
 			<ul class="controls">
-				<li><a href=""><img src="imgs/Malaise_Vagaljpg.jpg" alt="NEOSYNEPHRINE AP-HP 5 mg/ml solution injectable : arrêt de commercialisation à compter de juin 2013"></a></li>
-				<li><a href=""><img src="imgs/Pédiatre.jpg" alt="Antituberculeux standards chez l'enfant : révision des posologies"></a></li>
-				<li><a href=""><img src="imgs/masque_grippe.jpg" alt="Virus H7N9 : pas de transmission inter-humaine, mais une vigilance nécessaire"></a></li>
-				<li><a href=""><img src="imgs/HTA.jpg" alt="Traitement de l'hypertension artérielle essentielle : point d'information de l'ANSM"></a></li>
+				<li><a href=""><img src="imgs/Malaise_Vagaljpg.jpg"></a></li>
+				<li><a href=""><img src="imgs/Pediatre.jpg"></a></li>
+				<li><a href=""><img src="imgs/masque_grippe.jpg"></a></li>
+				<li><a href=""><img src="imgs/HTA.jpg"></a></li>
 			</ul>
 		</div>
 		<div>
@@ -29,12 +39,12 @@
 		<script>
 			var d = new Diaporama("#my_diaporama");
 
-			document.querySelectorAll(".action").forEach(function(pElement)
+			$$(".action").each(function(pElement)
 			{
-				pElement.addEventListener("click", function(e)
+				Event.observe(pElement, "click", function(e)
 				{
-					e.preventDefault();
-					var f = e.currentTarget.getAttribute("rel");
+					Event.stop(e);
+					var f = e.findElement("a").getAttribute("rel");
 					d[f]();
 				});
 			});

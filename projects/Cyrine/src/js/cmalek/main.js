@@ -17,6 +17,7 @@ var Main =
 	init:function()
 	{
 
+		Scroll.to(document.querySelector("#home"));
 		var loader = document.querySelector("#loader");
 		Main.scene.width = loader.offsetWidth;
 		Main.scene.height = loader.offsetHeight;
@@ -111,9 +112,9 @@ var Main =
 		ScrollAnimator.add("#about menu.social li a.viadeo").animateFrom(800).animateTo(1000).addProp("marginLeft", "px", 112, 12);
 		ScrollAnimator.add("#about menu.social li a.flicker").animateFrom(800).animateTo(1000).addProp("marginLeft", "px", 112, 12);
 		ScrollAnimator.add("#about .brigitte").animateFrom(900).animateTo(1100).addProp("height", "px", 1090, 740);
-		ScrollAnimator.add("#about>div.content").animateFrom(900).animateTo(1100).addProp("top", "px", 505, 115);
-		ScrollAnimator.add("#about>div.content h1").animateFrom(900).animateTo(1100).addProp("marginBottom", "px", 250, 0);
-		ScrollAnimator.add("#about>div.content h4.current").animateFrom(900).animateTo(1100).addProp("marginBottom", "px", 250, 30);
+		ScrollAnimator.add("#about>div.content").animateFrom(1100).animateTo(1300).addProp("top", "px", 505, 115).addProp("opacity", "", 0, 1);
+		ScrollAnimator.add("#about>div.content h1").animateFrom(1100).animateTo(1300).addProp("marginBottom", "px", 250, 0);
+		ScrollAnimator.add("#about>div.content h4.current").animateFrom(1100).animateTo(1300).addProp("marginBottom", "px", 250, 30);
 		ScrollAnimator.add("#about .a1.below").animateFrom(below.from).animateTo(below.to).addProp("left", "px", -100, -60).addProp("top", "px", 250, 220).addProp("opacity", "", 0, 1);
 		ScrollAnimator.add("#about .a1.above").animateFrom(above.from).animateTo(above.to).addProp("left", "px", -100, -60).addProp("top", "px", 250, 220).addProp("opacity", "", 0, 1);
 		ScrollAnimator.add("#about .a2.below").animateFrom(below.from).animateTo(below.to).addProp("left", "px", -110, -80).addProp("top", "px", 136, 156).addProp("opacity", "", 0, 1);
@@ -169,12 +170,10 @@ var Main =
 		switch(e.keyCode)
 		{
 			case 37:
-			case 38:
 				e.preventDefault();
 				Main.slider.previous();
 				break;
 			case 39:
-			case 40:
 				e.preventDefault();
 				Main.slider.next();
 				break;

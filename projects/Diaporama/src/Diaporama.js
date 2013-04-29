@@ -1,4 +1,51 @@
-NodeList.prototype.forEach = Array.prototype.forEach;
+if(!Array.prototype.each)
+{
+	Array.prototype.each = function(pHandler)
+	{
+		if(!pHandler)
+			return;
+		for(var i = 0, max = this.length;i<max;i++)
+		{
+			pHandler(this[i]);
+		}
+	}
+}
+/**
+ * MDN Fix https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Object/keys
+ */
+if (!Object.keys) {
+  Object.keys = (function () {
+    var hasOwnProperty = Object.prototype.hasOwnProperty,
+        hasDontEnumBug = !({toString: null}).propertyIsEnumerable('toString'),
+        dontEnums = [
+          'toString',
+          'toLocaleString',
+          'valueOf',
+          'hasOwnProperty',
+          'isPrototypeOf',
+          'propertyIsEnumerable',
+          'constructor'
+        ],
+        dontEnumsLength = dontEnums.length;
+
+    return function (obj) {
+      if (typeof obj !== 'object' && typeof obj !== 'function' || obj === null) throw new TypeError('Object.keys called on non-object');
+
+      var result = [];
+
+      for (var prop in obj) {
+        if (hasOwnProperty.call(obj, prop)) result.push(prop);
+      }
+
+      if (hasDontEnumBug) {
+        for (var i=0; i < dontEnumsLength; i++) {
+          if (hasOwnProperty.call(obj, dontEnums[i])) result.push(dontEnums[i]);
+        }
+      }
+      return result;
+    }
+  })()
+};
 
 /**
  * @author Arnaud NICOLAS - arno06@gmail.com
@@ -6,7 +53,7 @@ NodeList.prototype.forEach = Array.prototype.forEach;
 function Diaporama(pSelector)
 {
 	this.$ = {};
-	this.$.parent = document.querySelector(pSelector);
+	this.$.parent = $$(pSelector)[0];
 	if(!this.$.parent)
 		return;
 	this._harmonize();
@@ -22,18 +69,21 @@ Diaporama.prototype =
 	_harmonize:function()
 	{
 		var ref = this;
-		var viewer = this.$.parent.querySelector(".viewer");
-		this._viewer.elts = viewer.querySelectorAll("li");
-		var imgViewer = viewer.querySelectorAll("img");
-		imgViewer.forEach(function(pImg)
+		var viewer = this.$.parent.down(".viewer");
+		this._viewer.elts = viewer.getElementsBySelector("li");
+		var imgViewer = viewer.getElementsBySelector("img");
+		imgViewer.each(function(pImg)
 		{
 			pImg.style.width = viewer.offsetWidth+"px";
 			pImg.style.height = viewer.offsetHeight+"px";
 		});
-		this._viewer.elts.forEach(function(pEl)
+		this._viewer.elts.each(function(pEl)
 		{
 			pEl.style.display = "none";
 			pEl.style.left = "0";
+			var div = document.createElement("div");
+			div.innerHTML = pEl.querySelector("img").getAttribute("alt");
+			pEl.appendChild(div);
 		});
 		this._viewer.width = viewer.offsetWidth;
 
@@ -42,22 +92,22 @@ Diaporama.prototype =
 		this._controls.height = this._controls.elts.item(0).offsetHeight;
 		this._controls.width = controls.offsetWidth;
 
-		var imgControls = controls.querySelectorAll("img");
-		imgControls.forEach(function(pImg)
+		var imgControls = controls.getElementsBySelector("img");
+		imgControls.each(function(pImg)
 		{
 			pImg.style.width = ref._controls.width+"px";
 			pImg.style.height = ref._controls.height+"px";
 		});
 
-		var aControls = controls.querySelectorAll("a");
+		var aControls = controls.getElementsBySelector("a");
 		var i = 0;
-		aControls.forEach(function(pA)
+		aControls.each(function(pA)
 		{
-			pA.dataset.iterator = i++;
-			pA.addEventListener("click", function(e)
+			pA.setAttribute("iterator", i++);
+			Event.observe(pA, "click", function(e)
 			{
-				e.preventDefault();
-				ref.display(e.currentTarget.dataset.iterator);
+				Event.stop(e);
+				ref.display(e.findElement("a").getAttribute("iterator"));
 			});
 		});
 
@@ -80,7 +130,7 @@ Diaporama.prototype =
 	display:function(pIndex, pTo)
 	{
 		pTo = pTo || 1;
-		if(!this._viewer.elts.item(pIndex)||this._transition||this._current==pIndex)
+		if(!this._viewer.elts[pIndex]||this._transition||this._current==pIndex)
 			return;
 		/**
 		 * Main frame
@@ -92,7 +142,7 @@ Diaporama.prototype =
 			/**
 			 * Transition out for current element
 			 */
-			prev = this._viewer.elts.item(this._current);
+			prev = this._viewer.elts[this._current];
 			M4Tween.killTweensOf(prev);
 			M4Tween.to(prev,.5, {left:(-pTo*this._viewer.width)+"px"});
 		}
@@ -100,10 +150,10 @@ Diaporama.prototype =
 		/**
 		 * Identification of previous, current and next elements
 		 */
-		prev = this._viewer.elts.item(pIndex-1>=0?pIndex-1:this._viewer.elts.length-1);
-		next = this._viewer.elts.item(pIndex+1)||this._viewer.elts.item(0);
+		prev = this._viewer.elts[pIndex-1>=0?pIndex-1:this._viewer.elts.length-1];
+		next = this._viewer.elts[pIndex+1]||this._viewer.elts[0];
 		var ref = this;
-		var c = this._viewer.elts.item(pIndex);
+		var c = this._viewer.elts[pIndex];
 		c.style.display = "block";
 		c.style.left = (pTo*this._viewer.width)+"px";
 		this._transition = true;
@@ -127,7 +177,7 @@ Diaporama.prototype =
 			prev.style.display = "block";
 			prev.style.left = "-"+ref._viewer.width+"px";
 
-			ref._viewer.elts.forEach(function(pElement)
+			ref._viewer.elts.each(function(pElement)
 			{
 				if(currentlyAvailable.indexOf(pElement)!=-1)
 					return;
@@ -138,10 +188,14 @@ Diaporama.prototype =
 		/**
 		 * Control frame
 		 */
-		var displayed = [this._controls.elts.item(pIndex==0?this._viewer.elts.length-1:pIndex-1)];
+		var displayed = [this._controls.elts[(pIndex==0?this._viewer.elts.length-1:pIndex-1)]];
+		if(pTo==-1)
+		{
+			this._controls.elts[pIndex].style.top = -this._controls.height+"px";
+		}
 		var max = Math.min(pIndex+this._controls.count, this._viewer.elts.length);
 		for(var i = pIndex; i<max;i++)
-			displayed.push(this._controls.elts.item(i));
+			displayed.push(this._controls.elts[i]);
 		if(!displayed.length<4)
 		{
 			max = 4 - displayed.length;
@@ -149,17 +203,25 @@ Diaporama.prototype =
 			{
 				if(i>=pIndex)
 					continue;
-				displayed.push(this._controls.elts.item(i));
+				displayed.push(this._controls.elts[i]);
 			}
 		}
 
-		var item;
+		var item, to, ele, oc;
 		for(i = 0, max = displayed.length;i<max;i++)
 		{
 			item = displayed[i];
 			item.style.display = "block";
 			M4Tween.killTweensOf(item);
-			M4Tween.to(item,.5, {top:(-this._controls.height+(i * (this._controls.height)))+"px"});
+			to = (-this._controls.height+(i * (this._controls.height)));
+			if(i==0)
+			{
+				if(pTo==-1)
+					to = (displayed.length-1)*ref._controls.height;
+				ele = item;
+				oc = function(){ele.style.top=((displayed.length-1)*ref._controls.height)+"px";};
+			}
+			var t = M4Tween.to(item,.5, {top:to+"px"}).onComplete(oc);
 		}
 
 		this._current = pIndex;
