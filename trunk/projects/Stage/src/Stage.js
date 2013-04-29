@@ -335,6 +335,7 @@ function Sprite()
 {
     this.reset();
 }
+
 Class.define(Sprite, [Vector, DrawingCommand],{
 	reset:function()
 	{
@@ -389,12 +390,8 @@ Class.define(Container, [Sprite], {
 	numChildren:0,
 	reset:function()
 	{
-		this.visible = true;
-		this.mouseEnabled = false;
-		this.__mouse = {over:false, out:true, press:false, release:true};
-		this.clear();
+		this.super("reset");
 		this.removeChildren();
-		this.removeAllEventListener();
 		this.addEventListener(Event.ADDED_TO_STAGE, M4.proxy(this, this.__added));
 	},
 	addChild:function(pDisplay)
@@ -486,13 +483,15 @@ Class.define(Stage, [Container], {
 	__mouseEvents:{},
 	_lastTime : 0,
 	rightClick:false,
-	running:true,
+	running:false,
 	pause:function()
 	{
 		this.running = false;
 	},
 	resume:function()
 	{
+		if(this.running)
+			return;
 		this.running = true;
 		requestAnimFrame(M4.proxy(this, this.frameHandler));
 	},
@@ -502,8 +501,8 @@ Class.define(Stage, [Container], {
 		var now = (new Date()).getTime();
 		this.countDisplayList = this.__displayListIt;
 		this.__displayListIt = 0;
-		this.context.clearRect(0,0,this.width, this.height);
 		this.dispatchEvent(new StageEvent(Event.ENTER_FRAME, Math.min((now - this._lastTime) / 1000.0, 0.1)));
+		this.context.clearRect(0,0,this.width, this.height);
 		this.__mouseEvents = {};
 		this.draw();
 		this._dispatchEvents();
@@ -549,8 +548,16 @@ Class.define(Stage, [Container], {
 		};
 		this.domElement.onmousemove = function(e)
 		{
-			ref.mouseX = e.clientX - ref.domElement.offsetLeft + window.pageXOffset;
-			ref.mouseY = e.clientY - ref.domElement.offsetTop + window.pageYOffset;
+			var t = {top:0,left:0};
+			var p = ref.domElement;
+			while(p)
+			{
+				t.top += p.offsetTop||0;
+				t.left += p.offsetLeft||0;
+				p = p.parentNode;
+			}
+			ref.mouseX = e.clientX - t.left + window.pageXOffset;
+			ref.mouseY = e.clientY - t.top + window.pageYOffset;
 		};
 		this.domElement.onmousedown = function(e)
 		{

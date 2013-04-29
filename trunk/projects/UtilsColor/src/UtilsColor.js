@@ -3,20 +3,54 @@
  * http://code.google.com/p/anicolas/
  * UtilsColor.js
  */
+function RGBAColor(pR, pG, pB, pAlpha)
+{
+	this.r = pR||0;
+	this.g = pG||0;
+	this.b = pB||0;
+	this.alpha = pAlpha||1;
+}
+
+Class.define(RGBAColor, [Class],
+{
+	fromString:function(pValue)
+	{
+		var re = /^rgb[a]*\(([0-9]+)\s*\,*\s*([0-9]+)\s*\,*\s*([0-9]+)\s*\,*\s*([0-9]+)*\)$/i;
+		var exec = re.exec(pValue);
+		this.r = exec[1]||0;
+		this.g = exec[2]||0;
+		this.b = exec[3]||0;
+		this.alpha = exec[4]||0;
+	},
+	toString:function()
+	{
+		return "rgba("+this.r+", "+this.g+", "+this.b+", "+this.alpha+")";
+	}
+});
+
 function HSLColor(pR, pG, pB, pAlpha)
 {
-	this._r = pR||0;
-	this._g = pG||0;
-	this._b = pB||0;
-	this._alpha = pAlpha||1;
+	this.alpha = pAlpha||1;
 
-	var d = HSLColor.RGBtoHSL(this._r, this._g, this._b);
-	this._h = d.h;
-	this._s = d.s;
-	this._l = d.l;
+	this.fromRGB(pR, pG, pB);
 }
-Class.define(HSLColor, [Class],
+Class.define(HSLColor, [RGBAColor],
 {
+	fromString:function(pValue)
+	{
+		this.super("fromString", pValue);
+		this.fromRGB(this.r, this.g, this.b);
+	},
+	fromRGB:function(pR, pG, pB)
+	{
+		this.r = pR||0;
+		this.g = pG||0;
+		this.b = pB||0;
+		var d = HSLColor.RGBtoHSL(this.r, this.g, this.b);
+		this._h = d.h;
+		this._s = d.s;
+		this._l = d.l;
+	},
 	getRGBA:function()
 	{
 		var d = HSLColor.HSLtoRGB(this._h, this._s, this._l);
@@ -154,19 +188,3 @@ HexaColor.RGBtoHexa = function()
 {
 
 };
-
-function RGBAColor(pR, pG, pB, pAlpha)
-{
-	this.r = pR||0;
-	this.g = pG||0;
-	this.b = pB||0;
-	this.alpha = pAlpha||1;
-}
-
-Class.define(RGBAColor, [Class],
-{
-	toString:function()
-	{
-		return "rgba("+this.r+", "+this.g+", "+this.b+", "+this.alpha+")";
-	}
-});
