@@ -1,8 +1,4 @@
 <?php
-define("DB_HOST", "mysql5-1.perso");
-define("DB_USER", "arnaudnimage");
-define("DB_PWD", "qk68p34Q");
-define("DB_NAME", "arnaudnimage");
 include_once("minuit4/application/class.Singleton.php");
 include_once("minuit4/db/class.MysqlHandler.php");
 include_once("minuit4/db/class.Query.php");
