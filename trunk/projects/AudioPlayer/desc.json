@@ -1,0 +1,8 @@
+{
+	"name":"AudioPlayer",
+	"description":"HTML5 Audio Player developped for the fun of it, just drag and drop audio file into your browser. Last time I checked there was a memory leak on this one (with long playlist), consider yourself warned.",
+	"todo":["UI", "Visualizer", "Tests", "Correction"],
+	"tech":["html5", "javascript"],
+	"url":"./src/audio.html",
+	"img":""
+}
