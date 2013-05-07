@@ -1,0 +1,8 @@
+{
+	"name":"CSS3 Javascript Librairy",
+	"description":"The first idea was to unleash the power of CSS3 Transition directly in javascript like M4Tween do it. Some basic use case are missing and it need to be stablized.",
+	"todo":["Check killTweenOf", "Tests"],
+	"tech":["html5", "javascript", "CSS3"],
+	"url":"./examples/index.html",
+	"img":""
+}

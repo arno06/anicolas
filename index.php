@@ -2,13 +2,21 @@
 define("PROJECT_DIR", "./projects/");
 $filters = array(".svn", ".", "..", "common");
 $colors = array("#fff");
+
+function truncate($pStr, $pLength, $pEnd = "...")
+{
+	if(strlen($pStr)<=$pLength)
+		return $pStr;
+	return substr($pStr, 0, $pLength-strlen($pEnd)).$pEnd;
+}
+
 $base_folders = scandir(PROJECT_DIR);
 $folders = array();
 foreach($base_folders as $f)
 {
 	if(!is_dir(PROJECT_DIR.$f) || in_array($f, $filters))
 		continue;
-	$folders[] = array("name"=>$f, "description"=>"Lorem Ipsum", "img"=>"", "color"=>$colors[round(rand(0, count($colors)-1))]);
+	$folders[] = array("name"=>truncate($f, 10), "description"=>"Lorem Ipsum", "img"=>"", "color"=>$colors[round(rand(0, count($colors)-1))]);
 }
 ?><!DOCTYPE html>
 <html>
@@ -35,11 +43,13 @@ foreach($base_folders as $f)
 
 			.square.lab.max{transition:none;background:#ffffff;width:500px;overflow:hidden;margin:0;/*-webkit-transform:rotate(-90deg);transform:rotate(-90deg);*/}
 			.square.lab.max:hover{}
-			.square.lab.max ul{list-style: none;width:517px;height:500px;overflow-y: scroll;overflow-x: hidden;}
+			.square.lab.max ul{list-style: none;width:517px;height:500px;overflow-y: scroll;overflow-x: hidden;position:relative;}
 			.square.lab.max ul li{display:block;float:left;width:99px;height:99px;border-right:1px solid #555555;border-bottom:1px solid #555555;}
-			.square.lab.max ul li a{display:block;width:99px;height:99px;cursor:pointer;position:relative;text-align: center;}
+			.square.lab.max ul li a{display:block;width:99px;height:99px;cursor:pointer;position:relative;text-align: center;color:#000000;}
 			.square.lab.max ul li a span:first-child{display:block;position:absolute;width:100px;height:100px;display:none;}
-			.square.lab.max ul li a span:last-child{margin-left:25px;margin-top:30px;width:99px;height:99px;display:block;position:absolute;transform:rotate(-45deg);-webkit-transform:rotate(-45deg);}
+			.square.lab.max ul li a span:last-child{margin-left:25px;margin-top:30px;width:99px;height:99px;display:block;position:absolute;transform:rotate(-45deg);-webkit-transform:rotate(-45deg);cursor:pointer;}
+			.square.lab.max ul li.stepup{margin-top:-100px;}
+			.square.lab.max ul li.double{width:199px;height:199px;}
 
 			.square.whois{background:#2980b9;margin-top:200px;margin-left:200px;float:left;}
 			.square.whois>div{text-align: center;width:200px;color:#eeeeee;margin-top:50px;}
@@ -103,7 +113,9 @@ foreach($base_folders as $f)
 					{
 						an.u._(".square.lab").removeEventListener("click", an.lab.in);
 						an.u._(".square.lab").style.pointerEvents = "none";
+						M4Tween.killTweensOf(an.u._(".square.lab.max"));
 						M4Tween.to(an.u._(".square.lab.max"),.5, {"height":"500px", marginTop:"0px"});
+						M4Tween.killTweensOf(an.u._(".card"));
 						M4Tween.to(an.u._(".card"),.5, {"marginTop":"-400px", "marginLeft":"-70px"});
 					},
 					out:function()
@@ -172,9 +184,34 @@ foreach($base_folders as $f)
 			<div class="square lab max">
 				<ul>
 <?php
+$i = 0;
+$toCorrect = 0;
+$toPass = 0;
+$toTrigger = false;
 foreach($folders as $f)
 {
-	echo '<li><a href="./projects/'.$f["name"].'/" style="background:'.$f["color"].'"><span><img src="'.$f['img'].'" alt="'.$f['description'].'"></span><span>'.$f['name'].'</span></a></li>';
+	$class = $f["name"]=="M4Tween"?"double":"";
+	$style = "";
+	if(++$i==5)
+		$i=0;
+	if($toPass!=0)
+	{
+		$toPass--;
+		if($toPass==0)
+			$i=0;
+	}
+	if($class == "double")
+	{
+		$toCorrect = $i-1;
+		$toPass = ((5-($i+1))*2)+1;
+	}
+	if($toPass==0 && $toCorrect!=0)
+	{
+		$class = "stepup";
+		$toCorrect--;
+		$style = "margin-left:".(100*$i)."px";
+	}
+	echo '<li class="'.$class.'" style="'.$style.'"><a href="./projects/'.$f["name"].'/" style="background:'.$f["color"].'"><span><img src="'.$f['img'].'" alt="'.$f['description'].'"></span><span>'.$f['name'].'</span></a></li>';
 }?>
 				</ul>
 				<div class="clear"></div>

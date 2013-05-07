@@ -1,0 +1,8 @@
+{
+	"name":"Code Highlighter",
+	"description":"Simple code highlighter written in Javascript.",
+	"todo":["Provide a css default file"],
+	"tech":["javascript"],
+	"url":"./docs/",
+	"img":""
+}
