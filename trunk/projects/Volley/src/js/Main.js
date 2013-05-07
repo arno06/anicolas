@@ -4,21 +4,44 @@ var fa =
 	data:null,
 	container:null,
 	clickEvent:"click",
+	referrer:"http://www.arnaud-nicolas.fr/projects/Volley/src/",
 	init:function()
 	{
-		fa.clickEvent = ("ontouchend" in document)?"touchend":"mouseup";
+		var apps;
+		if(apps = window.navigator.mozApps)
+		{
+			var manifest = fa.referrer+"manifest.webapp";
+			var request = apps.checkInstalled(manifest);
+			request.onsuccess = function()
+			{
+				if(request.result)
+					return;
+
+				var inst = apps.install(manifest);
+				inst.onsuccess = function ()
+				{
+					alert("L'installation s'est effectuée avec succès !");
+				};
+				inst.onerror = function (){};
+			};
+			request.onerror = function()
+			{
+				alert("je suis pas content là");
+			};
+		}
+		fa.clickEvent = "click";//("ontouchend" in document)?"touchend":"mouseup";
 		fa.$ = {};
 		fa.$.loader = document.querySelector("#loader");
 		fa.$.loaderBar = document.querySelector("#loader>div");
 		fa.$.container = document.querySelector("#container");
 		fa.$.container.style.height = document.body.offsetHeight - 40+"px";
 		document.querySelector("#box").addEventListener(fa.clickEvent, fa.hideBoxHandler, false);
-		document.querySelectorAll("menu button").forEach(function(element){element.addEventListener(fa.clickEvent, fa.clickButtonHandler, false);});
+		document.querySelectorAll("menu div").forEach(function(element){element.addEventListener(fa.clickEvent, fa.clickButtonHandler, false);});
 		fa.loadData();
 	},
 	clickButtonHandler:function(e)
 	{
-		document.querySelectorAll("menu button").forEach(function(element){element.removeAttribute("class");});
+		document.querySelectorAll("menu div").forEach(function(element){element.removeAttribute("class");});
 		e.currentTarget.setAttribute("class", "current");
 		switch(e.currentTarget.dataset.name)
 		{
@@ -73,8 +96,8 @@ var fa =
 		{
 			team = teams[i];
 			var ct = M4.createElement("div", {"class":"element", parentNode:legend, style:{"height":"20px"}});
-			M4.createElement("div", {parentNode:ct, style:{float:"left", "backgroundColor":team.color, width:"10px", "height":"10px"}});
-			M4.createElement("div", {parentNode:ct, text:team.name, style:{color:"#666666"}});
+			M4.createElement("div", {parentNode:ct, style:{"display":"inline-block", "backgroundColor":team.color, width:"10px", "height":"10px"}});
+			M4.createElement("div", {parentNode:ct, text:team.name, style:{color:"#666666","display":"inline-block", "marginLeft":"5px"}});
 		}
 
 		var day_data, opponent, team;

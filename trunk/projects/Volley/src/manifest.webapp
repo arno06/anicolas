@@ -1,0 +1,17 @@
+{
+	"name": "2012/2013 - Val d'oise",
+	"description": "R&eacute;sultat de la saison 2012/2013 de volley-ball pour le d&eacute;partement du val d'oise",
+	"launch_path": "/projects/Volley/src/",
+	"icons":
+	{
+		"30": "/projects/Volley/src/assets/imgs/icon-30.png",
+		"60": "/projects/Volley/src/assets/imgs/icon-60.png"
+	},
+	"developer":
+	{
+		"name": "Arnaud NICOLAS",
+		"url": "http://www.arnaud-nicolas.fr/"
+	},
+	"default_locale": "fr",
+	"orientation": ["portrait"]
+}

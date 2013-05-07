@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Présentation Vidal.fr</title>
+		<style>
+			*{font-family: Arial, sans-serif;margin:0;padding:0;}
+			html, body{width:100%;height:100%;background:-webkit-radial-gradient( center, circle, #fefefe, #cecece) fixed;}
+			body>div{height:100%;position:relative;}
+			body>div>div{background:rgba(0, 0, 0, .05);width:70%;left:50%;margin-left:-35%;padding:30px;border-radius: 5px;box-shadow: 0 1px 3px rgba(0, 0, 0, .2);position:absolute;top:50%;}
+			body>div>div h1{text-align: center;text-shadow: 0 1px 3px rgba(0, 0, 0, .2);}
+			body>div>div ul{padding:25px;}
+			body>div>div ul li{font-size:24px;color:#555555;}
+			body>div>div ul li span{color:#000000;}
+			body>div>div img{display: block;width:900px;margin:0 auto;}
+			/*body>div>div ul li{}*/
+		</style>
+		<script src="../../Dependencies/src/?need=M4,M4Tween,Scroll"></script>
+		<script>
+			window.addEventListener("load", init, false);
+			window.addEventListener("resize", resizeHandler, false);
+			window.addEventListener("scroll", cut, true);
+			window.addEventListener("keydown", keyDownHandler, false);
+			var current = 0;
+			var max;
+			function init()
+			{
+				Scroll.prepareAll("body>div");
+				max = document.querySelectorAll("body>div>div").length;
+				goto(0);
+				resizeHandler();
+			}
+
+			function resizeHandler()
+			{
+				var slides = document.querySelectorAll("body>div>div");
+				slides.forEach(function(pElement)
+				{
+					pElement.style.marginTop = (- pElement.offsetHeight>>1)+"px";
+				});
+			}
+
+			function keyDownHandler(e)
+			{
+				e.preventDefault();
+				switch(e.keyCode)
+				{
+					case 38:
+						goto(current-1<0?max-1:current-1);
+						break;
+					case 40:
+						goto(current+1>max-1?0:current+1);
+						break;
+				}
+			}
+
+			function goto(pIndex)
+			{
+				current = pIndex;
+				Scroll.to(document.querySelectorAll("body>div")[current]);
+			}
+
+			function cut(e)
+			{
+
+			}
+		</script>
+	</head>
+	<body>
+		<div><div>
+			<h1>Refonte du site Vidal.fr</h1>
+			<ul>
+				<li>N°1 de l'information sur les produits de santé</li>
+				<li>Client : <span>Thomas Van Gorkum</span></li>
+				<li>Cible : <span>Professionnels de santé</span></li>
+				<li>Traffic : <span>peu/pas quantifiable</span></li>
+				<li>Budget : <span>~80k &euro;</span></li>
+			</ul>
+		</div></div>
+		<div><div>
+			<h1>Objectifs du projet</h1>
+			<ul>
+				<li>Centraliser différents services existants chez Vidal (vidalonline, vidalofficine...)</li>
+				<li title="+ professionnels de santé, - corpo">Qualifier le traffic du site Vidal.fr</li>
+				<li>Générer un traffic important (+- 500k visites / mois)</li>
+			</ul>
+		</div></div>
+		<div><div>
+			<h1>Besoins du Vidal</h1>
+			<ul>
+				<li>Etudes de faisabilité</li>
+				<li>Accompagnement technique</li>
+				<li>Exécution graphique</li>
+			</ul>
+		</div></div>
+		<div><div>
+			<h1>L'équipe du projet</h1>
+			<ul>
+				<li>Chef de projet / Leaddev : <span>Arnaud</span></li>
+				<li>Développeurs : <span>Alain</span>, <span>Adrien</span></li>
+				<li>Graphistes : <span>Nico</span>, <span>Virginie</span>, <span>Cyrine</span></li>
+			</ul>
+		</div></div>
+		<div><div>
+			<h1>Choix techniques</h1>
+			<ul>
+				<li>1 serveur de développement</li>
+				<li>1 serveur de production</li>
+				<li>Framework PHP Cbi</li>
+				<li>Bugtracker Mantis</li>
+			</ul>
+		</div></div>
+		<div><div>
+			<h1>Architecture globale initiale</h1>
+			<ul>
+				<li>1 frontoffice (vidal.fr)</li>
+				<li>1 backoffice (vidal.fr/admin/)</li>
+				<li>4 Webservices interrogés</li>
+				<li>Pas de données gérées localement</li>
+			</ul>
+		</div></div>
+		<div><div>
+			<h1>Architecture globale initiale</h1>
+			<img src="imgs/archi.png" alt="">
+		</div></div>
+		<div><div>
+			<h1>API Vidal</h1>
+			<ul>
+				<li>Job : Fournir l'ensemble des données scientifiques du Vidal</li>
+				<li>Responsable : &Eacute;quipe API Vidal</li>
+				<li>Langage : Java</li>
+				<li>Architecture : Rest</li>
+				<li>Format : XML</li>
+			</ul>
+		</div></div>
+		<div><div>
+			<h1>VidalID</h1>
+			<ul>
+				<li>Job : Gère l'authentification des utilisateurs Vidal (front&back)</li>
+				<li>Responsable : Infotronique</li>
+				<li>Langage : PHP</li>
+				<li>Architecture : Soap</li>
+				<li>Format : Objects</li>
+			</ul>
+		</div></div>
+		<div><div>
+			<h1>VidalActus</h1>
+			<ul>
+				<li>Job : Centralise la gestion des actualités des environnements Vidal</li>
+				<li>Responsable : Infotronique</li>
+				<li>Langage : PHP</li>
+				<li>Architecture : Soap</li>
+				<li>Format : Objects</li>
+			</ul>
+		</div></div>
+		<div><div>
+			<h1>Antidot</h1>
+			<ul>
+				<li>Job : moteur de recherche</li>
+				<li>Responsable : Antidot/&Eacute;quipe BO Vidal</li>
+				<li>Langage : C# ou C++</li>
+				<li>Architecture : Rest</li>
+				<li>Format : JSON</li>
+			</ul>
+		</div></div>
+		<div><div>
+			<h1>Vidal.fr</h1>
+			<ul>
+				<li>Interroge les différents webservices</li>
+				<li>Analyse &amp; agence l'information comme souhaitée</li>
+				<li>Déclinaison en version mobile web</li>
+				<li><a href="http://www.vidal.fr" target="_blank">Accéder au site</a></li>
+			</ul>
+		</div></div>
+		<div><div>
+			<h1>Et maintenant</h1>
+			<ul>
+				<li>Pour Avril :
+					<ul>
+						<li>~600 000 visiteurs</li>
+						<li>~30 000 visiteurs uniques par jour</li>
+					</ul>
+				</li>
+				<li>Lancement d'une campagne d'inscription au nouveau site (~ 100 000 nouveaux utilisateurs potentiels)</li>
+				<li>Fin de la beta</li>
+			</ul>
+		</div></div>
+		<div><div>
+			<h1>Les points d'améliorations</h1>
+			<ul>
+				<li>Durée du projet</li>
+				<li>Gestion des délais</li>
+				<li>Mise-en-ligne</li>
+			</ul>
+		</div></div>
+	</body>
+</html>
