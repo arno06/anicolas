@@ -30,6 +30,15 @@
 				stage.addChild(new FPS());
 			}
 
+			function frameHandler(e)
+			{
+				stage.clear();
+				p.forEach(function(particule)
+				{
+					particule.resetFriends();
+				});
+			}
+
 			function Particule()
 			{
 				this.reset();
@@ -52,19 +61,6 @@
 					this._friends = [];
 				}
 			});
-
-			function frameHandler(e)
-			{
-				stage.clear();
-				p.forEach(function(particule)
-				{
-					particule.resetFriends();
-				});
-				p.forEach(function(particule)
-				{
-					particule.resetFriends();
-				});
-			}
 		</script>
 		<link href="../../common/example/example.css" type="text/css" rel="stylesheet"/>
 	</head>

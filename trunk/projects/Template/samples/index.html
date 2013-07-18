@@ -7,6 +7,7 @@
 		<script>
 			function init()
 			{
+				var d = new Date();
 				var t = new Template("tpl_1");
 				t.assign("bool", true);
 				t.assign("name", "stranger");
@@ -14,7 +15,7 @@
 				t.assign("table2", ["one", "two", "three"]);
 				t.assign("names", [{name:"Mikl", toto:["oui", "non", "peut etre"]},{name:"Audrey", toto:[]},{name:"Virginie", toto:["oui", "bouboup", "non"]},{name:"Adrien", toto:["oui", "non"]}]);
 				t.assign("emptyTable", []);
-				t.assign("date", {heures:15, minutes:30});
+				t.assign("date", {heures:d.getHours(), minutes:d.getMinutes()});
 				t.render("#placeholder");
 			}
 		</script>
@@ -34,7 +35,13 @@
 			<h3>Tableau foreach</h3>
 			<ul>
 				{foreach $table1 $item $key}
-				<li>{$key} {$item} {if $key%2!=0} odd {else} not odd{/if}</li>
+				<li>{$key} {$item}
+					{if $key%2!=0}
+						odd
+					{else}
+						not odd
+					{/if}
+				</li>
 				{/foreach}
 			</ul>
 			<h3>Tableau foreach else</h3>
@@ -48,7 +55,13 @@
 			<h3>Tableau foreach objet</h3>
 			<ul>
 				{foreach $names $item $key}
-				<li>{$item.name} {foreach $item.toto $t}<span>{$t}</span>&nbsp;{/foreach}</li>
+				<li>{$item.name}
+					{foreach $item.toto $n}
+						{$n},
+					{else}
+						Nothing to see here
+					{/foreach}
+				</li>
 				{/foreach}
 			</ul>
 			{if $bool}
