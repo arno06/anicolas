@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>JS Templating</title>
+		<script src="../../M4/src/M4.js"></script>
+		<script src="../src/Template.js"></script>
+		<script>
+			function init()
+			{
+				document.querySelector("#bt_load").addEventListener("click", loadHandler);
+			}
+
+			function loadHandler()
+			{
+				var loader = document.querySelector("#loader");
+				loader.style.display = "block";
+				document.querySelector("#placeholder").innerHTML = "";
+				Request.load("php/eurosport_rss.php")
+						.onComplete(function(pResponse)
+				{
+					var data = pResponse.responseJSON;
+
+					var items = data.channel.item;
+					var item, cats;
+					for(var i = 0, max = items.length;i<max;i++)
+					{
+						item = items[i];
+						if(typeof item.category != "string")
+							cats = item.category.join(" - ");
+						else
+							cats = item.category;
+						cats += " - ";
+						item.title = item.title.substr(cats.length, item.title.length - cats.length);
+					}
+
+					var tpl = new Template("tpl_1");
+					tpl.assign("items", data.channel.item);
+					tpl.addEventListener(TemplateEvent.RENDER_COMPLETE_LOADED, function(e)
+					{
+						loader.style.display = "none";
+					});
+					tpl.render("#placeholder");
+				});
+			}
+		</script>
+		<style type="text/css">
+			#placeholder, #loader{width:400px;height:600px;right:100px;top:10px;position:absolute;}
+			#placeholder{background:#444444;overflow: auto;}
+			#loader{background:#000000 url(loader.gif) no-repeat center center;overflow:hidden;}
+			#placeholder .item{width:190px;height:190px;float:left;overflow: hidden;}
+		</style>
+	</head>
+	<body onload="init()">
+		<button id="bt_load">Load</button>
+		<div id="placeholder">
+
+		</div>
+		<div id="loader" style="display:none;"></div>
+		<script type="html/template" template-id="tpl_1">
+			{foreach $items $item $key}
+				<div class="item" style="background:url({$item.image.url}) no-repeat center center">
+					<h1>{$item.title}</h1>
+					{foreach $item.category $cat}
+						<span>{$cat}</span>
+					{/foreach}
+				</div>
+			{/foreach}
+		</script>
+	</body>
+</html>

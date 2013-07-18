@@ -47,6 +47,14 @@
 		}
 
 	},
+	"Template":
+	{
+		"need":["M4"],
+		"versions":
+		{
+			"rc":"Template/src/Template.js"
+		}
+	},
 	"UtilsColor":
 	{
 		"need":["M4"],

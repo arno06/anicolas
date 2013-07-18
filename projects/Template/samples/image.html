@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>JS Templating</title>
+		<script src="../../M4/src/M4.js"></script>
+		<script src="../src/Template.js"></script>
+		<script>
+			function init()
+			{
+				var d = new Date();
+				var t = new Template("tpl_1");
+				t.assign("image", "http://25.media.tumblr.com/tumblr_mend69jUi21rtvqzco1_1280.gif?"+Math.round(Math.random()*1000));
+				t.render("#placeholder");
+			}
+		</script>
+	</head>
+	<body onload="init()">
+		<div id="placeholder">
+
+		</div>
+		<script type="html/template" template-id="tpl_1">
+			<h1>Test avec une image</h1>
+			<img src="{$image}" alt="">
+		</script>
+	</body>
+</html>

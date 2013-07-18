@@ -223,9 +223,9 @@ Class.define(DrawingCommand, [Class, EventDispatcher], {
 					break;
 				case DrawingCommand.END_FILL:
 					open = false;
+					over = ctx.isPointInPath(this.stage.mouseX, this.stage.mouseY)||over;
 					ctx.fill();
 					ctx.closePath();
-					over = ctx.isPointInPath(this.stage.mouseX, this.stage.mouseY)||over;
 					break;
 				case DrawingCommand.DRAW_RECT:
 					ctx.rect(cmd.x, cmd.y, cmd.width, cmd.height);
@@ -241,6 +241,7 @@ Class.define(DrawingCommand, [Class, EventDispatcher], {
 					ctx.quadraticCurveTo(cmd.x, cmd.y+cmd.height, cmd.x, cmd.y+(cmd.height-cmd.bottomLeft));
 					ctx.lineTo(cmd.x, cmd.y+cmd.topLeft);
 					ctx.quadraticCurveTo(cmd.x, cmd.y, cmd.x+cmd.topLeft, cmd.y);
+					over = ctx.isPointInPath(this.stage.mouseX, this.stage.mouseY)||over;
 					ctx.closePath();
 					break;
 				case DrawingCommand.DRAW_ARC:
@@ -275,15 +276,16 @@ Class.define(DrawingCommand, [Class, EventDispatcher], {
 		}
 		if(stroke)
 		{
+			over = ctx.isPointInPath(this.stage.mouseX, this.stage.mouseY)||over;
 			ctx.stroke();
 			ctx.closePath();
 		}
 		if(open)
 		{
-			ctx.closePath();
+			over = ctx.isPointInPath(this.stage.mouseX, this.stage.mouseY)||over;
 			ctx.fill();
+			ctx.closePath();
 		}
-		over = ctx.isPointInPath(this.stage.mouseX, this.stage.mouseY)||over;
 		if(this.mouseEnabled)
 		{
 			var lx = this.stage.mouseX - this.x, ly = this.stage.mouseY - this.y;

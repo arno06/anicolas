@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Game of Life | Cell automatisation Game - Stage.js</title>
+		<script src="../../Dependencies/src/?need=M4,Stage"></script>
+		<script>
+			var grid;
+
+			function init()
+			{
+				grid = new Grid(600, 600, 5);
+				grid.setup();
+				tickHandler();
+			}
+
+			function tickHandler()
+			{
+				grid.tick();
+				setTimeout(tickHandler, 250);
+			}
+
+			function Grid(pWidth, pHeight, pCellSize)
+			{
+				pWidth = pWidth||300;
+				pHeight = pHeight||300;
+				pCellSize = pCellSize||5;
+				this.stage = new Stage(pWidth, pHeight, "#container");
+				this.stage.addChild(new FPS());
+				this.cellSize = pCellSize;
+				this.cols = pWidth/this.cellSize;
+				this.rows = pHeight/this.cellSize;
+				this.firstCell = null;
+			}
+
+			Class.define(Grid, [Class],
+			{
+				setup:function()
+				{
+					var cells = [];
+					for(var k = 0;k<this.rows;k++)
+						cells[k] = [];
+
+					var i = this.cols * this.rows;
+					var x = 0;
+					var y = 0;
+					var old;
+					while(i--)
+					{
+						if(!this.firstCell)
+						{
+							this.firstCell = old = new Cell(x, y);
+						}
+						else
+						{
+							old.next = new Cell(x, y);
+							old = old.next;
+						}
+						old.alive = Math.round(Math.random())==1;
+						cells[x][y] = old;
+						if(x<this.rows-1)
+						{
+							x++;
+						}
+						else
+						{
+							x = 0;
+							y++;
+						}
+					}
+
+					var cell = this.firstCell;
+					var neightbors;
+					while(cell)
+					{
+						neightbors = [];
+
+						if(cell.x > 0 && cell.y>0)
+							neightbors.push(cells[cell.x-1][cell.y-1]);
+						if(cell.y>0)
+							neightbors.push(cells[cell.x][cell.y-1]);
+						if(cell.x<this.cols-1 && cell.y>0)
+							neightbors.push(cells[cell.x+1][cell.y-1]);
+
+						if(cell.x>0)
+							neightbors.push(cells[cell.x-1][cell.y]);
+						if(cell.x<this.cols-1)
+							neightbors.push(cells[cell.x+1][cell.y]);
+
+						if(cell.x > 0 && cell.y<this.rows-1)
+							neightbors.push(cells[cell.x-1][cell.y+1]);
+						if(cell.y<this.rows-1)
+							neightbors.push(cells[cell.x][cell.y+1]);
+						if(cell.x<this.cols-1 && cell.y<this.rows-1)
+							neightbors.push(cells[cell.x+1][cell.y+1]);
+
+						cell.setNeighborhood(neightbors);
+						cell = cell.next;
+					}
+
+				},
+				tick:function()
+				{
+					this.stage.clear();
+
+					/**
+					 * Prediction Pass
+					 */
+					var cell = this.firstCell;
+					while(cell)
+					{
+						cell.predict();
+						cell = cell.next;
+					}
+
+					/**
+					 * Step Pass
+					 */
+					cell = this.firstCell;
+					while(cell)
+					{
+						cell.step();
+						cell = cell.next;
+					}
+
+					/**
+					 * Drawing Pass
+					 */
+					cell = this.firstCell;
+					while(cell)
+					{
+						if(cell.alive)
+						{
+							this.stage.beginFill("rgb(0, 0, 0)");
+							this.stage.drawRect(cell.x * this.cellSize, cell.y * this.cellSize, this.cellSize-1, this.cellSize-1);
+							this.stage.endFill();
+						}
+						cell = cell.next;
+					}
+				}
+			});
+
+			function Cell(pX, pY)
+			{
+				this.neightborhood = [];
+				this.alive = false;
+				this.next = null;
+				this.x = pX;
+				this.y = pY;
+			}
+
+			Class.define(Cell, [EventDispatcher],
+			{
+				setNeighborhood:function(pNeightbors)
+				{
+					this.neightborhood = pNeightbors;
+				},
+				getPosition:function()
+				{
+					return "["+this.x+", "+this.y+"]";
+				},
+				predict:function()
+				{
+					var count = 0;
+					var i = this.neightborhood.length;
+					while(i--)
+					{
+						if(this.neightborhood[i].alive===true)
+							count++;
+					}
+					if(!this.alive)
+						this.aliveNextStep = count==3;
+					else
+						this.aliveNextStep = count==3||count==2;
+				},
+				step:function()
+				{
+					this.alive = this.aliveNextStep;
+				}
+			});
+		</script>
+	</head>
+	<body onload="init()">
+		<div id="container">
+
+		</div>
+	</body>
+</html>
