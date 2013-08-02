@@ -2,8 +2,8 @@
 <html>
 	<head>
 		<title>MineSweeper</title>
-		<script type="text/javascript" src="js/minuit4/M4.js"></script>
-		<script type="text/javascript" src="js/minuit4/M4Tween.js"></script>
+		<script type="text/javascript" src="../../Dependencies/src/?need=M4,Stage"></script>
+		<script type="text/javascript" src="js/minesweeper.js"></script>
 		<style type="text/css">
 			*{margin:0;padding: 0;font-weight:normal;font-size:11px;}
 			body{background: rgb(192, 192, 192);overflow: hidden;}
@@ -11,13 +11,9 @@
 			Button{border-top:#fff 2px solid;border-left:#fff 2px solid;border-bottom: rgb(160,160,160) 2px solid;}
 		</style>
 	</head>
-	<body oncontextmenu="return false;">
+	<body oncontextmenu="return false;" onload="init();">
 	<h1>Minesweeper - Stage.js</h1>
 		<script type="text/javascript">
-			M4Tween.useStyle = false;
-			M4.need("js/minuit4/Stage.js",
-					"js/minesweeper.js")
-				.addEventListener(Event.COMPLETE, init);
 			var _stage;
 
 			var _minesweeperGame;

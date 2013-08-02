@@ -22,6 +22,17 @@ Class.define(RGBAColor, [Class],
 		this.b = exec[3]||0;
 		this.alpha = exec[4]||0;
 	},
+	getHexa:function()
+	{
+		return "#"+((this.r<<16)|(this.g<<8)|(this.b)).toString(16);
+	},
+	fromHexa:function(pValue)
+	{
+		var value = Number(pValue);
+		this.r = (value&parseInt("FF0000", 16))>>16;
+		this.g = (value&parseInt("00FF00", 16))>>8;
+		this.b = value&parseInt("0000FF", 16);
+	},
 	toString:function()
 	{
 		return "rgba("+this.r+", "+this.g+", "+this.b+", "+this.alpha+")";
@@ -54,7 +65,7 @@ Class.define(HSLColor, [RGBAColor],
 	getRGBA:function()
 	{
 		var d = HSLColor.HSLtoRGB(this._h, this._s, this._l);
-		return "rgba("+Math.round(d.r)+", "+Math.round(d.g)+", "+Math.round(d.b)+", "+this._alpha+")";
+		return "rgba("+Math.round(d.r)+", "+Math.round(d.g)+", "+Math.round(d.b)+", "+this.alpha+")";
 	},
 	getRGB:function()
 	{
@@ -63,8 +74,8 @@ Class.define(HSLColor, [RGBAColor],
 	},
 	setAlpha:function(pValue)
 	{
-		this._alpha = Math.max(0, pValue);
-		this._alpha = Math.min(1, this._alpha);
+		this.alpha = Math.max(0, pValue);
+		this.alpha = Math.min(1, this.alpha);
 	},
 	setH:function(pValue)
 	{
@@ -172,19 +183,4 @@ HSLColor.HuetoRGB=function(pT1, pT2, pH)
 	if ((3 * pH) < 2)
 		return (pT1 + (pT2 - pT1) * ((2 / 3) - pH) * 6);
 	return pT1;
-};
-
-function HexaColor(){}
-
-HexaColor.HexatoRGB = function(pValue)
-{
-	var value = Number(pValue);
-	var r = (this.finalValue&parseInt("FF0000", 16))>>16;
-	var g = (this.finalValue&parseInt("00FF00", 16))>>8;
-	var b = this.finalValue&parseInt("0000FF", 16);
-};
-
-HexaColor.RGBtoHexa = function()
-{
-
 };

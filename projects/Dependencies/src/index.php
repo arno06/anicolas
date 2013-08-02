@@ -29,46 +29,35 @@ unset($manifest["config"]);
 
 $needs = array();
 
-foreach($need as $lib)
-{
-	if(isset($manifest[$lib]))
-	{
-		array_unshift($needs, $lib);
-		if(!isset($manifest[$lib]["need"])||!is_array($manifest[$lib]["need"])||empty($manifest[$lib]["need"]))
-			continue;
-		$dep = array_reverse($manifest[$lib]["need"]);
-		foreach($dep as $req)
-			array_unshift($needs, $req);
-
-	}
-	else
-		$output .= csl($lib." is not available", "warn");
-}
+retrieveNeeds($need, $needs);
 
 $needs = array_unique($needs);
+
 /**
  * Check Cache File (not sure this should be done now)
  */
 /**
  * Get lib contents
  */
-
 foreach($needs as $lib)
 {
 	if(isset($manifest[$lib]))
 	{
-		// TBD : improve versions handling (?need=M4Tween@rc,M4@beta...)
-		if(!isset($manifest[$lib]["versions"])||!isset($manifest[$lib]["versions"]["rc"]))
+		if(!isset($manifest[$lib]["src"])||!is_array($manifest[$lib]["src"]))
 		{
 			echo csl($lib." is not available", "warn");
 			continue;
 		}
-		$file = $manifest[$lib]["versions"]["rc"];
-		$absolute_link = preg_match('/^http\:\/\//', $file, $matches);
-		if(!$absolute_link)
-			$file = $config["relative"].$file;
 
-		$output .= file_get_contents($file)."\r\n";
+		$files = $manifest[$lib]["src"];
+
+		for($i = 0, $max = count($files); $i<$max;$i++)
+		{
+			$absolute_link = preg_match('/^http\:\/\//', $files[$i], $matches);
+			if(!$absolute_link)
+				$files[$i] = $config["relative"].$files[$i];
+			$output .= file_get_contents($files[$i])."\r\n";
+		}
 	}
 	else
 		$output .= csl($lib." is not available");
@@ -78,7 +67,7 @@ foreach($needs as $lib)
  * Minified / Uglyflied / gzip
  */
 
-$accept_gzip = preg_match('/gzip/', $_SERVER['HTTP_ACCEPT_ENCODING'], $matches);
+$accept_gzip = preg_match('/gzip/', $_SERVER['HTTP_ACCEPT_ENCODING'], $matches)&&(!isset($_GET["output"])||empty($_GET["output"]));
 if($accept_gzip)
 {
 	$headers["Content-Encoding"] = "gzip";
@@ -93,7 +82,10 @@ if($accept_gzip)
  * Write body
  * End Request
  */
-output($output);
+if(!isset($_GET["output"])||empty($_GET["output"]))
+	output($output);
+else
+	download("package.js", $output);
 
 /**
  * Functions
@@ -119,4 +111,44 @@ function output($pContent)
 function csl($pText, $pType='log')
 {
 	return "console.".$pType."('Dependencies : ".addslashes($pText)."');\r\n";
+}
+
+function retrieveNeeds($pNeeded, &$pFinalList)
+{
+	global $manifest;
+	global $output;
+
+	foreach($pNeeded as $lib)
+	{
+		if(isset($manifest[$lib]))
+		{
+			array_unshift($pFinalList, $lib);
+			if(!isset($manifest[$lib]["need"])||!is_array($manifest[$lib]["need"])||empty($manifest[$lib]["need"]))
+				continue;
+			$dep = array_reverse($manifest[$lib]["need"]);
+			retrieveNeeds($dep, $pFinalList);
+		}
+		else
+			$output .= csl($lib." is not available", "warn");
+	}
+}
+
+function download($pFile, $pSource = "")
+{
+	if(empty($pFile))
+		return;
+	$fromSource = !empty($pSource);
+	if(!$fromSource)
+		$length = filesize($pFile);
+	else
+		$length = strlen($pSource);
+    header("content-disposition: attachment; filename=\"".basename($pFile)."\"");
+    header('Content-Type: application/force-download');
+    header('Content-Transfer-Encoding: binary');
+    header("Content-Length: ".$length);
+    header("Pragma: no-cache");
+    header("Cache-Control: must-revalidate, post-check=0, pre-check=0, public");
+    header("Expires: 0");
+	echo $pSource;
+    exit();
 }

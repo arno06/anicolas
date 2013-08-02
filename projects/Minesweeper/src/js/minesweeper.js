@@ -12,10 +12,11 @@ MinesweeperOptions =
 
 function Minesweeper(pLines, pCols, pMines)
 {
+	this.super();
 	this.reset();
 	this.config(pLines, pCols, pMines);
 	this.loader = new MassLoader();
-	this.loader.addEventListener(Event.COMPLETE, M4.proxy(this, this.assetLoaded));
+	this.loader.addEventListener(Event.COMPLETE, this.assetLoaded.proxy(this));
 	this.loader.load({"sprite":Minesweeper.SPRITESHEET});
 	this.clear();
 	this.setFont("Arial", "12px", "#000000");
@@ -56,8 +57,8 @@ Class.define(Minesweeper, [Container], {
 	assetLoaded:function()
 	{
 		this.clear();
-		this.addEventListener(Minesweeper.GAME_OVER, M4.proxy(this, this.gameOverHandler));
-		this.addEventListener(Minesweeper.GAME_WIN, M4.proxy(this, this.gameWinHandler));
+		this.addEventListener(Minesweeper.GAME_OVER, this.gameOverHandler.proxy(this));
+		this.addEventListener(Minesweeper.GAME_WIN, this.gameWinHandler.proxy(this));
 		this.setupUI();
 		this.startGame();
 	},
@@ -124,7 +125,7 @@ Class.define(Minesweeper, [Container], {
 	{
 		this.__resetButton = new ResetButton(this.loader.assets.sprite);
 		this.__resetButton.y = 12;
-		this.__resetButton.addEventListener(Minesweeper.RESTART, M4.proxy(this, this.restartHandler));
+		this.__resetButton.addEventListener(Minesweeper.RESTART, this.restartHandler.proxy(this));
 		this.addChild(this.__resetButton);
 
 		this.mineCounter = new Counter(this.loader.assets.sprite);
@@ -148,12 +149,12 @@ Class.define(Minesweeper, [Container], {
 				s = new Square(this.loader.assets.sprite);
 				s.x = Minesweeper.FIELD_X+(j * Minesweeper.SQUARE_WIDTH);
 				s.y = Minesweeper.FIELD_Y+(i * Minesweeper.SQUARE_HEIGHT);
-				s.addEventListener(Minesweeper.START, M4.proxy(this, this.startHandler));
-				s.addEventListener(MouseEvent.MOUSE_DOWN, M4.proxy(this, this.squareDownHandler));
-				s.addEventListener(MouseEvent.CLICK, M4.proxy(this, this.squareUpHandler));
-				s.addEventListener(Minesweeper.EXPLODING, M4.proxy(this, this.explodeHandler));
-				s.addEventListener(Minesweeper.DEDUCT, M4.proxy(this, this.deductHandler));
-				s.addEventListener(Minesweeper.COUNT, M4.proxy(this, this.countHandler));
+				s.addEventListener(Minesweeper.START, this.startHandler.proxy(this));
+				s.addEventListener(MouseEvent.MOUSE_DOWN, this.squareDownHandler.proxy(this));
+				s.addEventListener(MouseEvent.CLICK, this.squareUpHandler.proxy(this));
+				s.addEventListener(Minesweeper.EXPLODING, this.explodeHandler.proxy(this));
+				s.addEventListener(Minesweeper.DEDUCT, this.deductHandler.proxy(this));
+				s.addEventListener(Minesweeper.COUNT, this.countHandler.proxy(this));
 				this.addChild(s);
 				this.squares[i][j] = s;
 			}
@@ -254,7 +255,7 @@ Class.define(Minesweeper, [Container], {
 	},
 	startHandler:function()
 	{
-		this.timer = setInterval(M4.proxy(this, this.tickHandler), 1000);
+		this.timer = setInterval(this.tickHandler.proxy(this), 1000);
 		this.timeCounter.value = 0;
 		this.started = true;
 	},
@@ -286,7 +287,7 @@ Minesweeper.COLOR_BACKGROUND = "rgb(192, 192, 192)";
 
 function Square(pSprite)
 {
-	this.reset();
+	this.super();
 	this.sprite = pSprite;
 	this.mouseEnabled = true;
 	this.isMine = false;
@@ -308,12 +309,12 @@ function Square(pSprite)
 				"flag":new Vector(36,53),
 				"dunno":new Vector(53, 53)};
 	this.currentState = "default";
-	this.addEventListener(MouseEvent.CLICK, M4.proxy(this, this.trigger));
-	this.addEventListener(Event.ADDED_TO_STAGE, M4.proxy(this, this._addedHandler));
-	this.__drawHandler = M4.proxy(this, this.drawHandler);
-	this.addEventListener(Event.REMOVED_FROM_STAGE, M4.proxy(this, this.removedHandler));
+	this.addEventListener(MouseEvent.CLICK, this.trigger.proxy(this));
+	this.addEventListener(Event.ADDED_TO_STAGE, this._addedHandler.proxy(this));
+	this.__drawHandler = this.drawHandler.proxy(this);
+	this.addEventListener(Event.REMOVED_FROM_STAGE, this.removedHandler.proxy(this));
 }
-Class.define(Square, [DisplayObject], {
+Class.define(Square, [Sprite], {
 	__drawHandler:null,
 	_addedHandler:function()
 	{
@@ -400,6 +401,7 @@ Class.define(Square, [DisplayObject], {
 
 function Counter(pSprite)
 {
+	this.super();
 	this.reset();
 	this.value = 0;
 	this.sprite = pSprite;
@@ -413,12 +415,12 @@ function Counter(pSprite)
 				'n8': new Vector(100, 2),
 				'n9': new Vector(114, 2),
 				'n0': new Vector(128, 2)};
-	this.addEventListener(Event.ADDED_TO_STAGE, M4.proxy(this, this._addedHandler));
+	this.addEventListener(Event.ADDED_TO_STAGE, this._addedHandler.proxy(this));
 }
-Class.define(Counter, [DisplayObject], {
+Class.define(Counter, [Sprite], {
 	_addedHandler:function()
 	{
-		this.stage.addEventListener(Event.ENTER_FRAME, M4.proxy(this, this.drawHandler));
+		this.stage.addEventListener(Event.ENTER_FRAME, this.drawHandler.proxy(this));
 	},
 	drawHandler:function()
 	{
@@ -447,6 +449,7 @@ Class.define(Counter, [DisplayObject], {
 
 function ResetButton(pSprite)
 {
+	this.super();
 	this.reset();
 	this.mouseEnabled = true;
 	this.sprite = pSprite;
@@ -459,19 +462,19 @@ function ResetButton(pSprite)
 		game_over:new Vector(110, 26)
 	};
 	this.__currentState = "idle";
-	this.addEventListener(MouseEvent.MOUSE_DOWN, M4.proxy(this, this.changeStateHandler));
-	this.addEventListener(MouseEvent.MOUSE_UP, M4.proxy(this, this.resetHandler));
-	this.addEventListener(Event.ADDED_TO_STAGE, M4.proxy(this, this._addedHandler));
+	this.addEventListener(MouseEvent.MOUSE_DOWN, this.changeStateHandler.proxy(this));
+	this.addEventListener(MouseEvent.MOUSE_UP, this.resetHandler.proxy(this));
+	this.addEventListener(Event.ADDED_TO_STAGE, this._addedHandler.proxy(this));
 }
-Class.define(ResetButton, [DisplayObject], {
+Class.define(ResetButton, [Sprite], {
 	sprite:null,
 	__gameOver:false,
 	__gameWin:false,
 	__currentState:null,
 	_addedHandler:function()
 	{
-		this.stage.addEventListener(MouseEvent.MOUSE_UP, M4.proxy(this, this.changeStateHandler));
-		this.stage.addEventListener(Event.ENTER_FRAME, M4.proxy(this, this.drawHandler));
+		this.stage.addEventListener(MouseEvent.MOUSE_UP, this.changeStateHandler.proxy(this));
+		this.stage.addEventListener(Event.ENTER_FRAME, this.drawHandler.proxy(this));
 	},
 	resetHandler:function()
 	{
@@ -532,9 +535,9 @@ function SettingButton()
 	this.drawRect(0, 0, 27, 16);
 	this.endFill();
 	this.mouseEnabled = true;
-	this.addEventListener(Event.ADDED_TO_STAGE, M4.proxy(this, this.__addedHandler));
-	this.addEventListener(MouseEvent.MOUSE_OVER, M4.proxy(this, this.__overHandler));
-	this.addEventListener(MouseEvent.MOUSE_OUT, M4.proxy(this, this.__outHandler));
+	this.addEventListener(Event.ADDED_TO_STAGE, this.__addedHandler.proxy(this));
+	this.addEventListener(MouseEvent.MOUSE_OVER, this.__overHandler.proxy(this));
+	this.addEventListener(MouseEvent.MOUSE_OUT, this.__outHandler.proxy(this));
 }
 
 Class.define(SettingButton, [Container],
@@ -568,11 +571,11 @@ function MineButton(pLabel)
 	this.reset();
 	this.mouseEnabled = true;
 	this.label = pLabel;
-	this.addEventListener(Event.ADDED_TO_STAGE, M4.proxy(this, this.__addedHandler));
-	this.addEventListener(MouseEvent.MOUSE_DOWN, M4.proxy(this, this.__downHandler));
+	this.addEventListener(Event.ADDED_TO_STAGE, this.__addedHandler.proxy(this));
+	this.addEventListener(MouseEvent.MOUSE_DOWN, this.__downHandler.proxy(this));
 }
 
-Class.define(MineButton, [DisplayObject],
+Class.define(MineButton, [Sprite],
 {
 	label:null,
 	padding:8,
@@ -581,7 +584,7 @@ Class.define(MineButton, [DisplayObject],
 	{
 		this.__width = this.measureText(this.label, "visitor", "20px") + (this.padding<<1) - 2;
 		this.__upHandler();
-		this.stage.addEventListener(MouseEvent.MOUSE_UP, M4.proxy(this, this.__upHandler));
+		this.stage.addEventListener(MouseEvent.MOUSE_UP, this.__upHandler.proxy(this));
 	},
 	__upHandler:function()
 	{

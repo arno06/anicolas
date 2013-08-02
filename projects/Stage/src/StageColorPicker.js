@@ -25,11 +25,11 @@ function ColorPicker(pWidth, pHeight, pParent, pDebug)
 	this.height = 0;
 	this.localX = 0;
 	this.localY = 0;
-	this.addEventListener(Event.ADDED_TO_STAGE, M4.proxy(this, this._addedHandler));
-	this.addEventListener(MouseEvent.MOUSE_DOWN, M4.proxy(this, this._mouseDownHandler));
-	this.addEventListener(MouseEvent.MOUSE_UP, M4.proxy(this, this._mouseUpHandler));
-	this.addEventListener(MouseEvent.MOUSE_OUT, M4.proxy(this, this._mouseUpHandler));
-	this._anoEnterFrame = M4.proxy(this, this._enterFrameHandler);
+	this.addEventListener(Event.ADDED_TO_STAGE, this._addedHandler.proxy(this));
+	this.addEventListener(MouseEvent.MOUSE_DOWN, this._mouseDownHandler.proxy(this));
+	this.addEventListener(MouseEvent.MOUSE_UP, this._mouseUpHandler.proxy(this));
+	this.addEventListener(MouseEvent.MOUSE_OUT, this._mouseUpHandler.proxy(this));
+	this._anoEnterFrame = this._enterFrameHandler.proxy(this);
 	var stage = new Stage(pWidth, pHeight, pParent);
 	stage.addChild(this);
 	if(pDebug)
@@ -45,7 +45,7 @@ function ColorPicker(pWidth, pHeight, pParent, pDebug)
 		"parentNode":this.parentNode
 	});
 	this.selector.style.left = (this.height+22)+"px";
-	this.cursor.addEventListener("mouseup", M4.proxy(this, this._mouseUpHandler));
+	this.cursor.addEventListener("mouseup", this._mouseUpHandler.proxy(this));
 }
 
 Class.define(ColorPicker, [Sprite],
