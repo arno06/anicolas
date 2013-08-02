@@ -74,7 +74,7 @@ function BarChart(pDatas, pWidth, pHeight, pOptions)
 	this.height = pHeight - this.border.size;
 	this.datas = pDatas;
 	this.reset();
-	this.addEventListener(Event.ADDED_TO_STAGE, M4.proxy(this, this.drawDatas));
+	this.addEventListener(Event.ADDED_TO_STAGE, this.drawDatas.proxy(this));
 }
 
 Class.define(BarChart, [Container],
@@ -124,7 +124,7 @@ function BarChartPart(pWidth, pHeight, pLabel, pValue, pColor)
 	this.label = pLabel;
 	this.value = pValue;
 	this.color = pColor;
-	this.addEventListener(Event.ADDED_TO_STAGE, M4.proxy(this, this.drawPart));
+	this.addEventListener(Event.ADDED_TO_STAGE, this.drawPart.proxy(this));
 }
 
 Class.define(BarChartPart, [Container],
@@ -151,8 +151,8 @@ Class.define(BarChartPart, [Container],
 		this.toolTip.alpha = 0;
 		this.addChild(this.toolTip);
 		M4Tween.to(this, .3, {scaleY:1, useStyle:false});
-		this.addEventListener(MouseEvent.MOUSE_OVER, M4.proxy(this, this._overHandler));
-		this.addEventListener(MouseEvent.MOUSE_OUT, M4.proxy(this, this._outHandler));
+		this.addEventListener(MouseEvent.MOUSE_OVER, this._overHandler.proxy(this));
+		this.addEventListener(MouseEvent.MOUSE_OUT, this._outHandler.proxy(this));
 	}
 });
 
@@ -165,7 +165,7 @@ function PieChart(pDatas, pMaxRadius, pOption)
 	this.maxRadius = pMaxRadius||100;
 	this.fontFace = pOption.fontFace||"Arial";
 	this.fontSize = pOption.fontSize||"12px";
-	this.addEventListener(Event.ADDED_TO_STAGE, M4.proxy(this, this.drawDatas));
+	this.addEventListener(Event.ADDED_TO_STAGE, this.drawDatas.proxy(this));
 }
 
 Class.define(PieChart, [Container],
@@ -204,7 +204,7 @@ function PieChartPart(pAngle, pRadius, pLabel, pValue, pColor, pFontFace)
 	this.radius = pRadius;
 	this.toolTip = null;
 	this.fromToolTipY = 0;
-	this.addEventListener(Event.ADDED_TO_STAGE, M4.proxy(this, this.drawPart));
+	this.addEventListener(Event.ADDED_TO_STAGE, this.drawPart.proxy(this));
 }
 
 Class.define(PieChartPart, [Container],
@@ -249,8 +249,8 @@ Class.define(PieChartPart, [Container],
 			this.fromToolTipY = this.toolTip.y = -(this.stage.height>>1) + 17;
 		this.toolTip.y -= 10;
 		M4Tween.to(this, .3, {scaleX:1, scaleY:1, useStyle:false});
-		this.addEventListener(MouseEvent.MOUSE_OVER, M4.proxy(this, this._overHandler));
-		this.addEventListener(MouseEvent.MOUSE_OUT, M4.proxy(this, this._outHandler));
+		this.addEventListener(MouseEvent.MOUSE_OVER, this._overHandler.proxy(this));
+		this.addEventListener(MouseEvent.MOUSE_OUT, this._outHandler.proxy(this));
 	}
 });
 
@@ -264,7 +264,7 @@ function ChartToolTip(pLabel, pFontFace, pFontSize, pFontColor, pBackgroundColor
 	this.background = pBackgroundColor||"rgba(0, 0, 0, .55)";
 	this.borderRadius = pBorderRadius||0;
 	this.xPadding = pXPadding||5;
-	this.addEventListener(Event.ADDED_TO_STAGE, M4.proxy(this, this.drawToolTip));
+	this.addEventListener(Event.ADDED_TO_STAGE, this.drawToolTip.proxy(this));
 }
 
 Class.define(ChartToolTip, [Sprite],

@@ -349,10 +349,10 @@ Class.define(Sprite, [Vector, DrawingCommand],{
 		this.parent=null;
 		this.mouseEnabled = false;
 		this.__mouse = {over:false, out:true, press:false, release:true};
-		this.__anoDispatch = M4.proxy(this, this.dispatchEvent);
+		this.__anoDispatch = this.dispatchEvent.proxy(this);
 		this.clear();
 		this.removeAllEventListener();
-		this.addEventListener(Event.ADDED_TO_STAGE, M4.proxy(this, this.__added));
+		this.addEventListener(Event.ADDED_TO_STAGE, this.__added.proxy(this));
 	},
 	draw:function()
 	{
@@ -365,7 +365,7 @@ Class.define(Sprite, [Vector, DrawingCommand],{
 	},
 	__added:function()
 	{
-        this.addEventListener(Event.REMOVED_FROM_STAGE, M4.proxy(this, this.__removed));
+        this.addEventListener(Event.REMOVED_FROM_STAGE, this.__removed.proxy(this));
 		this.stage.addEventListener(Event.ENTER_FRAME, this.__anoDispatch);
 	},
 	__removed:function()
@@ -394,7 +394,7 @@ Class.define(Container, [Sprite], {
 	{
 		this.super("reset");
 		this.removeChildren();
-		this.addEventListener(Event.ADDED_TO_STAGE, M4.proxy(this, this.__added));
+		this.addEventListener(Event.ADDED_TO_STAGE, this.__added.proxy(this));
 	},
 	addChild:function(pDisplay)
 	{
@@ -450,7 +450,7 @@ Class.define(Container, [Sprite], {
 	},
 	__added:function()
 	{
-		this.addEventListener(Event.REMOVED_FROM_STAGE, M4.proxy(this, this.__removed));
+		this.addEventListener(Event.REMOVED_FROM_STAGE, this.__removed.proxy(this));
 		for(var i = 0, max = this.displayList.length; i<max; i++)
 			this.displayList[i].context = this.context;
 	}
@@ -495,7 +495,7 @@ Class.define(Stage, [Container], {
 		if(this.running)
 			return;
 		this.running = true;
-		requestAnimFrame(M4.proxy(this, this.frameHandler));
+		requestAnimFrame(this.frameHandler.proxy(this));
 	},
 	frameHandler:function()
 	{
@@ -510,7 +510,7 @@ Class.define(Stage, [Container], {
 		this._dispatchEvents();
 		this._lastTime = now;
 		if(this.running)
-			requestAnimFrame(M4.proxy(this, this.frameHandler));
+			requestAnimFrame(this.frameHandler.proxy(this));
 	},
 	_registerEvent:function(pTarget, pEvent)
 	{
@@ -595,9 +595,9 @@ function FPS()
 	this.ms = "...";
 	this.tick = 0;
 	this.oldTimer = (new Date()).getTime();
-	this.anoAdded = M4.proxy(this, this._addedHandler);
-	this.anoRemoved = M4.proxy(this, this._removedHandler);
-	this.anoEnter = M4.proxy(this, this.updateFPS);
+	this.anoAdded = this._addedHandler.proxy(this);
+	this.anoRemoved = this._removedHandler.proxy(this);
+	this.anoEnter = this.updateFPS.proxy(this);
 	this.addEventListener(Event.ADDED_TO_STAGE, this.anoAdded);
 	this.addEventListener(Event.REMOVED_FROM_STAGE, this.anoRemoved);
 }
@@ -656,11 +656,11 @@ Class.define(SpriteSheetAnimator, [Sprite], {
 		this.oldTimer=null;
 		this.currentTimer=null;
 		this.timer = 1000/pSpeed;
-		this.addEventListener(Event.ADDED_TO_STAGE, M4.proxy(this, this._addedHandler));
+		this.addEventListener(Event.ADDED_TO_STAGE, this._addedHandler.proxy(this));
 	},
 	_addedHandler:function()
 	{
-		this.stage.addEventListener(Event.ENTER_FRAME, M4.proxy(this, this.drawingHandler));
+		this.stage.addEventListener(Event.ENTER_FRAME, this.drawingHandler.proxy(this));
 	},
 	drawingHandler:function()
 	{
@@ -721,7 +721,7 @@ function Bitmap(pSrc)
 {
 	this.reset();
 	this.image = new Image();
-	this.image.addEventListener("load", M4.proxy(this, this.imageLoadedHandler), false);
+	this.image.addEventListener("load", this.imageLoadedHandler.proxy(this), false);
 	this.image.src = pSrc;
 }
 

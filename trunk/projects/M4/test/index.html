@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title></title>
+		<script src="../../Dependencies/src/?need=M4,Class,Event"></script>
+	</head>
+	<body>
+		<button>Action</button>
+		<script>
+			function Tester(pElement)
+			{
+				pElement.addEventListener("click", this._clickHandler.proxy(this), false);
+			}
+
+			Class.define(Tester, [Class],
+			{
+				_clickHandler:function(e)
+				{
+					console.log(e);
+					console.log(this);
+				}
+			});
+			new Tester(document.querySelector("button"));
+		</script>
+	</body>
+</html>

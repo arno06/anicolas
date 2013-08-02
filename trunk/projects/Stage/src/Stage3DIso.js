@@ -58,8 +58,8 @@ function IsoShape(pColor, pLight)
 	this.color = pColor||"rgb(127, 0, 0)";
 	this._material = new IsoMaterial(this.color);
 	this._light = pLight;
-	this._light.addEventListener(IsoLightEvent.UPDATED, M4.proxy(this, this.update));
-	this.addEventListener(Event.ADDED_TO_STAGE, M4.proxy(this, this.update));
+	this._light.addEventListener(IsoLightEvent.UPDATED, this.update.proxy(this));
+	this.addEventListener(Event.ADDED_TO_STAGE, this.update.proxy(this));
 }
 
 Class.define(IsoShape, [Sprite],

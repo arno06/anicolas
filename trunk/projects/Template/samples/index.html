@@ -13,7 +13,7 @@
 				t.assign("name", "stranger");
 				t.assign("table1", ["foo", "bar"]);
 				t.assign("table2", ["one", "two", "three"]);
-				t.assign("names", [{name:"Mikl", toto:["oui", "non", "peut etre"]},{name:"Audrey", toto:[]},{name:"Virginie", toto:["oui", "bouboup", "non"]},{name:"Adrien", toto:["oui", "non"]}]);
+				t.assign("names", [{t:"w00t", "test":"bouboup", toto:["oui", "non", "peut etre"]},{t:"Audrey", toto:[]},{t:"Virginie", toto:["oui", "bouboup", "non"]},{t:"Adrien", toto:["oui", "non"]}]);
 				t.assign("emptyTable", []);
 				t.assign("date", {heures:d.getHours(), minutes:d.getMinutes()});
 				t.render("#placeholder");
@@ -55,7 +55,7 @@
 			<h3>Tableau foreach objet</h3>
 			<ul>
 				{foreach $names $item $key}
-				<li>{$item.name}
+				<li>{$item.t} {$item.test}
 					{foreach $item.toto $n}
 						{$n},
 					{else}

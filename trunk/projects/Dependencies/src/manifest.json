@@ -3,64 +3,84 @@
 	{
 		"relative":"../../"
 	},
+	"Class":
+	{
+		"need":[],
+		"src":
+		[
+			"M4/src/Class.js"
+		]
+	},
 	"ColorPicker":
 	{
 		"need":["M4", "Stage", "UtilsColor"],
-		"versions":
-		{
-			"rc":"Stage/src/StageColorPicker.js"
-		}
+		"src":
+		[
+			"Stage/src/StageColorPicker.js"
+		]
+	},
+	"Event":
+	{
+		"need":["Class"],
+		"src":
+		[
+			"M4/src/Event.js",
+			"M4/src/EventDispatcher.js"
+		]
 	},
 	"M4":
 	{
-		"author":"",
-		"description":"",
-		"need":[],
-		"versions":
-		{
-			"rc":"M4/src/M4.js"
-		}
+		"need":["Class", "Event", "Request"],
+		"src":
+		[
+			"M4/src/M4.js"
+		]
 	},
 	"M4Tween":
 	{
-		"versions":
-		{
-			"rc":"M4Tween/src/M4Tween.js"
-		}
+		"src":
+		[
+			"M4Tween/src/M4Tween.js"
+		]
+	},
+	"Request":
+	{
+		"need":["Class"],
+		"src":
+		[
+			"M4/src/Request.js"
+		]
 	},
 	"Scroll":
 	{
 		"need":["M4Tween"],
-		"versions":
-		{
-			"rc":"M4Tween/src/Scroll.js"
-		}
+		"src":
+		[
+			"M4Tween/src/Scroll.js"
+		]
 	},
 	"Stage":
 	{
-		"author":"",
-		"description":"",
 		"need":["M4"],
-		"versions":
-		{
-			"rc":"Stage/src/Stage.js"
-		}
-
+		"src":
+		[
+			"Stage/src/Stage.js"
+		]
 	},
 	"Template":
 	{
 		"need":["M4"],
-		"versions":
-		{
-			"rc":"Template/src/Template.js"
-		}
+		"src":
+		[
+			"Template/src/Template.js"
+		]
 	},
 	"UtilsColor":
 	{
 		"need":["M4"],
-		"versions":
-		{
-			"rc":"UtilsColor/src/UtilsColor.js"
-		}
+		"src":
+		[
+			"UtilsColor/src/UtilsColor.js"
+		]
 	}
 }

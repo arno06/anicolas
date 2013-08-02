@@ -1,6 +1,8 @@
 function Template(pIdTemplate)
 {
+	this.removeAllEventListener();
 	this._content = [];
+	this._functions = [];
 	this.time = null;
 	this._id = pIdTemplate;
 }
@@ -11,6 +13,10 @@ Class.define(Template, [EventDispatcher],
 	assign:function(pName, pValue)
 	{
 		this._content[pName] = pValue;
+	},
+	setFunction:function(pName, pCallBack)
+	{
+		this._functions[pName] = pCallBack;
 	},
 	render:function(pParentNode)
 	{
@@ -138,21 +144,29 @@ Class.define(Template, [EventDispatcher],
 					{
 						var val = "{"+(params[2]||"$v")+"}";
 						var key = "{"+(params[3]||"$k")+"}";
-						var re = new RegExp("\{\\"+(params[2]||"$v")+"([a-z\.\_\-]+)*\}", "gi");
+						var re = new RegExp("\{\\"+(params[2]||"$v")+"([a-z0-9\.\_\-]+)*\}", "gi");
 						var v = "";
+						var tmp = "";
 						var vr;
 						for(var j = 0, maxj = d.length;j<maxj;j++)
 						{
 							v = blc.replace(val, d[j]);
-							while(vr = re.exec(v))
+							tmp = v;
+							while(vr = re.exec(v))//Keep exec on "v" and replacing on "tmp" (loosing reference)
 							{
 								vr[1] = vr[1].substr(1, vr[1].length-1);
-								v = v.replace(vr[0], this._getVariable(vr[1], d[j]));
+								tmp = tmp.replace(vr[0], this._getVariable(vr[1], d[j]));
+
+								var a = vr[0].substr(1, vr[0].length-2);
+								var s = this._getVariable(vr[1], d[j]);
+								if((typeof s).toLowerCase()=="string")
+									s = "'"+s+"'";
+								tmp = tmp.replace(a, s);
 							}
-							v = v.replace(key, j);
+							v = tmp.replace(key, j);
 							if(typeof d[j] == "string")
 							{
-								var tmp = d[j];
+								tmp = d[j];
 								d[j] = {};
 								d[j][(params[2]||"$v")] = tmp;
 							}
@@ -189,7 +203,9 @@ Class.define(Template, [EventDispatcher],
 		re = /\{\$([a-z0-9\.\_\-]+)*\}/i;
 		var vars;
 		while(vars = re.exec(pString))
+		{
 			pString = pString.replace(vars[0], this._getVariable(vars[1], pData));
+		}
 
 		return pString;
 	},

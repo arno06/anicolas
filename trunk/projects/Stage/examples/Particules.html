@@ -2,8 +2,7 @@
 <html>
 	<head>
 		<title>Stage.js - Example</title>
-		<script type="text/javascript" src="../../M4/src/M4.js"></script>
-		<script type="text/javascript" src="../src/Stage.js"></script>
+		<script src="../../Dependencies/src/?need=M4,Stage"></script>
 		<script type="text/javascript">
 			window.addEventListener("load", init, false);
 			var stage;
@@ -43,7 +42,7 @@
 			{
 				this.reset();
 				this.resetFriends();
-				this.addEventListener(Event.ADDED_TO_STAGE, M4.proxy(this, this._addedHandler));
+				this.addEventListener(Event.ADDED_TO_STAGE, this._addedHandler.proxy(this));
 			}
 
 			Class.define(Particule, [Sprite],
