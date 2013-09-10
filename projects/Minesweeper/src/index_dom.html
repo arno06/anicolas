@@ -1,13 +1,11 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>MineSweeper</title>
-		<script type="text/javascript" src="js/minuit4/M4.js"></script>
-		<script type="text/javascript" src="js/minuit4/M4Tween.js"></script>
+		<title>Minesweeper - DOM</title>
+		<script src="../../Dependencies/src/?need=M4,M4Tween"></script>
+		<link href="../../common/docs/docs.css" rel="stylesheet" type="text/css">
 		<style type="text/css">
-			*{margin:0;padding: 0;font-weight:normal;font-size:11px;}
-			body{background: rgb(192, 192, 192);overflow: hidden;}
-
+			#container.content{background:rgb(192,192,192);}
 			.ui{margin:0 auto 10px;padding:1px;height:31px;border-left:solid 2px rgb(128, 128, 128);border-top:solid 2px rgb(128, 128, 128);border-right:solid 2px rgb(255, 255, 255);border-bottom:solid 2px rgb(255, 255, 255);}
 
 			.ui .counter{margin-top:4px;height:23px;width:39px;border-left:solid 2px rgb(160, 160, 160);border-top:solid 2px rgb(160, 160, 160);border-right:solid 2px rgb(231, 231, 231);border-bottom:solid 2px rgb(231, 231, 231);}
@@ -56,9 +54,11 @@
 		</style>
 	</head>
 	<body oncontextmenu="return false;" onload="init()">
-	<h1>Minesweeper - Dom</h1>
-		<div id="minesweeper" data-cols="15" data-rows="15" data-mines="30">
+		<header><h1>Minesweeper - DOM</h1></header>
+		<div id="container" class="content">
+			<div id="minesweeper" data-cols="15" data-rows="15" data-mines="30">
 
+			</div>
 		</div>
 		<script type="text/javascript">
 
@@ -112,7 +112,7 @@
 						for(var i = 0;i<ref.field.x;i++)
 						{
 							line[i] = new Square(ref.$.field);
-							line[i].addEventListener(MineSweeper.EVT_EXPLODING, M4.proxy(ref, ref._explode));
+							line[i].addEventListener(MineSweeper.EVT_EXPLODING, ref._explode.proxy(this));
 						}
 						M4.createElement("div", {parentNode:ref.$.field, "class":"lb"});//Line breaker
 					});
@@ -198,7 +198,7 @@
 				this.dangerousNeighbors = 0;
 				this._triggered = false;
 				this.$.element = M4.createElement("div", {"parentNode":pParentNode, "class":"square", rel:"default"});
-				this._anoUpHandler = M4.proxy(this, this._upHandler);
+				this._anoUpHandler = this._upHandler.proxy(this);
 				this.$.element.addEventListener("mouseup", this._anoUpHandler);
 			}
 
@@ -208,6 +208,7 @@
 				{
 					if(this._triggered)
 						return;
+					console.log(this);
 					switch(e.button)
 					{
 						case 0:

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" Content="text/html; charset=ISO-8859-15"/>
+		<title>3DIso - Stage.js</title>
+		<script type="text/javascript" src="../../Dependencies/src/?need=M4Tween,Stage3DIso,UtilsColor"></script>
+		<link href="../../common/docs/docs.css" rel="stylesheet" type="text/css">
+		<style type="text/css">
+			canvas{display:block;width:800px;margin:0 auto;}
+		</style>
+		<script type="text/javascript">
+			window.addEventListener("load", init, false);
+
+			var _stage;
+			var shape;
+
+			var light;
+
+			function init()
+			{
+				M4Tween.useStyle = false;
+
+				_stage = new Stage(800, 600, "#container");
+
+				_stage.addChild(new FPS());
+
+				var s = 200;
+
+				light = new IsoLight(-100, -100, 100, 100);
+
+				var lp = light.getProjection();
+				_stage.clear();
+				_stage.beginFill("rgba(255, 0, 0, 1)");
+				_stage.drawCircle( 400+ lp.x, 300+  lp.y, 10);
+				_stage.endFill();
+
+				var p1 = new IsoVector(-s>>1, -s>>1, 0);
+				var p2 = new IsoVector(s>>1, -s>>1, 0);
+				var p3 = new IsoVector(s>>1, s>>1, 0);
+				var p4 = new IsoVector(-s>>1, s>>1, 0);
+
+				shape = new IsoShape("rgba(0, 255, 255, 1)", light);
+				shape.x = 400;
+				shape.y = 300;
+				shape.setPoints(p1, p2, p3, p4);
+
+				_stage.addChild(shape);
+
+				document.querySelector("#inp_x").addEventListener("change", rangeChangedHandler);
+				document.querySelector("#inp_y").addEventListener("change", rangeChangedHandler);
+				document.querySelector("#inp_z").addEventListener("change", rangeChangedHandler);
+				document.querySelector("#rotation_y").addEventListener("change", rotationYChangedHandler);
+			}
+
+			function rotationYChangedHandler(e)
+			{
+				shape.setRotationY(Number(e.currentTarget.value));
+			}
+
+			function rangeChangedHandler(e)
+			{
+				var p = e.currentTarget.getAttribute("id").split("_")[1];
+
+				switch(p)
+				{
+					case "x":
+						light.setX(Number(e.currentTarget.value));
+						break;
+					case "y":
+						light.setY(Number(e.currentTarget.value));
+						break;
+					default:
+						light.setZ(Number(e.currentTarget.value));
+						break;
+				}
+				var lp = light.getProjection();
+				_stage.clear();
+				_stage.beginFill("rgba(255, 0, 0, 1)");
+				_stage.drawCircle( 400+ lp.x, 300+  lp.y, 10);
+				_stage.endFill();
+			}
+		</script>
+	</head>
+	<body>
+		<header>
+			<h1>3DIso transformation using Stage.js</h1>
+		</header>
+		<table class="controls">
+			<tr><td><label for="inp_x">light.x : </label></td><td><input type="range" id="inp_x" min="-100" max="100" step="1" value="-100"></td></tr>
+			<tr><td><label for="inp_y">light.y : </label></td><td><input type="range" id="inp_y" min="-100" max="100" step="1" value="-100"></td></tr>
+			<tr><td><label for="inp_z">light.z : </label></td><td><input type="range" id="inp_z" min="-100" max="100" step="1" value="100"></td></tr>
+			<tr><td><label for="rotation_y">shape.rotationY : </label></td><td><input type="range" id="rotation_y" min="-360" max="360" step="1" value="0"></td></tr>
+		</table>
+		<div id="container" class="content"></div>
+	</body>
+</html>

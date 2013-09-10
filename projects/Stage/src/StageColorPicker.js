@@ -10,12 +10,12 @@
  */
 function ColorPicker(pWidth, pHeight, pParent, pDebug)
 {
+	pDebug = pDebug||false;
 	this.icon = M4.createElement("div",
 	{
 		"style":ColorPicker.style.icon,
 		"parentNode":pParent
 	});
-	pDebug = pDebug||false;
 	this.super();
 	this.parentNode = pParent;
 	this.parentNode.style.cssText = "position:relative;";

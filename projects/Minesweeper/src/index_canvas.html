@@ -1,18 +1,18 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>MineSweeper</title>
+		<title>MineSweeper - Stage.js</title>
+		<link href="../../common/docs/docs.css" rel="stylesheet">
 		<script type="text/javascript" src="../../Dependencies/src/?need=M4,Stage"></script>
 		<script type="text/javascript" src="js/minesweeper.js"></script>
 		<style type="text/css">
-			*{margin:0;padding: 0;font-weight:normal;font-size:11px;}
-			body{background: rgb(192, 192, 192);overflow: hidden;}
-			canvas{width:600px;height:600px;position:absolute;left:50%;top:50%;margin-top:-300px;margin-left:-300px;background: rgb(192, 192, 192);}
-			Button{border-top:#fff 2px solid;border-left:#fff 2px solid;border-bottom: rgb(160,160,160) 2px solid;}
+			canvas{display:block;margin:0 auto;background: rgb(192, 192, 192);}
+			#container.content{background:rgb(192, 192, 192);}
 		</style>
 	</head>
 	<body oncontextmenu="return false;" onload="init();">
-	<h1>Minesweeper - Stage.js</h1>
+		<header><h1>MineSweeper - Stage.js</h1></header>
+		<div id="container" class="content"></div>
 		<script type="text/javascript">
 			var _stage;
 
@@ -20,7 +20,7 @@
 			
 			function init()
 			{
-				_stage = new Stage(600, 600);
+				_stage = new Stage(600, 600, "#container");
 				_stage.addChild(new FPS());
 				_minesweeperGame = new Minesweeper(15, 15, 30);
 				_stage.addChild(_minesweeperGame);

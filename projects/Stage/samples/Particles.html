@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" Content="text/html; charset=ISO-8859-15"/>
+		<title>Particles - Stage.js</title>
+		<link href="../../common/docs/docs.css" rel="stylesheet" type="text/css">
+		<script src="../../Dependencies/src/?need=M4Tween,M4,UtilsColor,Stage"></script>
+		<style type="text/css">
+			canvas{display:block;width:800px;margin:0 auto;background: #eeeeff;}
+		</style>
+		<script type="text/javascript">
+			NodeList.prototype.forEach = Array.prototype.forEach;
+			window.addEventListener("load", init, false);
+
+			var _stage;
+			var id = ["particle_a", "particle_cg", "particle_ms", "emitter_p", "emitter_d"];
+
+			function init()
+			{
+				parseUrl();
+				M4Tween.useStyle = false;
+
+				_stage = new Stage(800, 600, "#container");
+				_stage.clear();
+				_stage.setFont("sans-serif", "37px", "rgba(0, 0, 0, .1)");
+				_stage.drawText("Click here!", 300, 260);
+				_stage.addChild(new FPS());
+
+				_stage.addEventListener(MouseEvent.CLICK, clickHandler);
+				document.querySelector("#particle_a").addEventListener("change", changeParticleHandler);
+				document.querySelector("#particle_cg").addEventListener("change", changeParticleHandler);
+				document.querySelector("#particle_ms").addEventListener("change", changeParticleHandler);
+				document.querySelectorAll("input[type=range]").forEach(function(pEl){pEl.addEventListener("change", rangeChangedHandler);});
+			}
+
+			function parseUrl()
+			{
+				var v = window.location.hash.split(",");
+				if(v.length === 1 && v[0] == "")
+					return;
+				for(var i = 0, max = id.length;i<max;i++)
+				{
+					document.querySelector("#"+id[i]).value = v[i];
+				}
+				Particle.AREA = Number(document.querySelector("#particle_a").value);
+				Particle.COLOR_GAP = Number(document.querySelector("#particle_cg").value);
+				Particle.MAX_SIZE = Number(document.querySelector("#particle_ms").value);
+			}
+
+			function rangeChangedHandler(e)
+			{
+				var v = [];
+				for(var i = 0, max = id.length;i<max;i++)
+				{
+					v.push(document.querySelector("#"+id[i]).value);
+				}
+				window.location.hash = v.join(",");
+			}
+
+			function changeParticleHandler(e)
+			{
+				var p = e.currentTarget.getAttribute("id").split("_")[1];
+
+				switch(p)
+				{
+					case "a":
+						Particle.AREA = Number(e.target.value);
+					break;
+					case "cg":
+						Particle.COLOR_GAP = Number(e.target.value);
+					break;
+					case "ms":
+						Particle.MAX_SIZE = Number(e.target.value);
+					break;
+				}
+			}
+
+			function clickHandler(e)
+			{
+				_stage.addChild(new Emitter(e.localX, e.localY, document.querySelector("#emitter_p").value, Number(document.querySelector("#emitter_d").value)));
+			}
+
+			function Emitter(pX, pY, pCount, pDuration)
+			{
+				this.reset();
+				this.x = pX;
+				this.y = pY;
+				this.population = pCount||20;
+				this._anoUpdate = null;
+				this.first = null;
+
+				this.duration = pDuration||500;
+				this.startTime = new Date().getTime();
+				this.endTime = this.startTime + this.duration;
+
+				this._anoAdded = this._addedHandler.proxy(this);
+				this.addEventListener(Event.ADDED_TO_STAGE, this._anoAdded);
+			}
+
+			Class.define(Emitter, [Sprite],
+			{
+				_updateHandler:function()
+				{
+					var f = this.first;
+					var t = new Date().getTime();
+					var coef = Math.min(1, ((t - this.startTime) / this.duration));
+					while(f)
+					{
+						f.update(coef);
+						f = f.next;
+					}
+					if(coef == 1)
+					{
+						this.kill();
+					}
+				},
+				_addedHandler:function()
+				{
+					this.launch();
+					this._anoUpdate = this._updateHandler.proxy(this);
+					this.addEventListener(Event.ENTER_FRAME, this._anoUpdate);
+				},
+				kill:function()
+				{
+					var f = this.first, c;
+					while(f)
+					{
+						f.parent.removeChild(f);
+						c = f;
+						f = f.next;
+						c.next = c.prev = null;
+					}
+					this.parent.removeChild(this);
+					this.first = null;
+				},
+				launch:function()
+				{
+					var i = this.population;
+					var p, c, baseH  = Math.round(Math.random() * 360), h;
+					while(i--)
+					{
+						c = new HSLColor(255, 0, 0, .5);
+						h = Math.round(Math.random() * (Particle.COLOR_GAP+Particle.COLOR_GAP)-Particle.COLOR_GAP) + baseH;
+						h = Math.max(0, h);
+						h = Math.min(360, h);
+						c.setH(h);
+						p = new Particle(this.x, this.y, c.getRGBA());
+						if(!this.first)
+							this.first = p;
+						else
+						{
+							this.first.prev = p;
+							p.next = this.first;
+							this.first = p;
+						}
+						this.parent.addChild(p);
+					}
+				}
+			});
+
+			function Particle(pStartX, pStartY, pColor)
+			{
+				this.reset();
+				this.next = null;
+				this.prev = null;
+				this.x = pStartX;
+				this.y = pStartY;
+				this.startPoint = new Vector(this.x, this.y);
+				var angle = Math.round(Math.random() * 360);
+				var rad = angle * M4.geom.DEGREE_TO_RADIAN;
+				this.endPoint = new Vector(this.x + Math.cos(rad) * Math.round(Math.random() * (Particle.AREA)), this.y + Math.sin(rad) * Math.round(Math.random() * (Particle.AREA)));
+				this.distance = this.endPoint.sub(this.startPoint);
+
+				this.clear();
+				this.beginFill(pColor||"rgba(255, 0, 255, .3)");
+				this.drawCircle(0, 0, Math.abs(Math.round(Math.random() * Particle.MAX_SIZE)));
+				this.endFill();
+			}
+
+			Class.define(Particle, [Sprite],
+			{
+				update:function(pDelta)
+				{
+					this.scaleX = this.scaleY = Math.sin(pDelta * Math.PI);
+					this.x = this.startPoint.x + (this.distance.x * pDelta);
+					this.y = this.startPoint.y + (this.distance.y * pDelta);
+				}
+			});
+			Particle.COLOR_GAP = 50;
+			Particle.AREA = 75;
+			Particle.MAX_SIZE = 10;
+		</script>
+	<body>
+		<header><h1>Particles using Stage.js</h1></header>
+		<table class="controls">
+			<tr><td><label for="emitter_p">Emitter.POPULATION : </label></td><td><input type="range" id="emitter_p" min="1" max="200" step="1" value="100"></td></tr>
+			<tr><td><label for="emitter_d">Duration : </label></td><td><input type="range" id="emitter_d" min="300" max="3000" step="100" value="500"></td></tr>
+			<tr><td><label for="particle_a">Particle.AREA : </label></td><td><input type="range" id="particle_a" min="5" max="205" step="1" value="100"></td></tr>
+			<tr><td><label for="particle_cg">Particle.COLOR_GAP : </label></td><td><input type="range" id="particle_cg" min="1" max="360" step="1" value="50"></td></tr>
+			<tr><td><label for="particle_ms">Particle.MAX_SIZE : </label></td><td><input type="range" id="particle_ms" min="1" max="100" step="1" value="10"></td></tr>
+		</table>
+		<div class="content" id="container"></div>
+	</body>
+</html>

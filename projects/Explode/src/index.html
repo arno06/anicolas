@@ -12,24 +12,25 @@
 			#field .col{width:35px;float:right;}
 			#field .square{width:33px;height:33px;border-radius:5px;margin:2px 0 0 2px;}
 			#field .square:active{opacity: .7;}
-			#field .square.first{background:-moz-linear-gradient(-90deg, #A10200 19%, #C60200 100%);}
-			#field .square.second{background:-moz-linear-gradient(-90deg, #E0AE00 19%, #F6BF00 100%);}
-			#field .square.third{background:-moz-linear-gradient(-90deg, #008F00 19%, #00BC00 100%);}
-			#field .square.fourth{background: -moz-linear-gradient(-90deg,#034CAB 19%, #0460D9 100%);}
+			#field .square.first{background:-moz-linear-gradient(-90deg, #A10200 19%, #C60200 100%);background:-webkit-linear-gradient(bottom, #C60200, #A10200);}
+			#field .square.second{background:-moz-linear-gradient(-90deg, #E0AE00 19%, #F6BF00 100%);background:-webkit-linear-gradient(bottom, #F6BF00 19%, #E0AE00 100%);}
+			#field .square.third{background:-moz-linear-gradient(-90deg, #008F00 19%, #00BC00 100%);background:-webkit-linear-gradient(bottom, #00BC00 19%, #008F00 100%);}
+			#field .square.fourth{background: -moz-linear-gradient(-90deg,#034CAB 19%, #0460D9 100%);background:-webkit-linear-gradient(bottom, #0460D9 19%, #034CAB 100%);}
 			#field .score_container{font-family: Fredoka One, sans-serif;padding:10px;width:245px;height:20px;background:#444444;border-radius:5px;box-shadow: 0 0 4px rgba(0, 0, 0, .5);margin:10px auto 0;}
 			#field .score{float:right;color:#eeeeee;}
 			#field .multiplier{box-shadow:0 0 3px rgba(0, 0, 0, .4);border:solid 2px #ffffff;float:left;margin-top:-15px;width:48px;height:33px;padding-top:15px;text-align:center;border-radius: 25px;background:#999999;color:#ffffff;}
 		</style>
 		<script src="../../Dependencies/src/?need=M4,M4Tween"></script>
 		<script>
-			var loader = M4.need({
-								"main":"./js/Main.js",
-								"audio_blop":"./assets/audio/blop.wav"})
-							.ready(init);
+			var loader = new MassLoader();
+			loader.addEventListener(Event.COMPLETE, init);
+			loader.load({
+					"main":"./js/Main.js",
+					"audio_blop":"./assets/audio/blop.wav"});
 			console.log("before");
 			function init()
 			{
-				console.log("ini");
+				console.log("init");
 				new Main(document.getElementById("field"), loader.assets.audio_blop);
 			}
 		</script>

@@ -16,8 +16,22 @@
 			{
 				_clickHandler:function(e)
 				{
-					console.log(e);
-					console.log(this);
+					var r = new Request("../../NSFW/src/php/proxy.reddit.php");
+					r.onComplete(function(e)
+					{
+						console.log("Completed");
+						console.log(e.responseText);
+						console.log(e.responseJSON);
+					});
+					r.onProgress(function(e)
+					{
+						console.log(e);
+						console.log("Progress "+Math.round((e.loaded/ e.total)*100)+"%");
+					});
+					r.onError(function(e)
+					{
+						console.log("error");
+					});
 				}
 			});
 			new Tester(document.querySelector("button"));

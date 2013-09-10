@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" Content="text/html; charset=ISO-8859-15"/>
+		<title>Ball - Stage.js</title>
+		<script type="text/javascript" src="../../Dependencies/src/?need=Stage,M4Tween"></script>
+		<style type="text/css">
+			*{font-size:12px;font-weight: normal;font-family: Arial, sans-serif;padding: 0;margin: 0;color:#666;}
+			h1,h2,h3{display:inline;font-size:14px;color:#000;}
+			h2{font-size:14px;}
+			canvas{position: absolute;left:50%;margin-left:-400px;top:50px;background: #eeeeff;}
+		</style>
+		<script type="text/javascript">
+			window.addEventListener("load", init, false);
+
+			var _stage;
+			var _env;
+
+			function init()
+			{
+				M4Tween.useStyle = false;
+
+				_stage = new Stage(800, 600);
+				_env = new Environnement();
+				_stage.addChild(_env);
+
+				for(var i = 0, max = 100; i<max;i++)
+					_env.addChild(Environnement.ball(400, 300));
+
+				_stage.addChild(new FPS());
+			}
+
+			function Environnement()
+			{
+				this.reset();
+				this.addEventListener(Event.ADDED_TO_STAGE, this.addedHandler.proxy(this), false);
+			}
+
+			Class.define(Environnement, [Container],
+			{
+				addedHandler:function()
+				{
+					this.stage.addEventListener(Event.ENTER_FRAME, this.frameHandler.proxy(this));
+				},
+
+				frameHandler:function(e)
+				{
+					var c1, c2;
+					for(var i = 0, max = this.numChildren; i<max;i++)
+					{
+						c1 = this.getChildAt(i);
+						for(var k = 0;k<max;k++)
+						{
+							if(i==k)
+								continue;
+							c2 = this.getChildAt(k);
+							var dx = c1.x - c2.x;
+							var dy = c1.y - c2.y;
+							var d = Math.sqrt(dx*dx+dy*dy);
+							if(d > (c1.radius + c2.radius))
+								continue;
+
+							var nc1x = c1.x + c1.vVector.x * e.delta;
+							var nc1y = c1.y + c1.vVector.y * e.delta;
+							var nc2x = c2.x + c2.vVector.x * e.delta;
+							var nc2y = c2.y + c2.vVector.y * e.delta;
+							var ndx = nc1x - nc2x;
+							var ndy = nc1y - nc2y;
+							var nd = Math.sqrt(ndx * ndx + ndy * ndy);
+							if(nd > (c1.radius + c2.radius))
+								continue;
+							if(d == 0)
+								continue;
+							dx /= d;
+							dy /= d;
+
+							var impactx = c1.vVector.x - c2.vVector.x;
+							var impacty = c1.vVector.y - c2.vVector.y;
+							var impactSpeed = impactx * dx + impacty * dy;
+
+							// Bump.
+							c1.vVector.x -= dx * impactSpeed;
+							c1.vVector.y -= dy * impactSpeed;
+							c2.vVector.x += dx * impactSpeed;
+							c2.vVector.y += dy * impactSpeed;
+						}
+					}
+				}
+			});
+
+			Environnement.ball = function(pX, pY)
+			{
+				var b = new Ball();
+				b.x = pX;
+				b.y = pY;
+				return b;
+			};
+
+			Environnement.GRAVITY = 1000;
+			Environnement.MAX_VELOCITY = 400;
+			Environnement.FRICTION = .7;
+			Environnement.randomVelocity = function(){return (Math.random()-.5) * Environnement.MAX_VELOCITY;};
+
+			function Ball()
+			{
+				this.reset();
+				this.fVector = new Vector(0, Environnement.GRAVITY);
+				this.vVector = new Vector(Environnement.randomVelocity(), Environnement.randomVelocity());
+				this.weight = Math.random();
+				this.radius = (1-this.weight) * (20 - 4) + 4;
+				this.bouncingRate = .8;
+				this.addEventListener(Event.ADDED_TO_STAGE, this.addedHandler.proxy(this), false);
+			}
+			Class.define(Ball, [Sprite], {
+				addedHandler:function()
+				{
+					this.stage.addEventListener(Event.ENTER_FRAME, this.frameHandler.proxy(this));
+					this.beginFill("rgba(15, 15, 255, .4)");
+					this.drawCircle(0, 0, this.radius);
+					this.endFill();
+					this.beginFill("rgb(15, 15, 255)");
+					this.drawCircle(0, 0, this.radius-4);
+					this.endFill();
+				},
+
+				frameHandler:function(e)
+				{
+					this.vVector.x += this.fVector.x * e.delta;
+					this.vVector.y += this.fVector.y * e.delta;
+
+					this.x += (this.vVector.x) * e.delta;
+					this.y += (this.vVector.y * e.delta);
+
+					if(this.y > this.stage.height - (this.radius))
+					{
+						this.y = this.stage.height - (this.radius);
+						this.vVector.y *= - this.bouncingRate;
+					}
+
+					if(this.x < this.radius)
+					{
+						this.x = this.radius;
+						this.vVector.x *= - this.bouncingRate;
+					}
+
+					if(this.x > this.stage.width - (this.radius))
+					{
+						this.x = this.stage.width - (this.radius);
+						this.vVector.x *= -(this.bouncingRate);
+					}
+				}
+			});
+		</script>
+	</head>
+	<body>
+		<h2>Balls</h2> using <h1>Stage.js</h1>
+	</body>
+</html>

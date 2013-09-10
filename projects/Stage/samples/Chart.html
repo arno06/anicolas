@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Chart - Stage.js</title>
+		<link href="../../common/docs/docs.css" rel="stylesheet">
+		<style>
+			.StageChart{margin:0 auto;width:400px;}
+		</style>
+		<script src="../../Dependencies/src/?need=M4Tween,Stage"></script>
+		<script type="text/javascript" src="../src/StageChart.js"></script>
+	</head>
+	<body>
+		<header>
+			<h1>Chart - Stage.js</h1>
+		</header>
+		<div class="content">
+			<div class="StageChart">
+				<script type="application/json">
+					{
+						"debug":true,
+						"width":400,
+						"height":300,
+						"type":"pie",
+						"options":
+						{
+							"fontFace":"Arial"
+						},
+						"datas":
+						[
+							{"color":"rgb(40, 125, 125)", "value":20, "label":"E-mails non ouverts"},
+							{"color":"rgb(125, 40, 125)", "value":6, "label":"E-mails non ouverts"},
+							{"color":"rgb(125, 125, 40)", "value":4, "label":"E-mails non ouverts"},
+							{"color":"rgb(125, 40, 40)", "value":30, "label":"E-mails ouverts"}
+						]
+					}
+				</script>
+			</div>
+			<div class="StageChart">
+				<script type="application/json">
+					{
+						"debug":true,
+						"width":400,
+						"height":300,
+						"type":"bar",
+						"options":
+						{
+							"minValue":0,
+							"maxValue":10000,
+							"border":{"size":2, "color":"rgb(0, 0, 0)"},
+							"grid":{"size":0.5, "color":"rgba(0, 0, 0, .25)", "cellWidth":60, "cellHeight":60}
+						},
+						"datas":
+						[
+							{"color":"rgb(0, 200, 0)", "value":3442, "label":"Septembre 2012"},
+							{"color":"rgb(200, 0, 0)", "value":1234, "label":"Octobre 2012"},
+							{"color":"rgb(0, 0, 200)", "value":9876, "label":"Décembre 2012"}
+						]
+					}
+				</script>
+			</div>
+		</div>
+	</body>
+</html>

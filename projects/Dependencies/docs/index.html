@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title></title>
-		<link href="../../common/docs/style.css" type="text/css" rel="stylesheet">
+		<title>Javascript Packager</title>
+		<link href="../../common/docs/docs.css" type="text/css" rel="stylesheet">
 		<style>
 			.content form{}
 			.content form .item{float:left;text-align: center;margin-right:10px;margin-bottom:10px;background:url(imgs/javascript.png) no-repeat center center;background-size:40px 40px;}
@@ -10,18 +10,16 @@
 			.content form .item input[type="checkbox"]{display:none;}
 			.content form .item input[type='checkbox']:checked + label{border:3px solid #9be38c;}
 
-
 			.content form .option{margin-bottom:10px;margin-right:10px;float:left;}
 			.content form .option label{cursor:pointer;display:block;text-align: center;-webkit-user-select:none;border:3px solid #efefef;padding:10px;}
 			.content form .option input[type="radio"]{display:none;}
 			.content form .option input[type='radio']:checked + label{border:3px solid #9be38c;}
+			.content form .option input[type='radio']:disabled + label{display:none;}
 
 			.content form hr{background:none;width:50%;border:solid 1px #dbedef;margin:0 auto 10px;}
 
-			.content form input[type='submit']{display:block;margin:0 auto;font-weight: bold;font-size:18px;border:solid 1px #6ab2c4;background: -webkit-gradient(linear, left top, left bottom, color-stop(1%,#89d7ff), color-stop(100%,#6ab2c4));padding:10px;border-radius:3px;color:#ffffff;cursor: pointer;}
-			.content form input[type='submit']:hover{background: -webkit-gradient(linear, left top, left bottom, color-stop(1%,#6ab2c4), color-stop(100%, #9d7ff));}
 		</style>
-		<script src="../src/?need=Request,M4"></script>
+		<script src="../src/?need=Request,M4,CodeFormater"></script>
 		<script>
 			var Main =
 			{
@@ -41,7 +39,7 @@
 					{
 						var list = pResponse.responseJSON;
 
-						var ct = document.querySelector(".content");
+						var ct = document.querySelector(".content.packager");
 
 						ct.innerHTML = "";
 
@@ -65,12 +63,12 @@
 						form += "</div>";
 
 						form += "<div class='option'>";
-						form += "<input type='radio' id='min' name='output' value='minimified'>";
-						form += "<label for='min'>Minimified</label>";
+						form += "<input type='radio' id='min' name='output' value='minified'>";
+						form += "<label for='min'>Minified</label>";
 						form += "</div>";
 
 						form += "<div class='option'>";
-						form += "<input type='radio' id='zip' name='output' value='zipped'>";
+						form += "<input type='radio' id='zip' name='output' value='zipped' disabled>";
 						form += "<label for='zip'>Zip</label>";
 						form += "</div>";
 
@@ -121,8 +119,16 @@
 				<li><a href="#">Packager</a></li>
 			</menu>
 		</header>
-		<div class="content">
+		<div class="content packager">
 
+		</div>
+
+		<div class="content docs">
+			<h2>About</h2>
+			<p>Lorem Ipsum</p>
+
+			<h2>Usage</h2>
+<pre class="PendingCodeFormater">&lt;script src="path/to/Dependencies/?need=Lib1,Lib2?M4,Stage"&gt;&lt;/script&gt;</pre>
 		</div>
 	</body>
 </html>

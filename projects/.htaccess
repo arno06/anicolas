@@ -1,0 +1,20 @@
+Options +Includes
+
+AddOutputFilter INCLUDES .html
+
+AddType text/html .shtml
+
+IndexOptions +Charset=UTF-8 +FancyIndexing +IgnoreCase +FoldersFirst +XHTML +HTMLTable +SuppressRules +SuppressDescription +NameWidth=* +SuppressLastModified +SuppressSize +IconWidth=20 +IconHeight=20
+
+IndexIgnore .htaccess ./common
+
+AddIcon /perso/anicolas/projects/common/inc/document.png .html .php .jpg .png .json .xml .gif .css
+AddIcon /perso/anicolas/projects/common/inc/folder.png ^^DIRECTORY^^
+AddIcon /perso/anicolas/projects/common/inc/document.png ^^BLANKICON^^
+AddIcon /perso/anicolas/projects/common/inc/back.png ..
+AddIcon /perso/anicolas/projects/common/inc/javascript.png .js
+
+IndexStyleSheet "http://localhost/perso/anicolas/projects/common/docs/docs.css"
+
+HeaderName /perso/anicolas/projects/common/inc/inc.header.html
+ReadmeName /perso/anicolas/projects/common/inc/inc.footer.html

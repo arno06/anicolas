@@ -48,9 +48,9 @@ Class.define(Main, [EventDispatcher],
 				if(col[i])
 					continue;
 				col[i] = new Square(colContainer, Main.utils.randomColor());
-				col[i].addEventListener(Main.event.RESET_COEF, M4.proxy(ref, ref._resetCoef));
-				col[i].addEventListener(Main.event.EXPLODING, M4.proxy(ref, ref._explode));
-				col[i].addEventListener(Main.event.REQUEST_SUPPRESION, M4.proxy(ref, ref._requestSuppressionHandler));
+				col[i].addEventListener(Main.event.RESET_COEF, ref._resetCoef.proxy(ref));
+				col[i].addEventListener(Main.event.EXPLODING, ref._explode.proxy(ref));
+				col[i].addEventListener(Main.event.REQUEST_SUPPRESION, ref._requestSuppressionHandler.proxy(ref));
 			}
 		});
 
@@ -156,7 +156,7 @@ function Square(pContainer, pType)
 	this.neighbors = [];
 	this.$.element = M4.createElement("div", {"class":"square "+this.type, parentNode:pContainer});
 	this._ano = {};
-	this._ano.clickHandler = M4.proxy(this, this.clickHandler);
+	this._ano.clickHandler = this.clickHandler.proxy(this);
 	this.$.element.addEventListener(Main.event.clickEvent, this._ano.clickHandler);
 }
 

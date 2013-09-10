@@ -286,7 +286,7 @@ Class.define(DrawingCommand, [Class, EventDispatcher], {
 			ctx.fill();
 			ctx.closePath();
 		}
-		if(this.mouseEnabled)
+		if(this.mouseEnabled && (this.constructor.name!="Stage"))
 		{
 			var lx = this.stage.mouseX - this.x, ly = this.stage.mouseY - this.y;
 			if(over)
@@ -469,7 +469,7 @@ function Stage(pWidth, pHeight, pParent)
 	this._lastTime = (new Date()).getTime();
 	this.domElement = M4.createElement("canvas", {width:this.width, height:this.height});
 	var parentNode = window.document.body;
-	if(pParent && typeof(pParent) == "String")
+	if(pParent && typeof(pParent) == "string")
 		parentNode = document.querySelector(pParent);
 	else if (pParent && pParent.parentNode)
 		parentNode = pParent;
@@ -543,36 +543,34 @@ Class.define(Stage, [Container], {
 		var ref = this;
 		this.domElement.onclick = function(e)
 		{
+			ref.mouseX = e.offsetX;
+			ref.mouseY = e.offsetY;
 			ref.rightClick = e.button == MouseEvent.RIGHT_BUTTON;
-			ref.dispatchEvent(new MouseEvent(MouseEvent.CLICK, false, ref.mouseX, ref.mouseY, e.button));
+			ref.dispatchEvent(new MouseEvent(MouseEvent.CLICK, false, e.offsetX, e.offsetY, e.button));
 			e.stopPropagation();
 			e.preventDefault();
 		};
 		this.domElement.onmousemove = function(e)
 		{
-			var t = {top:0,left:0};
-			var p = ref.domElement;
-			while(p)
-			{
-				t.top += p.offsetTop||0;
-				t.left += p.offsetLeft||0;
-				p = p.parentNode;
-			}
-			ref.mouseX = e.clientX - t.left + window.pageXOffset;
-			ref.mouseY = e.clientY - t.top + window.pageYOffset;
+			ref.mouseX = e.offsetX;
+			ref.mouseY = e.offsetY;
 		};
 		this.domElement.onmousedown = function(e)
 		{
+			ref.mouseX = e.offsetX;
+			ref.mouseY = e.offsetY;
 			ref.rightClick = e.button == MouseEvent.RIGHT_BUTTON;
-			ref.dispatchEvent(new MouseEvent(MouseEvent.MOUSE_DOWN, false, ref.mouseX, ref.mouseY, e.button));
+			ref.dispatchEvent(new MouseEvent(MouseEvent.MOUSE_DOWN, false, e.offsetX, e.offsetY, e.button));
 			e.stopPropagation();
 			e.preventDefault();
 			ref._mouseDown = true;
 		};
 		this.domElement.onmouseup = function(e)
 		{
+			ref.mouseX = e.offsetX;
+			ref.mouseY = e.offsetY;
 			ref.rightClick = e.button == MouseEvent.RIGHT_BUTTON;
-			ref.dispatchEvent(new MouseEvent(MouseEvent.MOUSE_UP, false, ref.mouseX, ref.mouseY, e.button));
+			ref.dispatchEvent(new MouseEvent(MouseEvent.MOUSE_UP, false, e.offsetX, e.offsetY, e.button));
 			e.stopPropagation();
 			e.preventDefault();
 			ref._mouseDown = false;

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" Content="text/html; charset=ISO-8859-15"/>
+		<title>Radial Clock - Stage.js</title>
+		<script src="../../Dependencies/src/?need=M4Tween,Stage"></script>
+		<style type="text/css">
+			*{font-size:12px;font-weight: normal;font-family: Arial, sans-serif;padding: 0;margin: 0;color:#666;}
+			h1,h2,h3{display:inline;font-size:14px;color:#000;}
+			h2{font-size:14px;}
+			h3 a{color:#8888FF;}
+			h3 a:hover{text-decoration: none;}
+			canvas{position: absolute;left:50%;margin-left:-400px;top:50px;}
+		</style>
+		<script type="text/javascript">
+			window.addEventListener("load", init, false);
+
+			var _stage, _clock;
+
+			function init()
+			{
+				M4Tween.useStyle = false;
+
+				_stage = new Stage(800, 600);
+
+				_clock = new Clock();
+				_clock.x = _stage.width>>1;
+				_clock.y = _stage.height>>1;
+				_stage.addChild(new FPS());
+				_stage.addChild(_clock);
+			}
+
+			function Clock()
+			{
+				this.reset();
+				this.addEventListener(Event.ADDED_TO_STAGE, this._addedToStage.proxy(this));
+			}
+
+			Class.define(Clock, [Container], {
+				_seconds:null,
+				_minuts:null,
+				_hours:null,
+				_initialized:false,
+				_addedToStage:function()
+				{
+					this.setFont("Arial", "15px", "rgb(25, 25, 25)");
+					this.drawText("It is", 90, -1);
+					this.drawText("hours", 140, -1);
+					this.drawText("minutes", 207, -1);
+					this.drawText("secondes", 285, -1);
+
+					this._seconds = new NumberCircle(60, 265, "Arial", "15px", "rgb(204, 204, 204)", "13px", "rgb(0, 0, 0)");
+					this.addChild(this._seconds);
+
+					this._minuts = new NumberCircle(60, 185, "Arial", "15px", "rgb(204, 204, 204)", "13px", "rgb(0, 0, 0)");
+					this.addChild(this._minuts);
+
+					this._hours = new NumberCircle(24, 120, "Arial", "15px", "rgb(204, 204, 204)", "13px", "rgb(0, 0, 0)");
+					this.addChild(this._hours);
+
+					setTimeout(this.tickSecond.proxy(this), 1000);
+				},
+				tickSecond:function()
+				{
+					var ref = this._seconds;
+					var d = new Date();
+
+					var tickHours = function(){this._tick(d.getHours(), 24, this._hours);};
+
+					var tickMinutes = function(){this._tick(d.getMinutes(), 60, this._minuts, tickHours.proxy(this));};
+
+					this._tick(d.getSeconds(), 60, this._seconds, tickMinutes.proxy(this));
+					
+					setTimeout(this.tickSecond.proxy(this), 1000);
+					this._initialized = true;
+				},
+
+				_tick:function(pTimeCode, pCount, pTarget, pHandlerReset)
+				{
+					var r = (pCount - pTimeCode) * (360 / pCount);
+					var complete = function(){};
+					if(pTimeCode == 0)
+					{
+						if(pHandlerReset)
+							pHandlerReset();
+						r = 0;
+						complete = function(){pTarget.rotation = 360;};
+					}
+					if(!this._initialized && pHandlerReset)
+						pHandlerReset();
+					pTarget.setCurrent(pTimeCode);
+					M4Tween.to(pTarget, .5, {rotation:r}).onComplete(complete);
+				}
+			});
+
+			function NumberCircle(pCount, pRadius, pFont, pFontSize, pColor, pFontSizeOn, pColorOn)
+			{
+				this.reset();
+				this.count = pCount;
+				this.rad = pRadius;
+				this.font = pFont;
+				this.fontSize = pFontSize;
+				this.color = pColor;
+				this.fontSizeOn = pFontSizeOn;
+				this.colorOn = pColorOn;
+				this.addEventListener(Event.ADDED_TO_STAGE, this._addedToStage.proxy(this));
+			}
+
+			Class.define(NumberCircle, [Container], {
+				_addedToStage:function()
+				{
+					var distance = 360 / this.count;
+					var r, s;
+					for(var i = 1; i<=this.count; i++)
+					{
+						s = new Sprite();
+						r = i*distance;
+						s.rotation = r;
+						r *= M4.geom.DEGREE_TO_RADIAN;
+						s.x = this.rad * Math.cos(r);
+						s.y = this.rad * Math.sin(r);
+						this.addChild(s);
+					}
+					this.setCurrent(-1);
+				},
+
+				setCurrent:function(pValue)
+				{
+					if(pValue == 0)
+						pValue = this.count;
+					var s, l;
+					for(var i = 1; i<=this.count; i++)
+					{
+						l = i<10? "0"+i : i;
+						if(i == this.count)
+							l = "00";
+						s = this.displayList[i-1];
+						s.clear();
+						if(i == pValue)
+							s.setFont(this.font, this.fontSizeOn, this.colorOn);
+						else
+							s.setFont(this.font, this.fontSize, this.color);
+						s.drawText(l, 0, 0);
+					}
+				}
+			});
+		</script>
+	</head>
+	<body>
+		<h2>Radial Clock</h2> using <h1>Stage.js</h1> <h3><a href="http://fxexperience.com/2009/10/radial-word-clock/">Inspired by JavaFX Demo</a></h3>
+	</body>
+</html>

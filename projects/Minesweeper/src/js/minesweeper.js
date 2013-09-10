@@ -287,7 +287,7 @@ Minesweeper.COLOR_BACKGROUND = "rgb(192, 192, 192)";
 
 function Square(pSprite)
 {
-	this.super();
+	this.reset();
 	this.sprite = pSprite;
 	this.mouseEnabled = true;
 	this.isMine = false;
@@ -417,7 +417,8 @@ function Counter(pSprite)
 				'n0': new Vector(128, 2)};
 	this.addEventListener(Event.ADDED_TO_STAGE, this._addedHandler.proxy(this));
 }
-Class.define(Counter, [Sprite], {
+Class.define(Counter, [Sprite],
+{
 	_addedHandler:function()
 	{
 		this.stage.addEventListener(Event.ENTER_FRAME, this.drawHandler.proxy(this));

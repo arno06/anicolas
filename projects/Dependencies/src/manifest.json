@@ -19,6 +19,14 @@
 			"Stage/src/StageColorPicker.js"
 		]
 	},
+	"CodeFormater":
+	{
+		"need":[],
+		"src":
+		[
+			"CodeFormater/src/CodeFormater.js"
+		]
+	},
 	"Event":
 	{
 		"need":["Class"],
@@ -45,7 +53,7 @@
 	},
 	"Request":
 	{
-		"need":["Class"],
+		"need":["Event"],
 		"src":
 		[
 			"M4/src/Request.js"
@@ -67,9 +75,17 @@
 			"Stage/src/Stage.js"
 		]
 	},
+	"Stage3DIso":
+	{
+		"need":["Stage"],
+		"src":
+		[
+			"Stage/src/Stage3DIso.js"
+		]
+	},
 	"Template":
 	{
-		"need":["M4"],
+		"need":["Class", "Event"],
 		"src":
 		[
 			"Template/src/Template.js"

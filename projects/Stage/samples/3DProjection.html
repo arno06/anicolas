@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" Content="text/html; charset=ISO-8859-15"/>
+		<title>3D Projection - Stage.js</title>
+		<script src="../../Dependencies/src/?need=Stage"></script>
+		<link href="../../common/docs/docs.css" rel="stylesheet">
+		<script type="text/javascript">
+
+			function Particule3D()
+			{
+				this.reset();
+				this.beginFill("rgba(255, 0, 0, .5)");
+				this.drawCircle(0, 0, 10);
+				this.endFill();
+			}
+
+			Class.define(Particule3D, [Sprite], {
+				_x:0,
+				_y:0,
+				z:0,
+				setX:function(pX)
+				{
+					if(typeof(pX)!="undefined")
+						this._x = pX;
+				},
+				setY:function(pY)
+				{
+					if(typeof(pY)!="undefined")
+						this._y = pY;
+				},
+				setZ:function(pZ)
+				{
+					if(typeof(pZ)!="undefined")
+						this.z = pZ;
+				},
+				setPosition:function(pX, pY, pZ)
+				{
+					this.setX(pX);
+					this.setY(pY);
+					this.setZ(pZ);
+				},
+				project:function(pProjectionPoint, pFocalLength)
+				{
+                    this.x = (pFocalLength * this._x) / (this.z - pProjectionPoint.z) + pProjectionPoint.x;
+					this.y = (pFocalLength * this._y) / (this.z - pProjectionPoint.z) + pProjectionPoint.y;
+					var s = pProjectionPoint.z/this.z;
+					this.scaleX = s;
+					this.scaleY = s;
+				}
+			});
+
+			window.addEventListener("load", init, false);
+
+			var _stage;
+
+			var _projectionPoint;
+
+			var _focalLength = 1000;
+
+			var _p;
+
+			var rotation = 0;
+
+			function init()
+			{
+				_stage = new Stage(800, 600, "#container");
+
+				_stage.addChild(new FPS());
+
+				_projectionPoint = {x:400, y:300, z:100};
+
+				_p = new Particule3D();
+				_p.z = 0;
+				_p.setX(-20);
+				_p.setY(-15);
+				_p.project(_projectionPoint, _focalLength);
+				_stage.addChild(_p);
+
+				_stage.addEventListener(Event.ENTER_FRAME, frameHandler, false);
+			}
+
+			function frameHandler(e)
+			{
+				rotation += 10;
+			}
+
+		</script>
+	</head>
+	<body>
+        <header>
+            <h1>3DProjection - Stage.js</h1>
+        </header>
+        <div class="content" id="container"></div>
+	</body>
+</html>

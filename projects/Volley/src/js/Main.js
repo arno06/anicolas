@@ -217,7 +217,7 @@ var fa =
 	{
 		fadeIn(fa.$.loader, .4);
 
-		Request.load("php/proxy.ffvb.php").onProgress(fa.dataProgressHandler).onComplete(fa.dataLoaded);
+		Request.load("assets/ffvb95_12-13.json").onProgress(fa.dataProgressHandler).onComplete(fa.dataLoaded);
 	},
 	dataProgressHandler:function(e)
 	{
@@ -225,17 +225,9 @@ var fa =
 		M4Tween.killTweensOf(fa.$.loaderBar.querySelector("div"));
 		M4Tween.to(fa.$.loaderBar.querySelector("div"),.5, {width:value+"%"})
 	},
-	dataLoaded:function(pResponse)
+	dataLoaded:function(e)
 	{
-		if(pResponse.status != 200)
-		{
-			/*BadAss error handling*/
-			console.log("Error detected !");
-			console.log(pResponse);
-			return;
-		}
-
-		fa.data = pResponse.responseJSON;
+		fa.data = e.responseJSON;
 		fa.parseAgenda();
 		fa.parseRanking();
 		fa.displayRanking();

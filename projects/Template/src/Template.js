@@ -1,8 +1,8 @@
 function Template(pIdTemplate)
 {
 	this.removeAllEventListener();
-	this._content = [];
-	this._functions = [];
+	this._content = {};
+	this._functions = Template.FUNCTIONS||{};
 	this.time = null;
 	this._id = pIdTemplate;
 }
@@ -62,63 +62,79 @@ Class.define(Template, [EventDispatcher],
 		if(!t)
 			return;
 
-		var re_blocs = /(\{[a-z]+|\{\/[a-z]+)(\s|\}){1}/gi;
+		var t0 = Template.TAG[0];
+		var t1 = Template.TAG[1];
 
-		var opener = ["{foreach", "{if"];
-		var closer = ["{\/foreach", "{\/if"];
-		var neutral= ["{else"];
+		var re_blocs = new RegExp("(\\"+t0+"[a-z]+|\\"+t0+"\/[a-z]+)(\\s|\\"+t1+"){1}", "gi");
+
+		var opener = [t0+"foreach", t0+"if"];
+		var closer = [t0+"\/foreach", t0+"\/if"];
+		var neutral= [t0+"else"];
 
 		var step = 0;
 
-		var result, tag, id, currentId;
+		var result, tag, id, currentId, justClosed = false;
 
 		while (result = re_blocs.exec(t))
 		{
 			tag = result[1];
 			if(opener.indexOf(tag)>-1)
 			{
+				justClosed = false;
 				id = ++step;
 				currentId = id;
 			}
 			else if (closer.indexOf(tag)>-1)
 			{
 				currentId = id--;
+				justClosed = true;
 			}
-			else if (neutral.indexOf(tag)>-1){}
+			else if (neutral.indexOf(tag)>-1)
+			{
+				if(justClosed)
+					currentId--;
+				justClosed = false;
+			}
 			else
 				continue;
 
 			t = t.replace(result[0], tag+"_"+currentId+result[2]);
 		}
-
 		var eval = this._parseBlock(t, this._content);
 		var end = new Date().getTime();
 		this.time = end - start;
 		return eval;
 	},
-	_parseBlock:function(pString, pData, pBaseObject)
+	_parseBlock:function(pString, pData)
 	{
-		var opener = /\{([a-z]+)(_[0-9]+)([^\}]*)\}/i;
+		var t_0 = Template.TAG[0];
+		var t_1 = Template.TAG[1];
 
-		var o, start, neutral, n, closer, c, length, s, totalBlock, blc, alt, params;
+		//{opener_X}
+		var opener = new RegExp('\\'+t_0+'([a-z]+)(_[0-9]+)([^\}]*)\\'+t_1, 'i');
+
+		//$path.to.var
+		var rea = /\$([a-z0-9\.\_\-]+)*/i;
+
+		var o, start, neutral, n, closer, c, length, totalBlock, blc, alt, params;
 
 		while(o = opener.exec(pString))
 		{
 			start = o.index;
 
-			closer = new RegExp('\{\/'+o[1]+o[2]+'\}', 'gi');
+			closer = new RegExp('\\'+t_0+'\/'+o[1]+o[2]+'\\'+t_1, 'gi');
 			c = closer.exec(pString);
 
 			if(!c)
 			{
 				console.log("no end tag");
-				continue;
+				break;
 			}
 
 			blc = pString.substr((start + o[0].length), c.index - (start + o[0].length));
 			alt = "";
 
-			neutral = new RegExp('\{else'+o[2]+'\}', 'gi');
+			neutral = new RegExp('\\'+t_0+'else'+o[2]+'\\'+t_1, 'gi');
 
 			n = neutral.exec(pString);
 			if(n)
@@ -136,15 +152,14 @@ Class.define(Template, [EventDispatcher],
 			{
 				case "foreach":
 					params = o[3].split(" ");//Setup [*, tablename, itemname, keyname]
-					if(pBaseObject&&pBaseObject.length)
-						params[1]= params[1].replace("$"+pBaseObject+".", "");
 					params[1] = params[1].replace("$","");
-					var d = pData[params[1]];
+					var d = this._getVariable(params[1], pData);
 					if(d && d.length)
 					{
-						var val = "{"+(params[2]||"$v")+"}";
-						var key = "{"+(params[3]||"$k")+"}";
-						var re = new RegExp("\{\\"+(params[2]||"$v")+"([a-z0-9\.\_\-]+)*\}", "gi");
+						var val = t_0+(params[2]||"$v")+t_1;
+						var key = t_0+(params[3]||"$k")+t_1;
+						var c_key = (params[3]||"$k").replace("$", "");
+						var re = new RegExp("\\"+t_0+"\\"+(params[2]||"$v")+"([a-z0-9\.\_\-]+)*\\"+t_1, "gi");
 						var v = "";
 						var tmp = "";
 						var vr;
@@ -152,45 +167,36 @@ Class.define(Template, [EventDispatcher],
 						{
 							v = blc.replace(val, d[j]);
 							tmp = v;
-							while(vr = re.exec(v))//Keep exec on "v" and replacing on "tmp" (loosing reference)
+							while(vr = re.exec(v))//Keep exec on "v" and replacing on "tmp" (loosing string index)
 							{
 								vr[1] = vr[1].substr(1, vr[1].length-1);
 								tmp = tmp.replace(vr[0], this._getVariable(vr[1], d[j]));
-
-								var a = vr[0].substr(1, vr[0].length-2);
-								var s = this._getVariable(vr[1], d[j]);
-								if((typeof s).toLowerCase()=="string")
-									s = "'"+s+"'";
-								tmp = tmp.replace(a, s);
 							}
-							v = tmp.replace(key, j);
+							v = tmp.replace(key, t_0+(params[2]||"$v")+"."+c_key+t_1);
+							v = v.replace("$"+c_key, (params[2]||"$v")+"."+c_key);
 							if(typeof d[j] == "string")
 							{
 								tmp = d[j];
 								d[j] = {};
 								d[j][(params[2]||"$v")] = tmp;
 							}
-							d[j][(params[3]||"$k")] = j;
-							v = this._parseBlock(v, d[j], (params[2]||"$v").replace("$", ""));
+							d[j][c_key] = j;
+
+							var dataCloned = pData.clone();
+							dataCloned[(params[2]||"$v").replace("$", "")] = d[j];
+
+							v = this._parseBlock(v, dataCloned);
 							r += v;
 						}
 					}
 					else
-						r = this._parseBlock(alt, pData, pBaseObject);
+						r = this._parseBlock(alt, pData);
 					break;
 				case "if":
-					var f = o[3];
-					for(var k in pData)
-					{
-						if(!pData.hasOwnProperty(k))
-							continue;
-						var value = pData[k];
-						while(f.indexOf(k)>-1)
-							f = f.replace(k, value);
-					}
+					var f = this._parseVariables(o[3], pData, rea);
 					r = eval("(function(){var r = false; try { r = "+f+"; } catch(e){ r= false;} return r;})()");
 					r = r?blc:(alt||"");
-					r = this._parseBlock(r, pData, pBaseObject);
+					r = this._parseBlock(r, pData);
 					break;
 				default:
 					continue;
@@ -200,21 +206,56 @@ Class.define(Template, [EventDispatcher],
 			pString = pString.replace(totalBlock, r);
 		}
 
-		re = /\{\$([a-z0-9\.\_\-]+)*\}/i;
-		var vars;
-		while(vars = re.exec(pString))
+		pString = this._parseVariables(pString, pData, Template.REGXP_VAR);
+
+		rea = new RegExp("\(([^,\)]*)\)", "gi");
+		var func;
+		var a;
+		var p;
+		while(func = Template.REGXP_FUNC.exec(pString))
 		{
-			pString = pString.replace(vars[0], this._getVariable(vars[1], pData));
+			var funcName = func[1];
+			if(!this._functions[funcName])
+			{
+				throw new Error("Call to undefined function "+funcName);
+			}
+			params = func[2];
+			p = [];
+			params = params.replace(/,\s/g, ",");
+			params = params.split(",");
+			for(var i = 0, max = params.length;i<max;i++)
+			{
+				if(params[i][0]=="$")
+					p.push(this._getVariable(params[i], pData));
+				else
+				{
+					if(/^[0-9][0-9\.]*[0-9]*$/.exec(params[i]))
+						params[i] = Number(params[i]);
+					if(/^("|')/.exec(params[i]))
+						params[i] = params[i].substr(1, params[i].length-2);
+					p.push(params[i]);
+				}
+			}
+			pString = pString.replace(func[0], this._functions[funcName].apply(null, p));
 		}
 
+		return pString;
+	},
+	_parseVariables:function(pString, pData, pRegXP)
+	{
+		pRegXP = pRegXP||Template.REGXP_ID;
+		var res;
+		while(res = pRegXP.exec(pString))
+		{
+			pString = pString.replace(res[0], this._getVariable(res[1], pData));
+		}
 		return pString;
 	},
 	_getVariable:function(pName, pContext)
 	{
 		var default_value = "";
 		var data = pContext||this._content;
-		var re = /([a-z0-9\.\_\-]+)/i;
-		var result = re.exec(pName);
+		var result = Template.REGXP_ID.exec(pName);
 
 		if(!result)
 			return default_value;
@@ -234,6 +275,38 @@ Class.define(Template, [EventDispatcher],
 	}
 });
 
+Template.TAG = ["{", "}"];
+Template.REGXP_FUNC = new RegExp("\\"+Template.TAG[0]+"\\=([^(]+)\\(([^"+Template.TAG[1]+"]+)\\)\\"+Template.TAG[1], "i");
+Template.REGXP_VAR = new RegExp("\\"+Template.TAG[0]+"\\$([a-z0-9\.\_\-]+)*\\"+Template.TAG[1], "i");
+Template.REGXP_ID = new RegExp("([a-z0-9\.\_\-]+)", "i");
+
+Template.FUNCTIONS =
+{
+	truncate:function(pString, pLength, pEnd)
+	{
+		pLength = pLength||80;
+		pEnd = pEnd||"...";
+		if(pString.length<=pLength)
+			return pString;
+		pString = pString.substr(0, pLength-pEnd.length);
+		return pString+pEnd;
+	},
+	uppercase:function(pString)
+	{
+		return pString.toUpperCase();
+	},
+	lowercase:function(pString)
+	{
+		return pString.toLowerCase();
+	},
+	replace:function(pString, pSearch, pReplace, pFlags)
+	{
+		pFlags = pFlags||"gi";
+		var re = new RegExp(pSearch, pFlags);
+		return pString.replace(re, pReplace);
+	}
+};
+
 Template.$ = {};
 
 Template.setup=function()
@@ -241,7 +314,7 @@ Template.setup=function()
 	var templates = document.querySelectorAll('script[type="html/template"]');
 	templates.forEach(function(pEl)
 	{
-		Template.$[pEl.getAttribute("template-id")] = pEl.text;
+		Template.$[pEl.getAttribute("id")] = pEl.text;
 	});
 };
 
