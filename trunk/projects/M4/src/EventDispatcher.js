@@ -82,7 +82,7 @@ Class.define(EventDispatcher, [Class], {
 				{
 					for(i = 0, max = this.__listeners[pEvent.type].length;i<max;i++)
 					{
-						if(this.__listeners[pEvent.type][i])
+						if(this.__listeners[pEvent.type]&&this.__listeners[pEvent.type][i])
 							this.__listeners[pEvent.type][i](pEvent);
 					}
 				}

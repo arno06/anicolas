@@ -16,7 +16,7 @@ foreach($base_folders as $f)
 {
 	if(!is_dir(PROJECT_DIR.$f) || in_array($f, $filters))
 		continue;
-	$folders[] = array("name"=>truncate($f, 10), "description"=>"Lorem Ipsum", "img"=>"", "color"=>$colors[round(rand(0, count($colors)-1))]);
+	$folders[] = array("path"=>$f, "name"=>truncate($f, 10), "description"=>"Lorem Ipsum", "img"=>"", "color"=>$colors[round(rand(0, count($colors)-1))]);
 }
 ?><!DOCTYPE html>
 <html>
@@ -46,7 +46,7 @@ foreach($base_folders as $f)
 			.square.lab.max ul{list-style: none;width:517px;height:500px;overflow-y: scroll;overflow-x: hidden;position:relative;}
 			.square.lab.max ul li{display:block;float:left;width:99px;height:99px;border-right:1px solid #555555;border-bottom:1px solid #555555;}
 			.square.lab.max ul li a{display:block;width:99px;height:99px;cursor:pointer;position:relative;text-align: center;color:#000000;}
-			.square.lab.max ul li a span:first-child{display:block;position:absolute;width:100px;height:100px;display:none;}
+			.square.lab.max ul li a span:first-child{position:absolute;width:100px;height:100px;display:none;}
 			.square.lab.max ul li a span:last-child{margin-left:25px;margin-top:30px;width:99px;height:99px;display:block;position:absolute;transform:rotate(-45deg);-webkit-transform:rotate(-45deg);cursor:pointer;}
 			.square.lab.max ul li.stepup{margin-top:-100px;}
 			.square.lab.max ul li.double{width:199px;height:199px;}
@@ -211,7 +211,7 @@ foreach($folders as $f)
 		$toCorrect--;
 		$style = "margin-left:".(100*$i)."px";
 	}
-	echo '<li class="'.$class.'" style="'.$style.'"><a href="./projects/'.$f["name"].'/" style="background:'.$f["color"].'"><span><img src="'.$f['img'].'" alt="'.$f['description'].'"></span><span>'.$f['name'].'</span></a></li>';
+	echo '<li class="'.$class.'" style="'.$style.'"><a href="./projects/'.$f["path"].'/" style="background:'.$f["color"].'"><span><img src="'.$f['img'].'" alt="'.$f['description'].'"></span><span>'.$f['name'].'</span></a></li>';
 }?>
 				</ul>
 				<div class="clear"></div>

@@ -2,13 +2,13 @@
 <html>
 	<head>
 		<title>Stage.js - Documentation</title>
-		<script type="text/javascript" src="../../CodeFormater/src/CodeFormater.js"></script>
+		<script type="text/javascript" src="../../Dependencies/src/?need=CodeFormater"></script>
 		<script type="text/javascript">
 			window.addEventListener("load", init, false);
 
 			function init()
 			{
-				document.querySelectorAll("pre").forEach(M4SynthaxColor.of);
+				document.querySelectorAll("pre").forEach(CodeFormater.applyTo);
 			}
 
 			/**
@@ -16,43 +16,46 @@
 			 */
 			NodeList.prototype.forEach = Array.prototype.forEach;
 		</script>
-		<link href="../../common/docs.css" type="text/css" rel="stylesheet"/>
+		<link href="../../common/docs/docs.css" type="text/css" rel="stylesheet"/>
 	</head>
 	<body>
-		<h1>Stage.js</h1>
-		<hr>
+		<header><h1>Stage.js</h1></header>
+		<div class="content">
+		<h2 id="download">TL;DR</h2>
+		<p>
+			<button onclick="window.open('../../Dependencies/src/?need=Stage');">Download</button>
+		</p>
 		<h2>Introduction</h2>
 		<p>
-			low dependencies, lightweight or maybe not, fast or maybe not, fun
-		</p>
-		<h2>Code Samples</h2>
-		<h3>The basics</h3>
-		<p>
-			Librairy for canvas manipulation. It support an AS3 API like (Please Adobe do not sue me)
-		</p>
-		<pre>
-var stage = new Stage(800, 600);
-var shape = new Shape();
-shape.beginFill("rgb(255, 0, 0)");
-shape.drawRectangle(-50, -50, 100, 100);
-shape.endFill();
-stage.addChild(shape);</pre>
-		<p>
-			Features :
+			Key features:
 		</p>
 		<ul>
 			<li>EventDispatcher</li>
 			<li>Event</li>
 			<li>MouseEvent</li>
-			<li>DisplayObject</li>
+			<li>Sprite</li>
 			<li>Container</li>
 			<li>RequestAnim shim layer (thanks to Paul Irish)</li>
 			<li>Drawing API (beginFill, drawRectangle, drawCircle, moveTo, lineTo...)</li>
 			<li>FPS Meter</li>
 			<li>Extensible</li>
 		</ul>
+		</div>
+		<div class="content">
+		<h2>Code Samples</h2>
+		<h3>The basics</h3>
+		<p>
+			Librairy for canvas manipulation. It support an AS3 API like (Please Adobe do not sue me)
+		</p>
+		<pre>var stage = new Stage(800, 600);
+var sprite = new Sprite();
+sprite.beginFill("rgb(255, 0, 0)");
+sprite.drawRectangle(-50, -50, 100, 100);
+sprite.endFill();
+sprite.addChild(shape);</pre>
+		</div>
 		<footer>
-			&copy; arno06@gmail.com | 2009 - 2013
+			DO WHAT THE FUCK YOU WANT TO LICENSE
 		</footer>
 	</body>
 </html>

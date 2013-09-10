@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" Content="text/html; charset=ISO-8859-15"/>
+		<title>Chronometer - Stage.js</title>
+		<script type="text/javascript" src="../../Dependencies/src/?need=Stage,M4,M4Tween"></script>
+		<link href="../../common/docs/docs.css" type="text/css" rel="stylesheet">
+		<style type="text/css">
+			canvas{display:block;width:200px;margin:0 auto;background: #000;}
+		</style>
+		<script type="text/javascript">
+			window.addEventListener("load", init, false);
+
+			var _stage, _number1, _number2, count = 0, _timeout = null;
+
+			function init()
+			{
+				console.log("ini");
+
+				M4Tween.useStyle = false;
+
+				_stage = new Stage(200, 200, "#container");
+
+				_stage.addChild(new FPS());
+				
+				_number1 = new Num(40, 15, 2);
+				_stage.addChild(_number1);
+				_number1.setValue(0);
+				_number1.x = 65;
+				_number1.y = 100;
+
+				_number2 = new Num(40, 15, 2);
+				_stage.addChild(_number2);
+				_number2.setValue(0);
+				_number2.x = 135;
+				_number2.y = 100;
+
+				var s = new SimpleButton("Start");
+				_stage.addChild(s);
+
+				s.x = 100;
+				s.y = 170;
+
+				s.addEventListener(MouseEvent.CLICK, clickHandler, false);
+			}
+
+			function clickHandler(e)
+			{
+				if(_timeout)
+				{
+					e.currentTarget.setLabel("Resume");
+					clearTimeout(_timeout);
+					_timeout = null;
+				}
+				else
+				{
+					e.currentTarget.setLabel("Pause");
+					_timeout = setTimeout(timeoutHandler, 1000);
+				}
+			}
+
+			function timeoutHandler()
+			{
+				if(++count==100)
+					count = 0;
+				var str = count.toString();
+				if(count < 10)
+					str = "0"+count.toString();
+				_number1.setValue(Number(str.charAt(0)));
+				_number2.setValue(Number(str.charAt(1)));
+				_timeout = setTimeout(timeoutHandler, 1000);
+			}
+
+			/**
+			 *      ---- 1 ----
+			 *      |         |
+			 *     32         2
+			 *      |         |
+			 *      |--- 64---|
+			 *      |         |
+			 *     16         4
+			 *      |         |
+			 *      ---- 8 ----
+			 */
+
+			function Num(pStickWidth, pStickHeight, pMargin)
+			{
+				this.reset();
+				this._stickHeight = pStickHeight;
+				this._stickWidth = pStickWidth;
+				this._margin = pMargin;
+				this.addEventListener(Event.ADDED_TO_STAGE, this._addedHandler.proxy(this));
+			}
+
+			Class.define(Num, [Container], {
+				_stickHeight:0,
+				_stickWidth:0,
+				_margin:0,
+				_values:[63, 6, 91, 79, 102, 109, 125, 7, 127, 111],
+				_sticks:[1,2,4,8,16,32,64],
+				setValue:function(pValue)
+				{
+					var a;
+					for(var i = 0;i<this.numChildren;i++)
+					{
+						a = .2;
+						if(this._sticks[i] & this._values[pValue])
+							a = 1;
+						M4Tween.to(this.getChildAt(i), .1, {alpha:a});
+					}
+				},
+				_addedHandler:function()
+				{
+					var u = this._stickWidth;
+					var position = [
+						{x:0, y:(-u) - (this._margin * 2), rotation:0},
+						{x:u>>1, y:(-u>>1) - this._margin, rotation:90},
+						{x:u>>1, y:(u>>1) + this._margin, rotation:90},
+						{x:0, y:u + (this._margin * 2), rotation:0},
+						{x:-u>>1, y: (u>>1) + this._margin, rotation:90},
+						{x:-u>>1, y:(-u>>1) - this._margin, rotation:90},
+						{x:0, y:0, rotation:0}
+					];
+					for(var i = 0, max = position.length; i<max;i++)
+					{
+						var s = new Stick(this._stickWidth, this._stickHeight);
+						for(var j in position[i])
+							s[j] = position[i][j];
+						this.addChild(s);
+					}
+				}
+			});
+
+			function Stick(pWidth, pHeight)
+			{
+				this.reset();
+				this._width = pWidth;
+				this._height = pHeight;
+				this.addEventListener(Event.ADDED_TO_STAGE, this._addedHandler.proxy(this));
+			}
+
+			Class.define(Stick, [Sprite], {
+				_width:0,
+				_height:0,
+				_addedHandler:function()
+				{
+					var hw = this._width>>1;
+					var hh = this._height>>1;
+					this.clear();
+					this.beginFill("rgb(200, 0, 0)");
+					this.drawRect(0, 0, this._width, this._height);
+					this.moveTo(-hw, 0);
+					this.lineTo(-hw + hh, hh);
+					this.lineTo(hw - hh, hh);
+					this.lineTo(hw, 0);
+					this.lineTo(hw - hh, -hh);
+					this.lineTo(-hw + hh, -hh);
+					this.lineTo(-hw, 0);
+					this.endFill();
+				}
+			});
+
+			function SimpleButton(pLabel)
+			{
+				console.log("MouseEnabled : "+this.mouseEnabled);
+				this.super();
+				console.log("MouseEnabled : "+this.mouseEnabled);
+				this._label = pLabel;
+				this.mouseEnabled = true;
+				this.addEventListener(Event.ADDED_TO_STAGE, this._addedHandler.proxy(this));
+			}
+
+			Class.define(SimpleButton, [Sprite], {
+				_label:"Label",
+				corner:5,
+				_addedHandler:function()
+				{
+					console.log("MouseEnabled : "+this.mouseEnabled);
+					this.redraw();
+				},
+				redraw:function()
+				{
+					var w = this.measureText(this._label, "Arial", "12px");
+					this.clear();
+					var g = this.createLinearGradient(0, -10, 0 , 20);
+					g.addColor("rgb(0, 0, 0)", 1).addColor("rgb(127, 127, 127)", 0);
+					this.setLineStyle(1, "rgb(170, 170, 170)");
+					this.beginFill(g);
+					this.drawRoundRect(-(w>>1) - 10, -10, w + 20, 20, this.corner, this.corner, this.corner, this.corner);
+					this.endFill();
+					this.setFont("Arial", "12px", "rgb(255, 255, 255)");
+					this.drawText(this._label, -w>>1, -8);
+				},
+				setLabel:function(pValue)
+				{
+					this._label = pValue;
+					this.redraw();
+				}
+			});
+		</script>
+	</head>
+	<body>
+	<header><h1>Chronometer using Stage.js</h1></header>
+	<div class="content" id="container"></div>
+	</body>
+</html>

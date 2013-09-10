@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>SpriteSheet Demo</title>
+		<link href="../../common/docs/docs.css" rel="stylesheet">
+		<script src="../../Dependencies/src/?need=M4Tween,Stage"></script>
+		<style type="text/css">
+			canvas{display:block;width:800px;margin:0 auto;background: #000;}
+		</style>
+		<script type="text/javascript">
+			window.addEventListener("load", init, false);
+
+			var _stage, _loader, _s;
+
+			function init()
+			{
+				M4Tween.useStyle = false;
+
+				_stage = new Stage(800, 600, "#container");
+
+				_loader = new MassLoader();
+				_loader.addEventListener(Event.COMPLETE, completeHandler, false);
+				_loader.load({"img":"imgs/vox.jpg"});
+			}
+
+			function completeHandler(e)
+			{
+				var w = 148,h = 148,x = 1,y = 1,t = [];
+				for(var j = 0, maxj = 4; j<maxj;j++)
+				{
+					x = 1;
+					for(var k = 0, maxk = 4; k<maxk;k++)
+					{
+						t.push(new Rectangle(x, y, w, h));
+						x += w;
+					}
+					y += h;
+				}
+				var nb_largeur = Math.round(800 / w);
+				var nb_hauteur = Math.round(600 / h);
+				for(var i = 0; i<nb_largeur;i++)
+				{
+					for(k = 0;k<nb_hauteur;k++)
+					{
+						_s = new SpriteSheetAnimator(_loader.assets.img, t, 24 + (k+i));
+						_stage.addChild(_s);
+						_s.x = 74 +(i) * w;
+						_s.y = 74 + (k) *h;
+						_s.scaleX = _s.scaleY = 0;
+						appear(_s, k + i);
+					}
+				}
+
+				_stage.addChild(new FPS());
+			}
+
+			function appear(pInstance, pDelay)
+			{
+				pDelay = pDelay||0;
+				M4Tween.to(pInstance, .5, {scaleX:1, scaleY:1, delay:.4*pDelay});
+			}
+		</script>
+	</head>
+	<body>
+	<header>
+		<h1>SpriteSheetAnimator - Stage.js</h1>
+	</header>
+	<div id="container" class="content"></div>
+	</body>
+</html>

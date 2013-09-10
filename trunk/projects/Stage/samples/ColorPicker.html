@@ -3,6 +3,7 @@
 	<head>
 		<title>Stage.js - Example</title>
 		<script src="../../Dependencies/src/?need=ColorPicker"></script>
+		<link href="../../common/docs/docs.css" rel="stylesheet" type="text/css">
 		<script type="text/javascript">
 			window.addEventListener("load", init, false);
 			var stage;
@@ -14,21 +15,13 @@
 				cp = new ColorPicker(120, 100, document.querySelector("#cp3"));
 			}
 		</script>
-		<link href="../../common/example/example.css" type="text/css" rel="stylesheet"/>
 	</head>
 	<body>
-		<h1>Stage.js</h1>
-		<div id="cp1">
-
+		<header><h1>ColorPicker - Stage.js</h1></header>
+		<div class="content">
+			<div id="cp1"></div>
+			<div id="cp2"></div>
+			<div id="cp3"></div>
 		</div>
-		<div id="cp2">
-
-		</div>
-		<div id="cp3">
-
-		</div>
-		<footer>
-			&copy; arno06@gmail.com | 2009 - 2013
-		</footer>
 	</body>
 </html>

@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" Content="text/html; charset=ISO-8859-15"/>
+		<title>3DIso - Stage.js</title>
+		<script type="text/javascript" src="../../Dependencies/src/?need=Stage,M4Tween"></script>
+		<link href="../../common/docs/docs.css" rel="stylesheet" type="text/css">
+		<style type="text/css">
+			canvas{margin:0 auto;background: #000;display:block;}
+		</style>
+		<script type="text/javascript">
+			window.addEventListener("load", init, false);
+
+			var _stage;
+			var _points = [];
+
+			function init()
+			{
+				M4Tween.useStyle = false;
+
+				_stage = new Stage(800, 480, "#container");
+
+				_stage.addChild(new FPS());
+
+				var line;
+
+				for(var i = 0, max = 10;i<max;i++)
+				{
+					line = [];
+					for(var k = 0;k<max;k++)
+					{
+						var p = new IsoVector(50 * i, 50 * k, 0).getProjection();
+						var t = new Tile(50, "#aaaaaa", "#444444");
+						t.x = 400 + p.x;
+						t.y = 80 + p.y;
+						_stage.addChild(t);
+						line.push(t);
+					}
+					_points.push(line);
+				}
+
+				setTimeout(changeForm, 150);
+			}
+
+			var _currentIndex = 10;
+
+			function changeForm()
+			{
+				if(++_currentIndex>=_points.length)
+					_currentIndex = 0;
+				var last = _points.length-(1+_currentIndex);
+
+				for(var i = 0, max = _points.length;i<max;i++)
+				{
+					for(var j = 0, maxj = _points[i].length; j<maxj;j++)
+					{
+						if(i == _currentIndex
+							||i == last
+							||j == _currentIndex
+							||j == last)
+						{
+							_points[i][j].activate();
+						}
+						else
+							_points[i][j].deactivate();
+					}
+				}
+
+				setTimeout(changeForm, 150);
+			}
+
+			function IsoVector(pX, pY, pZ)
+			{
+				this.x = pX;
+				this.y = pY;
+				this.z = pZ;
+			}
+
+			IsoVector.c1 = Math.sqrt(2)/2;
+			IsoVector.c2 = Math.sqrt(2/3);
+			IsoVector.c3 = 1/Math.sqrt(6);
+
+			Class.define(IsoVector, [Vector], {
+				z:0,
+				getProjection:function()
+				{
+					return new Vector((IsoVector.c1* (this.x-this.y)),-((IsoVector.c2*this.z) - (IsoVector.c3*(this.x+this.y))));
+				}
+			});
+
+			function Tile(pA, pColor, pColorInactiv)
+			{
+				this.a = pA;
+				this._defaultColor = pColor;
+				this._inactivColor = pColorInactiv;
+				this.color = "rgb(25, 25, 25)";
+				this.reset();
+				this.addEventListener(Event.ADDED_TO_STAGE, this.addedHandler.proxy(this));
+			}
+
+			Class.define(Tile, [Sprite], {
+				isoMode:true,
+				a:0,
+				z:0,
+				color:null,
+				addedHandler:function(e)
+				{
+					this.stage.addEventListener(Event.ENTER_FRAME, this.frameHandler.proxy(this));
+				},
+				activate:function()
+				{
+					M4Tween.killTweensOf(this);
+					M4Tween.to(this,.3, {color:this._defaultColor});
+				},
+				deactivate:function()
+				{
+					M4Tween.killTweensOf(this);
+					M4Tween.to(this,.2, {color:this._inactivColor});
+				},
+				frameHandler:function(e)
+				{
+					var l = this.a  * .5;
+					var p1 = new IsoVector(-l, -l, this.z);
+					var p2 = new IsoVector(l, -l, this.z);
+					var p3 = new IsoVector(l, l, this.z);
+					var p4 = new IsoVector(-l, l, this.z);
+					if(this.isoMode)
+					{
+						p1 = p1.getProjection();
+						p2 = p2.getProjection();
+						p3 = p3.getProjection();
+						p4 = p4.getProjection();
+					}
+					this.clear();
+					this.setLineStyle(1, "rgb(255, 255, 255)");
+					this.beginFill(this.color);
+					this.moveTo(p1.x, p1.y);
+					this.lineTo(p2.x, p2.y);
+					this.lineTo(p3.x, p3.y);
+					this.lineTo(p4.x, p4.y);
+					this.lineTo(p1.x, p1.y);
+					this.endFill();
+				}
+			});
+			
+		</script>
+	</head>
+	<body>
+		<header>
+			<h1>3DIso transformation using Stage.js</h1>
+		</header>
+		<div class="content" id="container"></div>
+	</body>
+</html>

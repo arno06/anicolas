@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" Content="text/html; charset=ISO-8859-15"/>
+		<title>Particles - Stage.js</title>
+		<link href="../../common/docs/docs.css" rel="stylesheet">
+		<script src="../../Dependencies/src/?need=M4,UtilsColor,Stage"></script>
+		<style type="text/css">
+			*{font-size:12px;font-weight: normal;font-family: Arial, sans-serif;padding: 0;margin: 0;color:#666;}
+			h1,h2,h3{display:inline;font-size:14px;color:#000;}
+			h2{font-size:14px;}
+			canvas{position: absolute;left:50%;margin-left:-400px;top:50px;background: #000;}
+		</style>
+		<script type="text/javascript">
+			window.addEventListener("load", init, false);
+
+			var _stage;
+
+			var pixels = [];
+
+			function init()
+			{
+
+				_stage = new Stage(800, 600, "#container");
+				_stage.addChild(new FPS());
+				_stage.setPixel(50, 50, 0, 0, 255, 1);
+				_stage.addEventListener(Event.ENTER_FRAME, onFrameHandler);
+
+				for(var i = 0, max = 200; i<max;i++)
+				{
+					pixels.push(new Px());
+				}
+
+			}
+
+			function onFrameHandler()
+			{
+				_stage.clear();
+				for(var i = 0, max = pixels.length; i<max;i++)
+				{
+					pixels[i].update();
+					_stage.setPixel(pixels[i].x, pixels[i].y, 255, 255, 255, pixels[i].speed);
+				}
+			}
+
+			function Px()
+			{
+				this.init();
+			}
+
+			Class.define(Px, [Class],
+			{
+				init:function()
+				{
+					this.speed = Math.random() + 0.5;
+					this.vx = 0;
+					this.vy = 0;
+					this.x = Math.round(Math.random() * 800);
+					this.y = 0;
+				},
+				update:function()
+				{
+					this.vy += Px.GRAVITY * this.speed;
+					this.vy *= .99;
+					this.y += this.vy;
+					if(this.y>=600)
+						this.init();
+				}
+			});
+
+			Px.GRAVITY = 0.02;
+
+		</script>
+	<body>
+		<header><h1>Pixels animation using Stage.js</h1></header>
+		<div id="container" class="content"></div>
+	</body>
+</html>

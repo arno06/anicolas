@@ -1,4 +1,6 @@
 <?php
+include_once("inc/class.Request.php");
+
 define("NEED_SEPARATOR", ",");
 define("MANIFEST", "manifest.json");
 
@@ -135,6 +137,18 @@ function retrieveNeeds($pNeeded, &$pFinalList)
 
 function download($pFile, $pSource = "")
 {
+	switch($_GET["output"])
+	{
+		case "minified":
+			$r = new Request("http://closure-compiler.appspot.com/compile");
+			$r->setDataPost(array("js_code"=>$pSource, "compilation_level"=>"SIMPLE_OPTIMIZATIONS", "output_format"=>"json", "output_info"=>"compiled_code"));
+			$pSource = json_decode($r->execute(), true);
+			$pSource = $pSource["compiledCode"];
+			$pFile = explode(".", $pFile);
+			$pFile = array($pFile[0], "min", "js");
+			$pFile = implode(".", $pFile);
+			break;
+	}
 	if(empty($pFile))
 		return;
 	$fromSource = !empty($pSource);

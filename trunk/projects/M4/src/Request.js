@@ -1,6 +1,7 @@
 function Request(pTarget, pParams, pMethod)
 {
-	pMethod = pMethod||"POST";
+	this.removeAllEventListener();
+	pMethod = (pMethod||"get").toUpperCase();
 	this.xhr_object = null;
     if (window.XMLHttpRequest)
 	    this.xhr_object = new XMLHttpRequest();
@@ -16,11 +17,7 @@ function Request(pTarget, pParams, pMethod)
 	for(i in pParams)
 		v += (j++>0?"&":"")+i+"="+pParams[i];
 	this.xhr_object.open(pMethod, pTarget, true);
-	this.xhr_object.onprogress = function(pEvent)
-	{
-		if(ref.onProgressHandler)
-			ref.onProgressHandler(pEvent);
-	};
+	this.xhr_object.onprogress = this.dispatchEvent.proxy(this);
 	this.xhr_object.onreadystatechange=function()
 	{
 		if(ref.xhr_object.readyState==4)
@@ -32,43 +29,62 @@ function Request(pTarget, pParams, pMethod)
 					var ct = ref.xhr_object.getResponseHeader("Content-type");
 					if(ct.indexOf("json")>-1)
 						eval("ref.xhr_object.responseJSON = "+ref.xhr_object.responseText+";");
-					if(ref.onCompleteHandler)
-						ref.onCompleteHandler(ref.xhr_object);
+					ref.dispatchEvent(new RequestEvent(Event.COMPLETE, ref.xhr_object.responseText, ref.xhr_object.responseJSON));
 				break;
 				case 403:
 				case 404:
 				case 500:
-					if(ref.onErrorHandler)
-						ref.onErrorHandler(ref.xhr_object.responseText);
+					ref.dispatchEvent(new RequestEvent(RequestEvent.ERROR));
 				break;
 			}
 		}
 	};
 
-	this.xhr_object.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded;charset:ISO-8859-1');
-	this.xhr_object.send(v);
+	this.xhr_object.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded;charset:'+Request.CHARSET);
+	try
+	{
+		this.xhr_object.send(v);
+	}
+	catch(e)
+	{
+		console.log(e);
+	}
 }
-Class.define(Request, [Class],
+Class.define(Request, [EventDispatcher],
 {
 	onComplete:function(pFunction)
 	{
-		this.onCompleteHandler = pFunction;
+		this.addEventListener(Event.COMPLETE, pFunction, false);
 		return this;
 	},
 	onProgress:function(pFunction)
 	{
-		this.onProgressHandler = pFunction;
+		this.addEventListener(RequestEvent.PROGRESS, pFunction, false);
 		return this;
 	},
 	onError:function(pFunction)
 	{
-		this.onErrorHandler = pFunction;
+		this.addEventListener(RequestEvent.ERROR, pFunction, false);
 		return this;
 	},
 	cancel:function()
 	{
+		this.dispatchEvent(new Event(RequestEvent.CANCEL));
 		this.xhr_object.abort();
 	}
 });
+Request.CHARSET = "UTF-8";
 Request.load = function (pUrl, pParams){return new Request(pUrl, pParams);};
 Request.update = function(pId, pUrl, pParams){return Request.load(pUrl, pParams).onComplete(function(pResponse){document.getElementById(pId).innerHTML = pResponse.responseText;});};
+
+function RequestEvent(pType, pResponseText, pResponseJSON, pBubble)
+{
+	this.super("constructor", pType, pBubble);
+	this.responseText = pResponseText||"";
+	this.responseJSON = pResponseJSON||{};
+}
+
+Class.define(RequestEvent, [Event], {});
+RequestEvent.ERROR = "error";
+RequestEvent.CANCEL = "cancel";
+RequestEvent.PROGRESS = "progress";

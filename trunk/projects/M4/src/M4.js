@@ -71,20 +71,6 @@ M4.geom = (function()
 	};
 }());
 
-NodeList.prototype.forEach = Array.prototype.forEach;
-
-String.prototype.html_entity_decode = function()
-{
-	var d = M4.createElement("div", {htmlText:this.toString()});
-	return d.firstChild.nodeValue;
-};
-
-Function.prototype.proxy = function(pInstance)
-{
-	var ref = this;
-	return function(){ref.apply(pInstance, arguments);};
-};
-
 function MassLoader(){this.removeAllEventListener();}
 Class.define(MassLoader, [EventDispatcher], {
 	__stack:null,
@@ -105,6 +91,11 @@ Class.define(MassLoader, [EventDispatcher], {
 			return;
 		}
 		var f = this.__stack[this.__current].file, id = this.__stack[this.__current].id, l, ref = this;
+		if(typeof(f) != "string")
+		{
+			this.loadNext();
+			return;
+		}
 		this.dispatchEvent(new Event(MassLoader.NEXT, false));
 		var type = f.split(".");
 		type = type[type.length-1];

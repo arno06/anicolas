@@ -1,3 +1,37 @@
+/**
+ * Utilities
+ */
+NodeList.prototype.forEach = Array.prototype.forEach;
+
+String.prototype.html_entity_decode = function()
+{
+	var d = M4.createElement("div", {htmlText:this.toString()});
+	return d.firstChild.nodeValue;
+};
+
+Function.prototype.proxy = function(pInstance)
+{
+	var ref = this;
+	return function(){ref.apply(pInstance, arguments);};
+};
+
+Object.prototype.clone = function()
+{
+	var obj = {};
+	for(var i in this)
+	{
+		if(!this.hasOwnProperty(i))
+			continue;
+		obj[i] = this[i];
+	}
+	return obj;
+};
+
+
+/**
+ * Base Class
+ * Overriding - toString - whatever
+ */
 function Class(){}
 
 Class.prototype = {

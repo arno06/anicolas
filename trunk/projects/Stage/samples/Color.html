@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" Content="text/html; charset=ISO-8859-15"/>
+		<title>Color Test - Stage.js</title>
+		<script type="text/javascript" src="../../Dependencies/src/?need=M4Tween,Stage,UtilsColor"></script>
+		<link href="../../common/docs/docs.css" rel="stylesheet">
+		<style type="text/css">
+			canvas{display:block;width:800px;margin:0 auto;}
+		</style>
+		<script type="text/javascript">
+			window.addEventListener("load", init, false);
+
+			var _stage, _color;
+
+			function init()
+			{
+				M4Tween.useStyle = false;
+
+				_stage = new Stage(800, 600, "#container");
+
+				_stage.addChild(new FPS());
+
+				_color = new HSLColor(255, 0, 0, 1);
+
+				_stage.addEventListener(Event.ENTER_FRAME, frameHandler);
+
+				document.querySelector("#color_h").addEventListener("change", colorChangedHandler);
+				document.querySelector("#color_s").addEventListener("change", colorChangedHandler);
+				document.querySelector("#color_l").addEventListener("change", colorChangedHandler);
+				document.querySelector("#color_a").addEventListener("change", colorChangedHandler);
+			}
+
+			function colorChangedHandler(e)
+			{
+				var p = e.currentTarget.getAttribute("id").split("_")[1];
+
+				switch(p)
+				{
+					case "a":
+						_color.setAlpha(Number(e.currentTarget.value));
+						break;
+					case "h":
+						_color.setH(Number(e.currentTarget.value));
+						break;
+					case "s":
+						_color.setS(Number(e.currentTarget.value));
+						break;
+					default:
+						_color.setL(Number(e.currentTarget.value));
+						break;
+				}
+				document.querySelector("#rgba").value = _color.getRGBA();
+			}
+
+			function frameHandler()
+			{
+				_stage.clear();
+				_stage.beginFill("rgb(45, 45, 45)");
+				_stage.drawCircle(200, 300, 200);
+				_stage.endFill();
+				_stage.beginFill(_color.getRGBA());
+				_stage.drawCircle(400, 300, 200);
+				_stage.endFill();
+			}
+		</script>
+	</head>
+	<body>
+		<header>
+			<h1>Color Test using Stage.js</h1>
+		</header>
+		<table class="controls">
+			<tr><td><label for="color_h">color.hue : </label></td><td><input type="range" id="color_h" min="0" max="360" step="1" value="0"></td></tr>
+			<tr><td><label for="color_s">color.saturation : </label></td><td><input type="range" id="color_s" min="0" max="1" step="0.01" value="1"></td></tr>
+			<tr><td><label for="color_l">color.lightness : </label></td><td><input type="range" id="color_l" min="0" max="1" step="0.01" value="0.5"></td></tr>
+			<tr><td><label for="color_a">color.alpha : </label></td><td><input type="range" id="color_a" min="0" max="1" step="0.01" value="1"></td></tr>
+			<tr><td><label for="rgba">color.rgba : </label></td><td><input type="text" id="rgba" disabled value="rgba(255, 0, 0, 1)"></td></tr>
+		</table>
+		<div id="container" class="content"></div>
+	</body>
+</html>

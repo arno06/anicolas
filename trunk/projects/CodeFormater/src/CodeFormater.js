@@ -1,5 +1,11 @@
-function M4SynthaxColor(){}
-M4SynthaxColor.dictionnaire = {
+var CodeFormater =
+{
+	init:function()
+	{
+		document.querySelectorAll("*.PendingCodeFormater").forEach(CodeFormater.applyTo);
+	}
+};
+CodeFormater.thesaurus = {
 		commentaires:[/(\/\*\*[a-z0-9\s\*\,\'\$\.\:\#\@\/йиа!\-=\(\)]{0,}\*\*\/)/gi, /(&lt;!--[a-z0-9\s,']{0,}--&gt;)/gi],
 		api:[/(alert)(\(|\s)/gi,/(console)/g,/(log)/g,/\.(parent)/g, /(new\s)/g, /(parent)/g],
 		string:[/(\"[a-z0-9\-\s:\/\.\_\|йазвкофи\+\=\&\?\;]*\")/gi],
@@ -7,18 +13,21 @@ M4SynthaxColor.dictionnaire = {
 		op:[/(\()/g,/(\))/g,/(\{)/g,/(\})/g,/(\])/g,/(\[)/g,/(\-&gt;)/g],
 		php:[/(\&lt;\?php)/g,/(\?\&gt;)/g,/(&lt;\?)/g],
 		xml:[/(&lt;[a-z:]+[0-9]*)/gi,/(&lt;[a-z:]+[0-9]*&gt;)/gi, /(&lt;\/[a-z:]+[0-9]*)/gi,/(\/&gt;)/gi, /(&gt;)/gi]};
-M4SynthaxColor.of = function (pElement)
+CodeFormater.applyTo = function (pElement)
 {
-	var codeColored = pElement.innerHTML, e;
+	pElement.classList.remove("PendingCodeFormater");
+	var codeColored = pElement.innerHTML, family, element;
 	codeColored = codeColored.replace(/\</g, "&lt;");
 	codeColored = codeColored.replace(/\>/g, "&gt;");
-	for(var i in M4SynthaxColor.dictionnaire)
+	for(var i in CodeFormater.thesaurus)
 	{
-		for(var j=0; j<M4SynthaxColor.dictionnaire[i].length; ++j)
+		family = CodeFormater.thesaurus[i];
+		for(var j=0; j<family.length; ++j)
 		{
-			e = M4SynthaxColor.dictionnaire[i][j];
-			codeColored = codeColored.replace(e,"<span class='M4"+i+"'>$1</span>");
+			codeColored = codeColored.replace(family[j],"<span class='M4"+i+"'>$1</span>");
 		}
 	}
 	pElement.innerHTML = codeColored;
 };
+
+window.addEventListener("load", CodeFormater.init, false);

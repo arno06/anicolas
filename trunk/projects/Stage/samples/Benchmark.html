@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" Content="text/html; charset=ISO-8859-15"/>
+		<title>Benchmark - Stage.js</title>
+		<link href="../../common/docs/docs.css" rel="stylesheet" type="text/css">
+		<script type="text/javascript" src="../../Dependencies/src/?need=M4Tween,Stage"></script>
+		<style type="text/css">
+			canvas{display:block;width:800px;margin:0 auto;}
+		</style>
+		<script type="text/javascript">
+			window.addEventListener("load", init, false);
+
+			var _stage;
+			var _penguins = [];
+			var _h = 600, _w = 800;
+			var count = 1000;
+
+			function init()
+			{
+
+				_stage = new Stage(_w, _h, "#container");
+				_stage.addEventListener(Event.ENTER_FRAME, frameHandler);
+			}
+
+			function clickHandler()
+			{
+				count = document.getElementById("count").value;
+				this._stage.removeChildren();
+				var penguin;
+				_penguins = [];
+				for(var i = 0; i<count;i++)
+				{
+					penguin = new Penguin();
+					penguin.x = (_w - 128) * Math.random();
+					penguin.y = (_w - 128) * Math.random();
+					_stage.addChild(penguin);
+					_penguins.push(penguin);
+				}
+				_stage.addChild(new FPS());
+			}
+
+			function frameHandler()
+			{
+
+				if(!_penguins.length)
+					return;
+				var temp;
+				var penguin;
+
+				for(var i = 0; i<count;i++)
+				{
+					penguin = _penguins[i];
+					temp = penguin.x + penguin.speedX;
+
+					if (temp + 128 > _w || temp < 0)
+					{
+						penguin.speedX *= -1;
+					}
+
+					temp = penguin.y + penguin.speedY;
+
+					if (temp + 128 > _h || temp < 0)
+					{
+						penguin.speedY *= -1;
+					}
+
+					penguin.x += penguin.speedX;
+					penguin.y += penguin.speedY;
+					penguin.rotation += penguin.rotationSpeed;
+				}
+			}
+
+			function Penguin()
+			{
+				this.reset();
+				this.img = new Image();
+				this.img.src = "imgs/penguin.png";
+				var rect = new Rectangle(0, 0, 128, 118);
+				this.drawImage(this.img, rect, rect);
+				this.speedX = Math.random() * 5 + 1;
+				this.speedY = Math.random() * 5 + 1;
+				this.rotationSpeed = ( -5 + Math.random() * 11);
+			}
+
+			Class.define(Penguin, [Sprite], {});
+		</script>
+	</head>
+	<body>
+	<header><h1>Benchmark using Stage.js</h1> - <a href="http://nickalie.com/posts/67">Orignal version</a></header>
+		<p class="controls"><input id="count" type="text" value="100"/><input type="button" value="update" onclick="clickHandler();"/></p>
+		<div class="content" id="container"></div>
+	</body>
+</html>

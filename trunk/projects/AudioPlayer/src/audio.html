@@ -144,8 +144,8 @@
 			function M4Player()
 			{
 				this.__sound = new Audio();
-				this.__sound.addEventListener("loadedmetadata", M4.proxy(this, this.__metaDataReady), false);
-				this.__sound.addEventListener("ended", M4.proxy(this, this.__trackEnded), false);
+				this.__sound.addEventListener("loadedmetadata", this.__metaDataReady.proxy(this), false);
+				this.__sound.addEventListener("ended", this.__trackEnded.proxy(this), false);
 				this.__sound.autoplay = false;
 				this.__sound.preload = "metadata";
 				this.__sound.loop = false;
@@ -240,12 +240,12 @@
 				},
 				__metaDataReady:function()
 				{
-					trace(this.__sound.duration);
+					console.log(this.__sound.duration);
 					this.dispatchEvent(new Event(M4Player.METADATA, false));
 				},
 				__trackEnded:function()
 				{
-					trace("track ended " + (this.__current+1==this.__playList.length)+" "+this.loop);
+					console.log("track ended " + (this.__current+1==this.__playList.length)+" "+this.loop);
 					this.dispatchEvent(new Event(Event.COMPLETE, false));
 					this.playing = false;
 					if((this.__current+1==this.__playList.length)&&!this.loop)
