@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" Content="text/html; charset=ISO-8859-15"/>
+		<title>JS - Benchmark (workers)</title>
+		<script src="../../Dependencies/src/?need=M4,Event,Template"></script>
+		<link href="../../common/docs/docs.css" rel="stylesheet" type="text/css">
+		<link href="assets/css/style.css" rel="stylesheet" type="text/css">
+	</head>
+	<body>
+		<header>
+			<h1>Benchmark Javascript</h1>
+			<menu>
+				<li><a href="bench_php.php">Version PHP</a></li>
+			</menu>
+		</header>
+		<div id="action">
+			<button id="run">Run</button>
+			<div id="state"></div>
+		</div>
+		<div class="content">
+			<table id="head">
+				<thead>
+					<tr>
+						<td class="label">What</td>
+						<td class="time">Time</td>
+						<td class="result">Résultat</td>
+						<td class="iteration">Iterations</td>
+					</tr>
+				</thead>
+			</table>
+			<table id="result">
+				<tbody>
+					<tr>
+						<td colspan="4" class="empty">No result (yet)</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+
+		<script type="text/javascript">
+			window.addEventListener("load", init, false);
+			var iteration = 4000;
+			var repetition = 60;
+			var bloc = [];
+			var current_bloc = '';
+			var tester;
+			function init()
+			{
+				document.getElementById("run").addEventListener("click", runHandler, false);
+				tester = new TasteIt();
+				tester.addEventListener("category", categoryHandler);
+				tester.addEventListener("result", resultHandler);
+				tester.addEventListener(Event.COMPLETE, completeHandler);
+			}
+
+			function completeHandler(e)
+			{
+				var b = document.getElementById("run");
+				b.removeAttribute("disabled");
+				b.innerHTML = "Run";
+				document.getElementById("state").removeAttribute("class");
+				var p = document.querySelector(".tr_pending");
+				p.parentNode.removeChild(p);
+			}
+
+			function runHandler()
+			{
+				var b = document.getElementById("run");
+				b.setAttribute("disabled", "disabled");
+				b.innerHTML = "Running";
+				document.getElementById("state").setAttribute("class", "running");
+				document.getElementById("result").getElementsByTagName("tbody")[0].innerHTML = "";
+				tester.reset();
+				/**
+				 * !n factoriel
+				 */
+				tester.add("Factorielle");
+				tester.add("Boucle for", "test28", 1307674368000);
+				tester.add("Recursive", "test29", 1307674368000);
+
+				/**
+				 * Array
+				 */
+				tester.add("Array");
+				tester.add("boucle for", "test1", "woot");
+				tester.add("boucle while", "test3", "woot");
+				tester.add("boucle for...in", "test2", "woot");
+				tester.add("boucle for...in (hasOwnProperty)", "test4", "woot");
+
+				/**
+				 * Stack
+				 */
+				tester.add("Stack");
+				tester.add("Array", "test23", true);
+				tester.add("LinkedList", "test22", true);
+
+				/**
+				 * Object
+				 */
+				tester.add("Object");
+				tester.add("boucle for", "test5bis", "bouboup");
+				tester.add("boucle for...in", "test5", "bouboup");
+				tester.add("boucle for...in (hasOwnProperty)", "test6", "bouboup");
+
+				/**
+				 * if
+				 */
+				tester.add("Condition");
+				tester.add("If else", "test7", "ok", 9000);
+				tester.add("Ternary Operator", "test8", "ok", 9000);
+				tester.add("switch case statement", "test9", "ok", 9000);
+
+				/**
+				 * POO
+				 */
+				tester.add("POO");
+				tester.add("new Client", "test10", "hi, my name is toto, i am 2 years old !", 9000);
+				tester.add("{}", "test11", "hi, my name is toto, i am 2 years old !", 9000);
+				tester.add("new Client closure", "test12", "hi, my name is toto, i am 2 years old !", 9000);
+				tester.add("Normal defintion", "test26", 20000, 9000);
+				tester.add("Cached definition", "test27", 20000, 9000);
+
+				/**
+				 * Type
+				 */
+				tester.add("Type");
+				tester.add("typeof function", "test13", true, 9000);
+				tester.add("instanceof function", "test14", true, 9000);
+				tester.add("typeof object", "test15", true, 9000);
+				tester.add("instance object", "test16", true, 9000);
+
+				/**
+				 * Number
+				 */
+				tester.add("Number");
+				tester.add("x>>1", "test17", 8, 9000);
+				tester.add("x/2", "test18", 8, 9000);
+				tester.add("x*.5", "test19", 8, 9000);
+				tester.add("s*1", "test20", 16, 9000);
+				tester.add("Number(s)", "test21", 16, 9000);
+
+				/**
+				 * Default parameters
+				 */
+				tester.add("Default parameters");
+				tester.add("if", "test24", "valeur", 9000);
+				tester.add("||", "test25", "valeur", 9000);
+
+				tester.run();
+			}
+
+			function categoryHandler(e)
+			{
+				current_bloc = e.result.toLowerCase().replace(/\s+/gi, "_");
+				var p = document.querySelector(".tr_pending");
+				if(p)
+					p.parentNode.removeChild(p);
+				var tpl = new Template('category_tpl');
+				tpl.assign('name', e.result);
+				tpl.render('#result tbody');
+
+			}
+
+			function resultHandler(e)
+			{
+				var t = e.result;
+				var p = document.querySelector(".tr_pending");
+				if(p)
+					p.parentNode.removeChild(p);
+
+				var tpl = new Template('item_tpl');
+				tpl.assign('label', t.label);
+				tpl.assign('class_name', current_bloc);
+				tpl.assign('result', t.time);
+				tpl.assign('correct', t.correct);
+				tpl.assign('iteration', t.iteration);
+				tpl.render('#result tbody');
+
+				var el = document.querySelectorAll('.'+current_bloc);
+
+				var min = 9999999999999999;
+				for(var i = 0, max = el.length; i<max;i++)
+				{
+					min = Math.min(min, Number(el[i].querySelectorAll("td")[1].getAttribute("rel")));
+				}
+				var d;
+				for(i = 0;i<max;i++)
+				{
+					if(Number(el[i].querySelectorAll("td")[1].getAttribute("rel")) == min)
+						el[i].querySelectorAll("td")[1].innerHTML = "1";
+					else
+					{
+						d = Math.round(((Number(el[i].querySelectorAll("td")[1].getAttribute("rel")) - min)/min)*100)/100;
+						el[i].querySelectorAll("td")[1].innerHTML = "+"+d+"%";
+					}
+				}
+			}
+
+			function TasteEvent(pType, pResult, pBubbles)
+			{
+				this.type = pType;
+				this.result = pResult;
+				this.bubbles = pBubbles||false;
+				this.eventPhase = Event.AT_TARGET;
+			}
+
+			Class.define(TasteEvent, [Event], {});
+
+			function TasteIt()
+			{
+				this._worker = new Worker("assets/js/benchmarkWorker.js");
+				this._worker.addEventListener("message", this._messageHandler.proxy(this));
+				this._worker.addEventListener("error", this._errorHandler.proxy(this));
+				this._stack = [];
+			}
+
+			Class.define(TasteIt,[EventDispatcher], {
+				_stack:[],
+				_worker:null,
+				_current:0,
+				reset:function()
+				{
+					this._current = -1;
+					this._stack = [];
+				},
+				add:function(pLabel, pFunction, pResult, pIteration)
+				{
+					pIteration = pIteration||4000;
+					this._stack.push({label:pLabel, method:pFunction||null, result:pResult||null, iteration:pIteration||null});
+				},
+				run:function()
+				{
+					this._current = -1;
+					this._next();
+				},
+				_next:function()
+				{
+					this._current++;
+					if(this._current>= this._stack.length)
+					{
+						this._completeHandler();
+						return;
+					}
+					var c = this._stack[this._current];
+					if(c.method != null)
+						this._worker.postMessage({action:"run", "method":c.method, iteration:c.iteration});
+					else
+					{
+						this.dispatchEvent(new TasteEvent("category", c.label));
+						this._next();
+					}
+				},
+				_messageHandler:function(e)
+				{
+					var c = this._stack[this._current];
+					this.dispatchEvent(new TasteEvent("result", {time:e.data.time, correct:c.result=== e.data.result, label:c.label, iteration:c.iteration}));
+					this._next();
+				},
+				_errorHandler:function(e)
+				{
+					console.log("Erreur dans les tests");
+				},
+				_completeHandler:function()
+				{
+					this.dispatchEvent(new Event(Event.COMPLETE));
+				}
+			});
+		</script>
+		<script type="html/template" id="category_tpl">
+			<tr>
+				<td colspan="4" class='category'>{$name}</td>
+			</tr>
+			<tr class="tr_pending">
+				<td colspan="4">Pending...</td>
+			</tr>
+		</script>
+		<script type="html/template" id="item_tpl">
+			<tr class="{$class_name}">
+				<td class="label">'{$label}'</td>
+				<td rel="{$result}" class="time">1</td>
+				<td class="{if $correct}c{else}i{/if} result">{if $correct}Correct{else}Incorrect{/if}</td>
+				<td class="iteration">{$iteration}</td>
+			</tr>
+			<tr class="tr_pending">
+				<td colspan="4">Pending...</td>
+			</tr>
+		</script>
+	</body>
+</html>

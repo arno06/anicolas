@@ -74,7 +74,7 @@ Class.define(Request, [EventDispatcher],
 	}
 });
 Request.CHARSET = "UTF-8";
-Request.load = function (pUrl, pParams){return new Request(pUrl, pParams);};
+Request.load = function (pUrl, pParams, pMethod){return new Request(pUrl, pParams, pMethod);};
 Request.update = function(pId, pUrl, pParams){return Request.load(pUrl, pParams).onComplete(function(pResponse){document.getElementById(pId).innerHTML = pResponse.responseText;});};
 
 function RequestEvent(pType, pResponseText, pResponseJSON, pBubble)
