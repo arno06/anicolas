@@ -217,7 +217,8 @@ var fa =
 	{
 		fadeIn(fa.$.loader, .4);
 
-		Request.load("assets/ffvb95_12-13.json").onProgress(fa.dataProgressHandler).onComplete(fa.dataLoaded);
+//		Request.load("assets/ffvb95_12-13.json").onProgress(fa.dataProgressHandler).onComplete(fa.dataLoaded);
+		Request.load("php/proxy.ffvb.php").onProgress(fa.dataProgressHandler).onComplete(fa.dataLoaded);
 	},
 	dataProgressHandler:function(e)
 	{
@@ -230,7 +231,7 @@ var fa =
 		fa.data = e.responseJSON;
 		fa.parseAgenda();
 		fa.parseRanking();
-		fa.displayRanking();
+		fa.displayCalendar();
 		M4Tween.killTweensOf(fa.$.loaderBar.querySelector("div"));
 		M4Tween.to(fa.$.loaderBar.querySelector("div"),.5, {width:"100%"})
 			.onComplete(function()
@@ -314,6 +315,7 @@ var fa =
 	parseAgenda:function()
 	{
 		var agenda = M4.createElement("div", {"id":"agenda"});
+		M4.createElement("a", {"href":"php/icalendar.php", "htmlText":"T&eacute;l&eacute;charger le calendrier", "parentNode":agenda, "class":"button"});
 		var entry, day, fair, match, container;
 		for(var i = 0, max = fa.data.agenda.length; i<max;i++)
 		{

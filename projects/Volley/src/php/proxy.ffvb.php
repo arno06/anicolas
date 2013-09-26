@@ -41,7 +41,7 @@ function re_extract($pRegExp, $pString)
 	return $matches[1];
 }
 
-$url = "http://www.ffvbbeach.org/ffvbapp/resu/vbspo_calendrier.php?saison=2012%2F2013&codent=PTIDF95&poule=SMD&division=&tour=&calend=COMPLET&x=14&y=7";
+$url = "http://www.ffvbbeach.org/ffvbapp/resu/vbspo_calendrier.php?saison=2013%2F2014&codent=LIIDF&poule=3MC&division=&tour=&calend=COMPLET&x=14&y=7";
 $html = file_get_contents($url);
 
 re_escape('/(\r|\n|\t)/', $html);
@@ -108,22 +108,23 @@ for($i = 1, $max = count($ranking_p->tr); $i<$max; $i++)
 			"played"=>num($team[3]),
 			"won"=>num($team[4]),
 			"lost"=>num($team[5]),
-			"3_0"=>num($team[6]),
-			"3_1"=>num($team[7]),
-			"3_2"=>num($team[8]),
-			"2_3"=>num($team[9]),
-			"1_3"=>num($team[10]),
-			"0_3"=>num($team[11])
+			"F"=>num($team[6]),
+			"3_0"=>num($team[7]),
+			"3_1"=>num($team[8]),
+			"3_2"=>num($team[9]),
+			"2_3"=>num($team[10]),
+			"1_3"=>num($team[11]),
+			"0_3"=>num($team[12])
 		),
 		"sets"=>array(
-			"played"=>num($team[12])+num($team[13]),
-			"won"=>num($team[12]),
-			"lost"=>num($team[13])
+			"played"=>num($team[13])+num($team[14]),
+			"won"=>num($team[13]),
+			"lost"=>num($team[14])
 		),
 		"points"=>array(
-			"played"=>num($team[15])+num($team[16]),
-			"won"=>num($team[15]),
-			"lost"=>num($team[16])
+			"played"=>num($team[16])+num($team[17]),
+			"won"=>num($team[16]),
+			"lost"=>num($team[17])
 		)
 	);
 }
@@ -166,15 +167,18 @@ $return = array(
 	"agenda"=>$agenda
 );
 
+$gzip = isset($_GET['gzip'])?$_GET['gzip']:true;
 
 /**
  * Ouput
  */
 $return = json_encode($return);
-$return = gzencode($return);
+if($gzip)
+	$return = gzencode($return);
 header("Cache-Control: no-cache, must-revalidate");
 header("Expires: Sat, 26 Jul 1997 05:00:00 GMT");
-header("Content-Encoding: gzip");
+if($gzip)
+	header("Content-Encoding: gzip");
 header("Content-Length: " . strlen($return));
 header("Content-Type:application/json; charset=ISO-8859-15");
 echo $return;
