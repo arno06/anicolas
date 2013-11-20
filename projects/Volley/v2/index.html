@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="format-detection" content="telephone=no" />
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1" />
+        <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
+        <title>Volley</title>
+    </head>
+    <body>
+        <script type="html/template" id="struct_tpl">
+            <menu class="main hidden">
+        {foreach $routing $item}
+            {if $item.inMenu==true}
+                <li>
+                    <a href="#{$item.hash}">{$item.label}</a>
+                </li>
+            {/if}
+        {else}
+                <li>
+                    Empty
+                </li>
+        {/foreach}
+            </menu>
+            <div id="screen">
+                <div class="overlay"></div>
+                <header class="hidden">
+                    <div id="backbutton" class="hidden nav"></div>
+                    <div id="menubutton" class="hidden nav"></div>
+					<div class="actions"></div>
+                </header>
+                <div class="content">
+					<div class="loader"></div>
+					<div class="holder"></div>
+                </div>
+            </div>
+        </script>
+
+        <script type="html/template" id="notfound_tpl">
+            <h1>{$dictionnary.notfound.h1}</h1>
+        </script>
+
+		<!--<script src="../../Dependencies/src/?need=M4,EventDispatcher,Event,Template,M4Tween"></script>-->
+		<script src="js/lib/global.js"></script>
+        <script src="js/lib/Phonegap/Misc.js"></script>
+        <script src="js/lib/Dictionnary/Dictionnary.js"></script>
+        <script src="js/lib/Router/Router.js"></script>
+		<script src="js/app/Models.js"></script>
+        <script src="js/app/Controllers.js"></script>
+        <script src="js/Main.js"></script>
+    </body>
+</html>

@@ -1,0 +1,16 @@
+[
+	{
+		"inMenu":true,
+		"label":"@navigation.items.0",
+		"hash":"ranking/",
+		"controller":"RankingCtrl",
+		"parameters":[]
+	},
+	{
+		"inMenu":true,
+		"label":"@navigation.items.1",
+		"hash":"agenda/",
+		"controller":"AgendaCtrl",
+		"parameters":[]
+	}
+]

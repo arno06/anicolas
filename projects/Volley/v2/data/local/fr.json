@@ -1,0 +1,20 @@
+{
+	"global":
+	{
+		"name":"FR - Volley",
+		"description":"FR - Volley",
+		"next":"Suivant"
+	},
+	"notfound":
+	{
+		"h1":"Controller introuvable"
+	},
+	"navigation":
+	{
+		"items":[
+			"Classement",
+			"Agenda"
+		]
+	},
+	"month":["Janvier", "F&eacute;vrier", "Mars", "Avril", "Mai", "Juin", "Juillet", "Ao&ucirc;t", "Septembre", "Octobre", "Novembre", "D&eacute;cembre"]
+}

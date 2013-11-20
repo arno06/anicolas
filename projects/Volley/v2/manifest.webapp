@@ -1,0 +1,17 @@
+{
+	"name": "Volley",
+	"description": "R&eacute;sultat de la saison 2013/2014 de volley-ball de Regional 3 Poule B",
+	"launch_path": "/index.html",
+	"icons":
+	{
+		"30": "/assets/imgs/icons/icon-30.png",
+		"60": "/assets/imgs/icons/icon-60.png"
+	},
+	"developer":
+	{
+		"name": "Arnaud NICOLAS",
+		"url": "http://www.arnaud-nicolas.fr/"
+	},
+	"default_locale": "fr",
+	"orientation": ["portrait"]
+}

@@ -1,0 +1,8 @@
+{
+	"version":"1.0.alpha",
+	"name":"@global.name",
+	"description":"@global.description",
+	"language":"fr",
+	"debug":true,
+	"firstScreen":"#ranking/"
+}

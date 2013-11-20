@@ -1,0 +1,155 @@
+@path_to_imgs:"../imgs/";
+@duration_transition_menu:.7s;
+@duration_transition_header:.5s;
+@menu_width:75%;
+@header_height:10%;
+@main_color: #000000;
+
+.transition(@pProp, @pDuration)
+{
+	-webkit-transition:@pProp @pDuration;
+	-moz-transition:@pProp @pDuration;
+	transition:@pProp @pDuration;
+}
+
+.translate3d(@pX, @pY, @pZ)
+{
+	-webkit-transform:translate3D(@pX, @pY, @pZ);
+	-moz-transform:translate3D(@pX, @pY, @pZ);
+	transform:translate3D(@pX, @pY, @pZ);
+}
+
+*{-webkit-tap-highlight-color: rgba(0,0,0,0);margin:0;padding:0;font-family: Helvetica, Arial, sans-serif;outline: none;}
+
+.clear{clear:both;}
+
+html,body{height:100%;width:100%;}
+
+body
+{
+	-webkit-touch-callout: none;-webkit-text-size-adjust: none;-webkit-user-select: none;font-size:12px;
+
+	menu.main, div#screen{.transition(all, @duration_transition_menu);}
+
+	menu.main{
+		width:@menu_width;position:absolute;background: #ffffff;height:100%;.translate3d(0, 0, 0);z-index:2;
+		li{
+			font-size:1.75em;list-style: none;border-bottom:1px solid @main_color;width:100%;display:block;
+			background:url("@{path_to_imgs}menu_item.png") no-repeat 90% center;
+			a{text-decoration: none;color:#000000;display:block;padding:4% 0 4% 65px;margin:0 auto;.transition(all, .3s);background-repeat:no-repeat;background-position:11px center;background-size:32px 32px;}
+			a.current, a.active{background-color: @main_color;color:#ffffff;}
+			a[href="#ranking/"]{background-image:url("@{path_to_imgs}icon_medal.png");}
+			a[href="#agenda/"]{background-image:url("@{path_to_imgs}icon_calendar.png");}
+
+		}
+		li:first-of-type{margin-top:25%;border-top:1px solid @main_color;}
+	}
+	menu.main.hidden{.translate3d(-100%, 0, 0);}
+
+	menu.main+div#screen{
+		.translate3d(@menu_width, 0, -100px);
+		div.overlay{background:rgba(0, 0, 0, .75);pointer-events:auto;}
+	}
+	menu.main.hidden+div#screen{
+		.translate3d(0, 0, 0);
+		div.overlay{background:rgba(0, 0, 0, 0);pointer-events:none;}
+	}
+
+	div#screen{
+		height:100%;
+		position:relative;
+		div.overlay{position:absolute;width:100%;height:100%;.transition(background-color, @duration_transition_menu);z-index:999;}
+		header{
+			z-index:14;
+			box-shadow: 0 1px 4px rgba(0, 0, 0, .5);
+			position:relative;
+			.transition(all, @duration_transition_header);
+			height:@header_height;
+			background:#ffffff url("@{path_to_imgs}logo.png") no-repeat center center;
+			.translate3d(0, 0, 0);
+
+			&.hidden{
+				.translate3d(0, -100%, 0);
+				box-shadow: none;
+
+				&+footer+div.content{
+					.translate3d(0, -@header_height, 0);height:100%;background:#ffffff;
+					.holder{
+						.block{box-shadow: none;}
+					}
+				}
+				&+footer.hidden+div.content
+				{
+					height:100%;
+				}
+			}
+
+			div.nav{
+				.transition(all, .5s);left:5%;
+				display:block;width:5%;padding:5%;box-sizing:border-box;float:left;background:rgba(0, 0, 0, 0);position:absolute;top:50%;.translate3d(0, -50%, 0);pointer-events:auto;cursor:pointer;
+			}
+			div.nav.hidden{pointer-events:none;opacity: 0;}
+			div#menubutton{
+				background:rgba(0, 0, 0, 0) url("@{path_to_imgs}btn_menu.png") no-repeat center center;
+			}
+			div#backbutton{
+				background:rgba(0, 0, 0, 0) url("@{path_to_imgs}btn_back.png") no-repeat center center;
+			}
+			div#backbutton.hidden{.translate3d(100%, -50%, 0);}
+			div#menubutton.hidden{.translate3d(0, -100%, 0);}
+
+			div.actions{
+				position:absolute;
+				top:50%;
+				width:100%;
+				a{opacity:1;width:5%;padding:5%;box-sizing:border-box;background:#33ee33;display:block;position:absolute;right:5%;.translate3d(0, -50%, 0);}
+				a.add{background:rgba(0, 0, 0, 0) url("@{path_to_imgs}btn_add.png") no-repeat center center;}
+			}
+			+div.content
+			{
+				height: 100%-@header_height;
+				.translate3d(0, 0, 0);
+			}
+		}
+
+		div.content
+		{
+			.holder
+			{
+				height:100%;
+				#agenda{background:#eee;padding-top:20px;}
+				#agenda a.button{display:block;width:70%;padding:15px 0;margin:0 auto 20px;text-align: center;font-weight: bold;color:#ffffff;background-image: -webkit-linear-gradient(bottom, #3380B2 0%, #4096d4 100%);border-radius: 5px;text-decoration: none;box-shadow: 0 0 4px rgba(0, 0, 0, .3);border:solid 1px #4db4ff;}
+				#agenda .day{padding:10px 5px;}
+				#agenda .day h2{font-size:18px;font-weight: bold;}
+				#agenda .day h2 span{font-size:14px;font-weight: normal;}
+				#agenda .day .match{padding:10px;border:1px dashed #999;margin:5px;background:#fff;position:relative;}
+				#agenda .day .match .home{}
+				#agenda .day .match .vs{text-align: center;padding:10px 0;}
+				#agenda .day .match .guest{text-align: right;}
+				#agenda .day .match .home_set, #agenda .day .match .guest_set{top:0;left:0;font-weight: bold;width:50%;position:absolute;text-align: center;font-size: 18px;}
+				#agenda .day .match .home_set{padding-top:30px;}
+				#agenda .day .match .guest_set{padding-top:30px;left:50%;}
+				#agenda .day .match .date{color: #deffeb;font-style:italic;width:70px;height:30px;position:absolute;top:50%;left:50%;margin-left:-35px;margin-top:-15px;background: rgb(153, 216, 185);text-align: center;box-shadow: 0 1px 3px rgba(0, 0, 0, .3);}
+				#agenda .day .match .date span{font-weight:bold;color: #fff;}
+				#agenda .day .match .date small{display:block;font-size:8px;line-height: 8px;}
+
+				#agenda .day .match.home_won .home, #agenda .day .match.guest_won .guest{color: #00b400;}
+				#agenda .day .match.home_won .guest,#agenda .day .match.guest_won .home{color: #b40000;}
+
+				#ranking{}
+				#ranking .entry{padding: 10px 0;border-top: #eee solid 1px;border-bottom: #fff solid 1px;background: rgb(238,238,238);}
+				#ranking .entry.odd{background: rgb(255,255,255);}
+				#ranking .entry .ranking{width:30px;text-align:right;float:left;margin-right:10px;font-weight: bold;font-size:22px;}
+				#ranking .entry:nth-of-type(1) .ranking{color:#FFD600;}
+				#ranking .entry:nth-of-type(2) .ranking{color:#aaa;}
+				#ranking .entry:nth-of-type(3) .ranking{color:#E09000;}
+				#ranking .entry .name{float:left;font-size:20px;padding-top:1px;}
+				#ranking .entry .points, #ranking .entry .day{float:right;font-size:22px;text-align: right;}
+				#ranking .entry>div>span.units{color:#999;font-size:14px;}
+				#ranking .entry .points{width:100px;}
+				#ranking .entry .day{width:50px;}
+				#ranking .entry .extra{display:none;}
+			}
+		}
+	}
+}

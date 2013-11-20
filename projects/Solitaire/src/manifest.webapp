@@ -1,0 +1,17 @@
+{
+  "name": "Solitaire",
+  "description": "Casse t&ecirc;te Solitaire",
+  "launch_path": "/index.html",
+  "icons": {
+    "128": "/assets/imgs/icon_solitaire_128.png",
+    "256": "/assets/imgs/icon_solitaire_256.png"
+  },
+  "developer": {
+    "name": "Arnaud NICOLAS",
+    "url": "http://www.arnaud-nicolas.fr/"
+  },
+  "default_locale": "fr",
+  "orientation": [
+    "portrait"
+  ]
+}

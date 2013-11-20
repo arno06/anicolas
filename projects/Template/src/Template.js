@@ -60,7 +60,7 @@ Class.define(Template, [EventDispatcher],
 		var start = new Date().getTime();
 		var t = Template.$[this._id];
 		if(!t)
-			return;
+			return "";
 
 		var t0 = Template.TAG[0];
 		var t1 = Template.TAG[1];
@@ -73,27 +73,25 @@ Class.define(Template, [EventDispatcher],
 
 		var step = 0;
 
-		var result, tag, id, currentId, justClosed = false;
+		var result, tag, currentId;
+
+		var opened = [];
 
 		while (result = re_blocs.exec(t))
 		{
 			tag = result[1];
 			if(opener.indexOf(tag)>-1)
 			{
-				justClosed = false;
-				id = ++step;
-				currentId = id;
+				currentId = ++step;
+				opened.unshift(currentId);
 			}
 			else if (closer.indexOf(tag)>-1)
 			{
-				currentId = id--;
-				justClosed = true;
+				currentId = opened.shift();
 			}
 			else if (neutral.indexOf(tag)>-1)
 			{
-				if(justClosed)
-					currentId--;
-				justClosed = false;
+				currentId = opened[0];
 			}
 			else
 				continue;
@@ -182,9 +180,9 @@ Class.define(Template, [EventDispatcher],
 							}
 							d[j][c_key] = j;
 
-							var dataCloned = pData.clone();
+							var dataCloned = Object.clone(pData);
 							dataCloned[(params[2]||"$v").replace("$", "")] = d[j];
-
+							dataCloned[c_key] = j;
 							v = this._parseBlock(v, dataCloned);
 							r += v;
 						}
@@ -194,6 +192,10 @@ Class.define(Template, [EventDispatcher],
 					break;
 				case "if":
 					var f = this._parseVariables(o[3], pData, rea);
+					while(f[0]==" ")
+						f = f.replace(/^\s/, '');
+					if(/^\s*$/.exec(f)||/^\!\=/.exec(f)||/^\=\=/.exec(f)||/^\>\=/.exec(f)||/^\<\=/.exec(f)||/^\%/.exec(f)||/^\|/.exec(f))
+						f = false;
 					r = eval("(function(){var r = false; try { r = "+f+"; } catch(e){ r= false;} return r;})()");
 					r = r?blc:(alt||"");
 					r = this._parseBlock(r, pData);
@@ -208,7 +210,6 @@ Class.define(Template, [EventDispatcher],
 
 		pString = this._parseVariables(pString, pData, Template.REGXP_VAR);
 
-		rea = new RegExp("\(([^,\)]*)\)", "gi");
 		var func;
 		var a;
 		var p;
@@ -304,6 +305,15 @@ Template.FUNCTIONS =
 		pFlags = pFlags||"gi";
 		var re = new RegExp(pSearch, pFlags);
 		return pString.replace(re, pReplace);
+	},
+	add:function()
+	{
+		var result = 0;
+		for(var i = 0, max = arguments.length;i<max;i++)
+		{
+			result+=Number(arguments[i]);
+		}
+		return result;
 	}
 };
 
@@ -315,7 +325,51 @@ Template.setup=function()
 	templates.forEach(function(pEl)
 	{
 		Template.$[pEl.getAttribute("id")] = pEl.text;
+		pEl.parentNode.removeChild(pEl);
 	});
+};
+
+Template.load = function(pDataList)
+{
+	var _data = [];
+	for(var i in pDataList)
+	{
+		if(!pDataList.hasOwnProperty(i))
+			continue;
+		_data.push({"name":i, "file":pDataList[i]});
+	}
+
+	var _currentIndex = -1;
+	var _callBack = null;
+
+	function templateLoadedHandler(pResquest)
+	{
+		Template.$[_data[_currentIndex].name] = pResquest.responseText;
+		next();
+	}
+
+	function next()
+	{
+		_currentIndex++;
+		if(_currentIndex>=_data.length)
+		{
+			if(_callBack)
+				_callBack();
+			return;
+		}
+
+		Request.load(_data[_currentIndex].file, {}, "get").onComplete(templateLoadedHandler).onError(next);
+	}
+
+	next();
+
+	return {
+		onComplete:function(pCallBack)
+		{
+			_callBack = pCallBack;
+			return this;
+		}
+	};
 };
 
 window.addEventListener("load", Template.setup, false);

@@ -1,13 +1,14 @@
 window.indexedDB = window.indexedDB || window.webkitIndexedDB || window.mozIndexedDB;
-window.IDBTransaction = window.webkitIDBTransaction;
-window.IDBKeyRange = window.webkitIDBKeyRange;
+window.IDBTransaction = window.IDBTransaction||window.webkitIDBTransaction;
+window.IDBKeyRange = window.IDBKeyRange||window.webkitIDBKeyRange;
 
-function DBHandler(pName)
+function DBHandler(pName, pVersion)
 {
 	this.removeAllEventListener();
 	this._idb = this._ressource = null;
 	this._models = [];
 	this._name = pName;
+	this._version = pVersion;
 	this._setIDB();
 }
 
@@ -20,7 +21,13 @@ Class.define(DBHandler, [EventDispatcher],{
 	open:function()
 	{
 		var ref = this;
-		this._ressource = this._idb.open(this._name);
+		this._ressource = this._idb.open(this._name, this._version);
+		this._ressource.onupgradeneeded = function(e)
+		{
+			for(var i = 0, max = ref._models.length;i<max;i++)
+				ref._models[i].setDB(ref._ressource.result);
+			ref.createFromModel(ref._ressource.transaction);
+		};
 		this._ressource.onerror = function()
 		{
 			ref.dispatchEvent(new Event(DBHandler.DBERROR, false));
@@ -31,6 +38,10 @@ Class.define(DBHandler, [EventDispatcher],{
 			ref.db = e.target.result;
 			for(var i = 0, max = ref._models.length;i<max;i++)
 				ref._models[i].setDB(ref.db);
+			ref._ressource.onversionchange = function()
+			{
+				ref.db.close();
+			};
 			ref.dispatchEvent(new Event(DBHandler.READY, false));
 		};
 
@@ -39,10 +50,10 @@ Class.define(DBHandler, [EventDispatcher],{
 	{
 		this._models.push(pModel);
 	},
-	createFromModel:function()
+	createFromModel:function(pTransaction)
 	{
 		for(var i = 0, max = this._models.length;i<max;i++)
-			this._models[i].create();
+			this._models[i].create(pTransaction);
 	},
 	_setIDB:function()
 	{
@@ -63,7 +74,7 @@ Class.define(BaseModel, [], {
 	{
 		if(this._db.objectStoreNames.contains(this._name))
 			this._db.deleteObjectStore(this._name);
-		this._db.createObjectStore(this._name, {keyPath:this._id});
+		this._db.createObjectStore(this._name, {keyPath:this._id, autoIncrement:true});
 	},
 	setDB:function(pDb)
 	{
@@ -102,7 +113,7 @@ BaseModel.ERROR_RESULT = "err_result";
 function IndexedDBQuery(pDb, pName)
 {
 	this._result = [];
-    this._transaction = pDb.transaction([pName], 1);
+    this._transaction = pDb.transaction([pName], "readwrite");
     this._store = this._transaction.objectStore(pName);
 	this._resultHandler = this._errorHandler = null;
 }
@@ -134,33 +145,29 @@ Class.define(IndexedDBQuery, [], {
 	insert:function(pDatas)
 	{
 		var q = this._store.put(pDatas);
-		q.onsuccess = M4.proxy(this, this._triggerResult);
+		q.onsuccess = this._triggerResult.proxy(this);
 		return this;
 	},
     delete:function(pId)
     {
         var q = this._store.delete(pId);
-        q.onsuccess = M4.proxy(this, this._triggerResult);
+        q.onsuccess = this._triggerResult.proxy(this);
         return this;
     },
 	update:function(pId, pDatas)
 	{
 		var ref = this;
-		var keyRange = IDBKeyRange.only(pId);
-		var cursor = this._store.openCursor(keyRange);
-		cursor.onsuccess = function(e)
+		var rg = this._store.get(pId);
+		rg.onsuccess = function()
 		{
-			var r = e.target.result;
-			if(!r)
-				return;
-			var d = r.value;
-			for(var i in pDatas)
-				d[i] = pDatas[i];
-			var req = r.update(d);
-			req.onsuccess = function()
+			var res = rg.result;
+			for(var i in res)
 			{
-				ref._triggerResult();
-			};
+				if(!pDatas.hasOwnProperty(i))
+					pDatas[i] = res[i];
+			}
+			var rp = ref._store.put(pDatas);
+			rp.onsuccess = ref._triggerResult.proxy(ref);
 		};
 		return this;
 	},

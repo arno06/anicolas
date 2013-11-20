@@ -16,7 +16,7 @@
 					{value1:23, value2:1},
 					{value1:"aze", value2:24}
 				]);
-				t.setFunction("add", function()
+				t.setFunction("add2", function()
 				{
 					var result = 0;
 					for(var i = 0, max = arguments.length;i<max;i++)
@@ -64,7 +64,7 @@
 			<ul>
 				{foreach $table $item $key}
 				<li>
-					{$baseValue}+{$item.value1}+{$item.value2}={=add($baseValue, $item.value1, $item.value2)}
+					{$baseValue}+{$item.value1}+{$item.value2}+{$key}={=add($baseValue, $item.value1, $item.value2, $key)}
 				</li>
 				{/foreach}
 			</ul>

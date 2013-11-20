@@ -7,28 +7,28 @@ var fa =
 	referrer:"http://www.arnaud-nicolas.fr/projects/Volley/src/",
 	init:function()
 	{
-		var apps;
-		if(apps = window.navigator.mozApps)
-		{
-			var manifest = fa.referrer+"manifest.webapp";
-			var request = apps.checkInstalled(manifest);
-			request.onsuccess = function()
-			{
-				if(request.result)
-					return;
-
-				var inst = apps.install(manifest);
-				inst.onsuccess = function ()
-				{
-					alert("L'installation s'est effectuée avec succès !");
-				};
-				inst.onerror = function (){};
-			};
-			request.onerror = function()
-			{
-				alert("je suis pas content là");
-			};
-		}
+//		var apps;
+//		if(apps = window.navigator.mozApps)
+//		{
+//			var manifest = fa.referrer+"manifest.webapp";
+//			var request = apps.checkInstalled(manifest);
+//			request.onsuccess = function()
+//			{
+//				if(request.result)
+//					return;
+//
+//				var inst = apps.install(manifest);
+//				inst.onsuccess = function ()
+//				{
+//					alert("L'installation s'est effectuée avec succès !");
+//				};
+//				inst.onerror = function (){};
+//			};
+//			request.onerror = function()
+//			{
+//				alert("je suis pas content là");
+//			};
+//		}
 		fa.clickEvent = "click";//("ontouchend" in document)?"touchend":"mouseup";
 		fa.$ = {};
 		fa.$.loader = document.querySelector("#loader");
