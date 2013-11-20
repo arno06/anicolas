@@ -1,4 +1,3 @@
-
 function IsoVector(pX, pY, pZ)
 {
 	this.x = pX||0;

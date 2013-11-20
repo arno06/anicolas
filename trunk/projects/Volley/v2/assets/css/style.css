@@ -1,0 +1,351 @@
+* {
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  margin: 0;
+  padding: 0;
+  font-family: Helvetica, Arial, sans-serif;
+  outline: none;
+}
+.clear {
+  clear: both;
+}
+html,
+body {
+  height: 100%;
+  width: 100%;
+}
+body {
+  -webkit-touch-callout: none;
+  -webkit-text-size-adjust: none;
+  -webkit-user-select: none;
+  font-size: 12px;
+}
+body menu.main,
+body div#screen {
+  -webkit-transition: all 0.7s;
+  -moz-transition: all 0.7s;
+  transition: all 0.7s;
+}
+body menu.main {
+  width: 75%;
+  position: absolute;
+  background: #ffffff;
+  height: 100%;
+  -webkit-transform: translate3D(0, 0, 0);
+  -moz-transform: translate3D(0, 0, 0);
+  transform: translate3D(0, 0, 0);
+  z-index: 2;
+}
+body menu.main li {
+  font-size: 1.75em;
+  list-style: none;
+  border-bottom: 1px solid #000000;
+  width: 100%;
+  display: block;
+  background: url("../imgs/menu_item.png") no-repeat 90% center;
+}
+body menu.main li a {
+  text-decoration: none;
+  color: #000000;
+  display: block;
+  padding: 4% 0 4% 65px;
+  margin: 0 auto;
+  -webkit-transition: all 0.3s;
+  -moz-transition: all 0.3s;
+  transition: all 0.3s;
+  background-repeat: no-repeat;
+  background-position: 11px center;
+  background-size: 32px 32px;
+}
+body menu.main li a.current,
+body menu.main li a.active {
+  background-color: #000000;
+  color: #ffffff;
+}
+body menu.main li a[href="#ranking/"] {
+  background-image: url("../imgs/icon_medal.png");
+}
+body menu.main li a[href="#agenda/"] {
+  background-image: url("../imgs/icon_calendar.png");
+}
+body menu.main li:first-of-type {
+  margin-top: 25%;
+  border-top: 1px solid #000000;
+}
+body menu.main.hidden {
+  -webkit-transform: translate3D(-100%, 0, 0);
+  -moz-transform: translate3D(-100%, 0, 0);
+  transform: translate3D(-100%, 0, 0);
+}
+body menu.main + div#screen {
+  -webkit-transform: translate3D(75%, 0, -100px);
+  -moz-transform: translate3D(75%, 0, -100px);
+  transform: translate3D(75%, 0, -100px);
+}
+body menu.main + div#screen div.overlay {
+  background: rgba(0, 0, 0, 0.75);
+  pointer-events: auto;
+}
+body menu.main.hidden + div#screen {
+  -webkit-transform: translate3D(0, 0, 0);
+  -moz-transform: translate3D(0, 0, 0);
+  transform: translate3D(0, 0, 0);
+}
+body menu.main.hidden + div#screen div.overlay {
+  background: rgba(0, 0, 0, 0);
+  pointer-events: none;
+}
+body div#screen {
+  height: 100%;
+  position: relative;
+}
+body div#screen div.overlay {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  -webkit-transition: background-color 0.7s;
+  -moz-transition: background-color 0.7s;
+  transition: background-color 0.7s;
+  z-index: 999;
+}
+body div#screen header {
+  z-index: 14;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+  position: relative;
+  -webkit-transition: all 0.5s;
+  -moz-transition: all 0.5s;
+  transition: all 0.5s;
+  height: 10%;
+  background: #ffffff url("../imgs/logo.png") no-repeat center center;
+  -webkit-transform: translate3D(0, 0, 0);
+  -moz-transform: translate3D(0, 0, 0);
+  transform: translate3D(0, 0, 0);
+}
+body div#screen header.hidden {
+  -webkit-transform: translate3D(0, -100%, 0);
+  -moz-transform: translate3D(0, -100%, 0);
+  transform: translate3D(0, -100%, 0);
+  box-shadow: none;
+}
+body div#screen header.hidden + footer + div.content {
+  -webkit-transform: translate3D(0, -10%, 0);
+  -moz-transform: translate3D(0, -10%, 0);
+  transform: translate3D(0, -10%, 0);
+  height: 100%;
+  background: #ffffff;
+}
+body div#screen header.hidden + footer + div.content .holder .block {
+  box-shadow: none;
+}
+body div#screen header.hidden + footer.hidden + div.content {
+  height: 100%;
+}
+body div#screen header div.nav {
+  -webkit-transition: all 0.5s;
+  -moz-transition: all 0.5s;
+  transition: all 0.5s;
+  left: 5%;
+  display: block;
+  width: 5%;
+  padding: 5%;
+  box-sizing: border-box;
+  float: left;
+  background: rgba(0, 0, 0, 0);
+  position: absolute;
+  top: 50%;
+  -webkit-transform: translate3D(0, -50%, 0);
+  -moz-transform: translate3D(0, -50%, 0);
+  transform: translate3D(0, -50%, 0);
+  pointer-events: auto;
+  cursor: pointer;
+}
+body div#screen header div.nav.hidden {
+  pointer-events: none;
+  opacity: 0;
+}
+body div#screen header div#menubutton {
+  background: rgba(0, 0, 0, 0) url("../imgs/btn_menu.png") no-repeat center center;
+}
+body div#screen header div#backbutton {
+  background: rgba(0, 0, 0, 0) url("../imgs/btn_back.png") no-repeat center center;
+}
+body div#screen header div#backbutton.hidden {
+  -webkit-transform: translate3D(100%, -50%, 0);
+  -moz-transform: translate3D(100%, -50%, 0);
+  transform: translate3D(100%, -50%, 0);
+}
+body div#screen header div#menubutton.hidden {
+  -webkit-transform: translate3D(0, -100%, 0);
+  -moz-transform: translate3D(0, -100%, 0);
+  transform: translate3D(0, -100%, 0);
+}
+body div#screen header div.actions {
+  position: absolute;
+  top: 50%;
+  width: 100%;
+}
+body div#screen header div.actions a {
+  opacity: 1;
+  width: 5%;
+  padding: 5%;
+  box-sizing: border-box;
+  background: #33ee33;
+  display: block;
+  position: absolute;
+  right: 5%;
+  -webkit-transform: translate3D(0, -50%, 0);
+  -moz-transform: translate3D(0, -50%, 0);
+  transform: translate3D(0, -50%, 0);
+}
+body div#screen header div.actions a.add {
+  background: rgba(0, 0, 0, 0) url("../imgs/btn_add.png") no-repeat center center;
+}
+body div#screen header + div.content {
+  height: 90%;
+  -webkit-transform: translate3D(0, 0, 0);
+  -moz-transform: translate3D(0, 0, 0);
+  transform: translate3D(0, 0, 0);
+}
+body div#screen div.content .holder {
+  height: 100%;
+}
+body div#screen div.content .holder #agenda {
+  background: #eee;
+  padding-top: 20px;
+}
+body div#screen div.content .holder #agenda a.button {
+  display: block;
+  width: 70%;
+  padding: 15px 0;
+  margin: 0 auto 20px;
+  text-align: center;
+  font-weight: bold;
+  color: #ffffff;
+  background-image: -webkit-linear-gradient(bottom, #3380b2 0%, #4096d4 100%);
+  border-radius: 5px;
+  text-decoration: none;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.3);
+  border: solid 1px #4db4ff;
+}
+body div#screen div.content .holder #agenda .day {
+  padding: 10px 5px;
+}
+body div#screen div.content .holder #agenda .day h2 {
+  font-size: 18px;
+  font-weight: bold;
+}
+body div#screen div.content .holder #agenda .day h2 span {
+  font-size: 14px;
+  font-weight: normal;
+}
+body div#screen div.content .holder #agenda .day .match {
+  padding: 10px;
+  border: 1px dashed #999;
+  margin: 5px;
+  background: #fff;
+  position: relative;
+}
+body div#screen div.content .holder #agenda .day .match .vs {
+  text-align: center;
+  padding: 10px 0;
+}
+body div#screen div.content .holder #agenda .day .match .guest {
+  text-align: right;
+}
+body div#screen div.content .holder #agenda .day .match .home_set,
+body div#screen div.content .holder #agenda .day .match .guest_set {
+  top: 0;
+  left: 0;
+  font-weight: bold;
+  width: 50%;
+  position: absolute;
+  text-align: center;
+  font-size: 18px;
+}
+body div#screen div.content .holder #agenda .day .match .home_set {
+  padding-top: 30px;
+}
+body div#screen div.content .holder #agenda .day .match .guest_set {
+  padding-top: 30px;
+  left: 50%;
+}
+body div#screen div.content .holder #agenda .day .match .date {
+  color: #deffeb;
+  font-style: italic;
+  width: 70px;
+  height: 30px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-left: -35px;
+  margin-top: -15px;
+  background: #99d8b9;
+  text-align: center;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+body div#screen div.content .holder #agenda .day .match .date span {
+  font-weight: bold;
+  color: #fff;
+}
+body div#screen div.content .holder #agenda .day .match .date small {
+  display: block;
+  font-size: 8px;
+  line-height: 8px;
+}
+body div#screen div.content .holder #agenda .day .match.home_won .home,
+body div#screen div.content .holder #agenda .day .match.guest_won .guest {
+  color: #00b400;
+}
+body div#screen div.content .holder #agenda .day .match.home_won .guest,
+body div#screen div.content .holder #agenda .day .match.guest_won .home {
+  color: #b40000;
+}
+body div#screen div.content .holder #ranking .entry {
+  padding: 10px 0;
+  border-top: #eee solid 1px;
+  border-bottom: #fff solid 1px;
+  background: #eeeeee;
+}
+body div#screen div.content .holder #ranking .entry.odd {
+  background: #ffffff;
+}
+body div#screen div.content .holder #ranking .entry .ranking {
+  width: 30px;
+  text-align: right;
+  float: left;
+  margin-right: 10px;
+  font-weight: bold;
+  font-size: 22px;
+}
+body div#screen div.content .holder #ranking .entry:nth-of-type(1) .ranking {
+  color: #FFD600;
+}
+body div#screen div.content .holder #ranking .entry:nth-of-type(2) .ranking {
+  color: #aaa;
+}
+body div#screen div.content .holder #ranking .entry:nth-of-type(3) .ranking {
+  color: #E09000;
+}
+body div#screen div.content .holder #ranking .entry .name {
+  float: left;
+  font-size: 20px;
+  padding-top: 1px;
+}
+body div#screen div.content .holder #ranking .entry .points,
+body div#screen div.content .holder #ranking .entry .day {
+  float: right;
+  font-size: 22px;
+  text-align: right;
+}
+body div#screen div.content .holder #ranking .entry > div > span.units {
+  color: #999;
+  font-size: 14px;
+}
+body div#screen div.content .holder #ranking .entry .points {
+  width: 100px;
+}
+body div#screen div.content .holder #ranking .entry .day {
+  width: 50px;
+}
+body div#screen div.content .holder #ranking .entry .extra {
+  display: none;
+}

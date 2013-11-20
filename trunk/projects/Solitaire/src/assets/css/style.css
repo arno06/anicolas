@@ -1,0 +1,100 @@
+* {
+  margin: 0;
+  padding: 0;
+  font-family: Helvetica, Arial, sans-serif;
+  outline: none;
+}
+html,
+body {
+  width: 100%;
+  height: 100%;
+}
+body {
+  background: #f5f5f5;
+  overflow: hidden;
+}
+body header {
+  position: relative;
+  height: 30px;
+  width: 100%;
+  text-align: center;
+  font-size: 24px;
+  padding: 10px;
+  background: #ffffff;
+  margin-bottom: 15px;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.4);
+}
+body header a.restart {
+  display: block;
+  position: absolute;
+  width: 32px;
+  height: 32px;
+  background: url("../imgs/icon_restart.png") no-repeat center center;
+  background-size: 32px 32px;
+  right: 32px;
+  top: 50%;
+  margin-top: -16px;
+}
+body header span.count {
+  display: block;
+  position: absolute;
+  font-style: italic;
+  color: #666666;
+  margin-top: -10px;
+  top: 50%;
+  font-size: 16px;
+}
+body header span.count span {
+  font-style: normal;
+  color: #000000;
+  font-weight: bold;
+}
+body .content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-top: -140px;
+  margin-left: -140px;
+}
+body .board {
+  width: 280px;
+  height: 280px;
+  margin: 0 auto;
+}
+body .board div.square {
+  width: 30px;
+  height: 30px;
+  float: left;
+  margin: 5px;
+}
+body .board div.square.available {
+  width: 30px;
+  height: 30px;
+  float: left;
+  margin: 5px;
+  background: #cccccc;
+  border-radius: 50%;
+  box-shadow: inset 0 0 5px #000000;
+}
+body .board div.square.available .piece {
+  -moz-transition: all 0.5s;
+  transition: all 0.5s;
+  width: 32px;
+  height: 32px;
+  background: #3e3e3e;
+  border-radius: 100%;
+  margin: -1px 0 0 -1px;
+}
+body .board div.square.available .piece.current {
+  width: 34px;
+  height: 34px;
+  margin: -3px 0 0 -3px;
+  background: #5bc5ff;
+  border: 1px solid #3e3e3e;
+}
+body .board div.crlf {
+  width: 0;
+  height: 0;
+  clear: both;
+  margin: 0;
+}

@@ -15,14 +15,14 @@ Function.prototype.proxy = function(pInstance)
 	return function(){ref.apply(pInstance, arguments);};
 };
 
-Object.prototype.clone = function()
+Object.clone = function(pData)
 {
 	var obj = {};
-	for(var i in this)
+	for(var i in pData)
 	{
-		if(!this.hasOwnProperty(i))
+		if(!pData.hasOwnProperty(i))
 			continue;
-		obj[i] = this[i];
+		obj[i] = pData[i];
 	}
 	return obj;
 };

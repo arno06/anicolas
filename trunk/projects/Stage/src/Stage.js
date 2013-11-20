@@ -543,34 +543,34 @@ Class.define(Stage, [Container], {
 		var ref = this;
 		this.domElement.onclick = function(e)
 		{
-			ref.mouseX = e.offsetX;
-			ref.mouseY = e.offsetY;
+			ref.mouseX = e.offsetX|| e.layerX;
+			ref.mouseY = e.offsetY|| e.layerY;
 			ref.rightClick = e.button == MouseEvent.RIGHT_BUTTON;
-			ref.dispatchEvent(new MouseEvent(MouseEvent.CLICK, false, e.offsetX, e.offsetY, e.button));
+			ref.dispatchEvent(new MouseEvent(MouseEvent.CLICK, false, ref.mouseX, ref.mouseY, e.button));
 			e.stopPropagation();
 			e.preventDefault();
 		};
 		this.domElement.onmousemove = function(e)
 		{
-			ref.mouseX = e.offsetX;
-			ref.mouseY = e.offsetY;
+			ref.mouseX = e.offsetX|| e.layerX;
+			ref.mouseY = e.offsetY|| e.layerY;
 		};
 		this.domElement.onmousedown = function(e)
 		{
-			ref.mouseX = e.offsetX;
-			ref.mouseY = e.offsetY;
+			ref.mouseX = e.offsetX|| e.layerX;
+			ref.mouseY = e.offsetY|| e.layerY;
 			ref.rightClick = e.button == MouseEvent.RIGHT_BUTTON;
-			ref.dispatchEvent(new MouseEvent(MouseEvent.MOUSE_DOWN, false, e.offsetX, e.offsetY, e.button));
+			ref.dispatchEvent(new MouseEvent(MouseEvent.MOUSE_DOWN, false, ref.mouseX, ref.mouseY, e.button));
 			e.stopPropagation();
 			e.preventDefault();
 			ref._mouseDown = true;
 		};
 		this.domElement.onmouseup = function(e)
 		{
-			ref.mouseX = e.offsetX;
-			ref.mouseY = e.offsetY;
+			ref.mouseX = e.offsetX||e.layerX;
+			ref.mouseY = e.offsetY||e.layerY;
 			ref.rightClick = e.button == MouseEvent.RIGHT_BUTTON;
-			ref.dispatchEvent(new MouseEvent(MouseEvent.MOUSE_UP, false, e.offsetX, e.offsetY, e.button));
+			ref.dispatchEvent(new MouseEvent(MouseEvent.MOUSE_UP, false, ref.mouseX, ref.mouseY, e.button));
 			e.stopPropagation();
 			e.preventDefault();
 			ref._mouseDown = false;

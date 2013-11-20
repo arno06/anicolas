@@ -1,0 +1,17 @@
+{
+	"name": "Explode",
+	"description": "Simple Puzzle Game",
+	"launch_path": "/projects/Explode/src/",
+	"icons":
+	{
+		"30": "/projects/Volley/src/assets/imgs/icon-30.png",
+		"60": "/projects/Volley/src/assets/imgs/icon-60.png"
+	},
+	"developer":
+	{
+		"name": "Arnaud NICOLAS",
+		"url": "http://www.arnaud-nicolas.fr/"
+	},
+	"default_locale": "fr",
+	"orientation": ["portrait"]
+}

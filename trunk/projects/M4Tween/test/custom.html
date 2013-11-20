@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>M4Tween tests</title>
+		<script src="../src/M4Tween.js"></script>
+		<style>
+			.element{width:200px;height:200px;background: #5bc5ff;opacity: 0;display:none;border-radius:100%;position:absolute;}
+		</style>
+	</head>
+	<body>
+		<script>
+
+			function fadeIn(pElement, pCallBack)
+			{
+				pElement.style.display = "block";
+				M4Tween.killTweensOf(pElement);
+				M4Tween.to(pElement, 1, {opacity:1}).onComplete(pCallBack);
+			}
+
+			function fadeOut(pElement, pCallBack)
+			{
+				var cb = function()
+				{
+					if(pCallBack)
+						pCallBack();
+					pElement.style.display = "none";
+				};
+				M4Tween.killTweensOf(pElement);
+				M4Tween.to(pElement, 1, {opacity:0}).onComplete(cb);
+			}
+
+
+			function createDivs()
+			{
+				var ct = 1;
+				for(var i = 0; i<ct;i++)
+				{
+					document.body.innerHTML += "<div class='element'></div>";
+				}
+			}
+
+			function docClickedHandler()
+			{
+				var element = document.querySelector(".element");
+
+				fadeIn(element, function()
+				{
+					fadeOut(element);
+				});
+			}
+
+			createDivs();
+
+			document.addEventListener('click', docClickedHandler, false);
+		</script>
+	</body>
+</html>

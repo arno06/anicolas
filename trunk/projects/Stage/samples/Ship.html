@@ -6,7 +6,7 @@
 		<link href="../../common/docs/docs.css" rel="stylesheet" type="text/css">
 		<script src="../../Dependencies/src/?need=Stage"></script>
 		<style type="text/css">
-			canvas{display:block;width:800px;margin:0 auto;}
+			canvas{}
 		</style>
 		<script type="text/javascript">
 			window.addEventListener("load", init, false);
@@ -46,7 +46,6 @@
 
 			function clickHandler(e)
 			{
-				console.log(e);
 				var p;
 				for(var i = 0, max = _projectiles.length;i<max;i++)
 				{
@@ -59,10 +58,10 @@
 				_stage.drawRect(0, 0, _stage.width, _stage.height);
 				_stage.endFill();
 				_stage.beginFill("rgba(200, 200, 255, .5)");
-				_stage.drawCircle(e.localX, e.localY, 10);
+				_stage.drawCircle(_stage.mouseX, _stage.mouseY, 10);
 				_stage.endFill();
 				_stage.beginFill("rgba(200, 200, 255, 1)");
-				_stage.drawCircle(e.localX, e.localY, 6);
+				_stage.drawCircle(_stage.mouseX, _stage.mouseY, 6);
 				_stage.endFill();
 			}
 
