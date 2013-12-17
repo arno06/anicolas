@@ -210,7 +210,7 @@ body div#screen div.content .holder {
 }
 body div#screen div.content .holder #agenda {
   background: #eee;
-  padding-top: 20px;
+  padding-top: 10px;
 }
 body div#screen div.content .holder #agenda a.button {
   display: block;

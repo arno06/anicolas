@@ -67,6 +67,7 @@ Class.define(DrawingCommand, [Class, EventDispatcher], {
 	context:null,
 	stage:null,
 	mouseEnabled:false,
+	mask:false,
 	__mouse:{over:false, press:false},
 	clear:function()
 	{
@@ -162,20 +163,29 @@ Class.define(DrawingCommand, [Class, EventDispatcher], {
 		if(!this.context || !this.stage)
 			return;
 		this.stage.__displayListIt++;
-		var open  = false, cmd, textColor, c, ctx = this.context, stroke = false, over = false;
+		var open  = false, cmd, textColor, c, ctx = this.context, stroke = false, over = false, cmds, j, maxj;
 		ctx.shadowColor = ctx.shadowBlur = ctx.shadowOffsetX = ctx.shadowOffsetY = null;
 		if(this.filters.length>0)
 		{
-			for(var j = 0, maxj = this.filters.length;j<maxj;j++)
+			for(j = 0, maxj = this.filters.length;j<maxj;j++)
 			{
 				var f = this.filters[j];
 				for(var k = 0, maxk = f.props.length;k<maxk;k++)
 					this.context[f.props[k].name] = f.props[k].value;
 			}
 		}
-		for(var i = 0, max = this.commands.length; i<max;i++)
+		cmds = this.commands.slice(0);
+		if(this.mask)
 		{
-			cmd = this.commands[i];
+			var mcmds = this.mask.commands.slice(0);
+			mcmds.push({type:DrawingCommand.CLIP});
+
+			for(j = 0, maxj = mcmds.length-1;maxj>=j;maxj--)
+				cmds.unshift(mcmds[maxj]);
+		}
+		for(var i = 0, max = cmds.length; i<max;i++)
+		{
+			cmd = cmds[i];
 			switch(cmd.type)
 			{
 				case DrawingCommand.SET_LINE_STYLE:
@@ -195,6 +205,11 @@ Class.define(DrawingCommand, [Class, EventDispatcher], {
 			}
 			switch(cmd.type)
 			{
+				case DrawingCommand.CLIP:
+					open = false;
+					ctx.closePath();
+					ctx.clip();
+					break;
 				case DrawingCommand.MOVE_TO:
 					open = true;
 					ctx.beginPath();
@@ -332,6 +347,7 @@ DrawingCommand.DRAW_TEXT = "cmd_drawtext";
 DrawingCommand.SET_FONT = "cmd_setfont";
 DrawingCommand.DRAW_IMG = "cmd_drawimg";
 DrawingCommand.SET_PIXEL = "cmd_setpixel";
+DrawingCommand.CLIP = "cmd_clip";
 
 function Sprite()
 {

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<style>
+			body{height:2500px;overflow:auto;}
+			body p{position:fixed;transition:all .5s;}
+			body div.background{position:fixed;height:200px;background:#22aa44;transition:all .5s;}
+		</style>
+		<script src="../src/ScrollAnimator.js"></script>
+		<script>
+			function init()
+			{
+				ScrollAnimator.add("div.background").animateFrom(500).animateTo(1200).addProp("width", "px", 0, 200);
+				ScrollAnimator.add("div.background").animateFrom(1200).animateTo(2000).addProp("height", "px", 200, 0);
+				ScrollAnimator.add("p.hello").animateFrom(0).animateTo(700).addProp("fontSize", "px", 10, 20);
+				ScrollAnimator.register();
+			}
+		</script>
+	</head>
+	<body onload="init()">
+		<div class="background"></div>
+		<p class="hello">Hello World</p>
+	</body>
+</html>

@@ -191,10 +191,10 @@ Class.define(Template, [EventDispatcher],
 						r = this._parseBlock(alt, pData);
 					break;
 				case "if":
-					var f = this._parseVariables(o[3], pData, rea);
+					var f = this._parseVariables(o[3], pData, rea, true);
 					while(f[0]==" ")
 						f = f.replace(/^\s/, '');
-					if(/^\s*$/.exec(f)||/^\!\=/.exec(f)||/^\=\=/.exec(f)||/^\>\=/.exec(f)||/^\<\=/.exec(f)||/^\%/.exec(f)||/^\|/.exec(f))
+					if(/^\s*$/.exec(f)||/^(!|=|>|<)/.exec(f)||/(\||&)(!|=|>|<)/.exec(f))
 						f = false;
 					r = eval("(function(){var r = false; try { r = "+f+"; } catch(e){ r= false;} return r;})()");
 					r = r?blc:(alt||"");
@@ -242,13 +242,17 @@ Class.define(Template, [EventDispatcher],
 
 		return pString;
 	},
-	_parseVariables:function(pString, pData, pRegXP)
+	_parseVariables:function(pString, pData, pRegXP, pEscapeString)
 	{
+		pEscapeString = pEscapeString||false;
 		pRegXP = pRegXP||Template.REGXP_ID;
-		var res;
+		var res, value;
 		while(res = pRegXP.exec(pString))
 		{
-			pString = pString.replace(res[0], this._getVariable(res[1], pData));
+			value = this._getVariable(res[1], pData);
+			if(pEscapeString&& (typeof value )== "string")
+				value = "'"+value+"'";
+			pString = pString.replace(res[0], value);
 		}
 		return pString;
 	},

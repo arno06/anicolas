@@ -9,6 +9,8 @@
 			var table = ["This", "is", "spartaaa", "...", "foo", "bar"];
 			var tpl = new Template("id_tpl");
 			tpl.assign("myTable", table);
+			tpl.assign("test1", 42);
+			tpl.assign("test2", 6);
 			tpl.addEventListener(TemplateEvent.RENDER_INIT, tplRenderInitHandler, false);
 			tpl.addEventListener(TemplateEvent.RENDER_COMPLETE, tplRenderCompleteHandler, false);
 			tpl.addEventListener(TemplateEvent.RENDER_COMPLETE_LOADED, tplRenderCompleteLoadedHandler, false);
@@ -45,6 +47,12 @@
 					{$key} : {=add($key, 1)}
 				</li>
 			{/foreach}
+			</ul>
+			<h1>Condition test</h1>
+			<ul>
+				<li>$test1>=0 {if $test1>=0}ok{else}ko{/if}</li>
+				<li>$test2>=0 {if $test2>=0}ok{else}ko{/if}</li>
+				<li>$test1>=0&&$test2>=0 {if $test1>=0&&$test2>=0}ok{else}ko{/if}</li>
 			</ul>
 		</script>
 	</body>

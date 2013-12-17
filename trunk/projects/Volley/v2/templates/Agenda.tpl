@@ -4,7 +4,7 @@
 		<div class="day">
 			<h2>{$day.label} <span>{$day.matches.length} matches</span></h2>
 			{foreach $day.matches $match}
-				<div class="match {if $match.home.set==3}home_won{else}guest_won{/if}">
+				<div class="match {if $match.home.points>=0}{if $match.home.set==3}home_won{else}guest_won{/if}{/if}">
 					<div class="home">{$match.home.name}</div>
 					{if $match.home.points>=0}
 						<div class="home_set">{$match.home.set}</div>
