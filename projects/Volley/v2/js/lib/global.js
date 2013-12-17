@@ -896,7 +896,7 @@ Class.define(Template, [EventDispatcher],
 					var f = this._parseVariables(o[3], pData, rea);
 					while(f[0]==" ")
 						f = f.replace(/^\s/, '');
-					if(/^\s*$/.exec(f)||/^\!\=/.exec(f)||/^\=\=/.exec(f)||/^\>\=/.exec(f)||/^\<\=/.exec(f)||/^\%/.exec(f)||/^\|/.exec(f))
+					if(/^\s*$/.exec(f)||/^(!|=|>|<)/.exec(f)||/(\||&)(!|=|>|<)/.exec(f))
 						f = false;
 					r = eval("(function(){var r = false; try { r = "+f+"; } catch(e){ r= false;} return r;})()");
 					r = r?blc:(alt||"");

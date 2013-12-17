@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Masks Demo</title>
+		<link href="../../common/docs/docs.css" rel="stylesheet">
+		<script src="../../Dependencies/src/?need=M4Tween,Stage"></script>
+		<style type="text/css">
+			/*canvas{display:block;width:800px;margin:0 auto;background: #ffffff;}*/
+		</style>
+		<script type="text/javascript">
+
+			var _stage;
+
+			var _mask;
+
+			function inita()
+			{
+				_stage = new Stage(800, 600, "#container");
+
+				var s = new Sprite();
+
+				s.x = 400;
+				s.y = 300;
+				s.clear();
+				s.drawImage(document.querySelector("#peng"), new Rectangle(0, 0, 1024, 680), new Rectangle(-512, -340, 1024, 680));
+
+				_mask = new Sprite();
+				_mask.clear();
+				_mask.moveTo(0, 0);
+				_mask.drawArc(0, 0, 512, 0, 359.987, false);
+				_mask.lineTo(0, 0);
+
+				s.mask = _mask;
+
+				_stage.addChild(s);
+
+				_stage.addChild(new FPS());
+
+//				_stage.pause();
+
+				M4Tween.from(0).to(1).start().onUpdate(changeArc);
+			}
+
+			function changeArc(pTarget)
+			{
+				_mask.clear();
+				_mask.moveTo(0, 0);
+				_mask.drawArc(0, 0, 512, -90, -90+((1-pTarget.value) * -359.9), true);
+				_mask.lineTo(0, 0);
+			}
+
+			window.addEventListener("load", inita, false);
+		</script>
+	</head>
+	<body>
+	<header>
+		<h1>Masks - Stage.js</h1>
+	</header>
+	<div id="container" class="content">
+
+	</div>
+
+	<img src="http://miss-etc.com/wp-content/uploads/2013/10/IMG_5176-1024x680.jpg" id="peng" style="display:none;">
+	</body>
+</html>
