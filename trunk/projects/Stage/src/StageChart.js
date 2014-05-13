@@ -5,12 +5,13 @@
  <div class="StageChart">
 		<script type="application/json">
 			{
+			    "id":"demo",
 				"debug":true,
 				"width":400,
 				"height":300,
 				"type":"pie",
 				"fontFace":"Arial",
-				"datas":
+				"data":
 				[
 					{"color":"rgb(200, 200, 200)", "value":30, "label":"E-mails ouverts"},
 					{"color":"rgb(85, 85, 85)", "value":60, "label":"E-mails non ouverts"},
@@ -23,20 +24,34 @@
  */
 var StageChart =
 {
+    _holder:{},
+    get:function(pId)
+    {
+        return StageChart._holder[pId]||null;
+    },
 	init:function()
 	{
 		var charts = document.querySelectorAll(".StageChart");
-		var options = {width:400, height:400, debug:false, fontFace:"Arial", datas:[], options:{}};
-		var chart, parent;
+		var options = {width:400, height:400, debug:false, data:[], options:{}};
+		var chart, parent, config;
 		for(var i = 0, max = charts.length;i<max;i++)
 		{
 			parent = charts[i];
-			chart = JSON.parse(parent.querySelector('script[type="application/json"]').innerHTML);
+            config = parent.querySelector('script[type="application/json"]');
+            if(!config)
+                continue;
+			chart = JSON.parse(config.innerHTML);
+            config.parentNode.removeChild(config);
 			for(var j in options)
 			{
+                if(!options.hasOwnProperty(j))
+                    continue;
+
 				if(!chart[j])
 					chart[j] = options[j];
 			}
+            if(chart.id)
+                parent.setAttribute("id", chart.id);
 			var s;
 			switch(chart.type)
 			{
@@ -45,17 +60,21 @@ var StageChart =
 					if(chart.debug)
 						s.addChild(new FPS());
 					var min = Math.min(chart.width, chart.height)>>1;
-					var p = new PieChart(chart.datas, min, chart.options);
+					var p = new PieChart(chart.data, min, chart.options, chart.events);
 					p.x = chart.width >>1;
 					p.y = chart.height>>1;
 					s.addChild(p);
+                    if(chart.id)
+                        StageChart._holder[chart.id] = p;
 					break;
 				case "bar":
 					s = new Stage(chart.width, chart.height, parent);
 					if(chart.debug)
 						s.addChild(new FPS());
-					var b = new BarChart(chart.datas, chart.width, chart.height, chart.options);
+					var b = new BarChart(chart.data, chart.width, chart.height, chart.options, chart.events);
 					s.addChild(b);
+                    if(chart.id)
+                        StageChart._holder[chart.id] = b;
 					break;
 			}
 		}
@@ -65,14 +84,15 @@ var StageChart =
 
 window.addEventListener("load", StageChart.init, false);
 
-function BarChart(pDatas, pWidth, pHeight, pOptions)
+function BarChart(pData, pWidth, pHeight, pOptions, pEvents)
 {
 	var defaultOptions = {border:{size:1, color:"rgb(255, 0, 0)"}, grid:{size:0.5, color:"rgb(0, 0, 255)", cellWidth:100, cellHeight:100}, minValue:0, maxValue:10};
 	for(var i in defaultOptions)
 		this[i] = pOptions[i]||defaultOptions[i];
 	this.width = pWidth - this.border.size;
 	this.height = pHeight - this.border.size;
-	this.datas = pDatas;
+	this.data = pData;
+    this.events = pEvents;
 	this.reset();
 	this.addEventListener(Event.ADDED_TO_STAGE, this.drawDatas.proxy(this));
 }
@@ -100,11 +120,11 @@ Class.define(BarChart, [Container],
 		}
 		this.drawText(this.maxValue, 2, 2);
 		var item, height, chartPart;
-		max = this.datas.length;
+		max = this.data.length;
 		var distance = Math.floor(this.width / (max+1));
 		for(i = 0; i<max;i++)
 		{
-			item = this.datas[i];
+			item = this.data[i];
 			height = Math.round(Math.min(this.height, (item.value / this.maxValue) * this.height));
 			chartPart = new BarChartPart(30, height, item.label, item.value, item.color);
 			chartPart.x = (i+1) * distance;
@@ -156,11 +176,13 @@ Class.define(BarChartPart, [Container],
 	}
 });
 
-function PieChart(pDatas, pMaxRadius, pOption)
+function PieChart(pData, pMaxRadius, pOption, pEvents)
 {
 	this.reset();
 	this.coefOver = 1.1;
-	this.datas = pDatas;
+	this.data = pData;
+    this.events = pEvents;
+    this.options = pOption||{};
 	pMaxRadius = pMaxRadius - ((pMaxRadius * this.coefOver) - pMaxRadius);
 	this.maxRadius = pMaxRadius||100;
 	this.fontFace = pOption.fontFace||"Arial";
@@ -174,22 +196,40 @@ Class.define(PieChart, [Container],
 	{
 		this.removeChildren();
 		var item, chartPart, itemAngle, totalAngle = 0, maxValue = 0, total = 0;
-		for(var i = 0, max = this.datas.length; i<max;i++)
+		for(var i = 0, max = this.data.length; i<max;i++)
 		{
-			maxValue = Math.max(this.datas[i].value, maxValue);
-			total += this.datas[i].value;
+			maxValue = Math.max(this.data[i].value, maxValue);
+			total += this.data[i].value;
 		}
 		for(i = 0; i<max;i++)
 		{
-			item = this.datas[i];
+			item = this.data[i];
 			item.value = ((item.value/total) * 100);
 			itemAngle = item.value * 3.6;
 			chartPart = new PieChartPart(itemAngle, this.maxRadius, item.label, item.value, item.color, this.fontFace);
+            chartPart.addEventListener(MouseEvent.CLICK, this.partClickedHandler.proxy(this), false);
 			chartPart.rotation = totalAngle;
 			this.addChild(chartPart);
 			totalAngle += itemAngle;
 		}
-	}
+        if(this.options.label)
+        {
+            var fs = Number(this.options.label.fontSize.replace("px",""))>>1;
+            var s = new Sprite();
+            s.clear();
+            s.beginFill(this.options.label.backgroundColor||"rgb(255, 255, 255)");
+            s.drawCircle(0, 0, this.maxRadius>>1);
+            s.endFill();
+            var w = this.measureText(this.options.label.text, this.options.fontFace, this.options.label.fontSize);
+            s.setFont(this.options.fontFace, this.options.label.fontSize, this.options.label.color||"rgb(0, 0, 0)");
+            s.drawText(this.options.label.text, -w>>1, -fs);
+            this.addChild(s);
+        }
+	},
+    partClickedHandler:function(e)
+    {
+        this.dispatchEvent(new StageChartEvent(StageChartEvent.PART_CLICK, false, e.target));
+    }
 });
 
 function PieChartPart(pAngle, pRadius, pLabel, pValue, pColor, pFontFace)
@@ -212,6 +252,15 @@ Class.define(PieChartPart, [Container],
 	_over:null,
 	_overHandler:function()
 	{
+        if(!this.toolTip.parent)
+        {
+            this.parent.addChild(this.toolTip);
+            var w = this.toolTip.getWidth()>>1;
+            if((this.toolTip.x-w) < (-this.toolTip.parent.maxRadius))
+                this.toolTip.x = -(this.toolTip.parent.maxRadius) + (w);
+            else if (this.toolTip.x+w > this.toolTip.parent.maxRadius)
+                this.toolTip.x = this.toolTip.parent.maxRadius - w;
+        }
 		M4Tween.killTweensOf(this);
 		M4Tween.killTweensOf(this.toolTip);
 		M4Tween.to(this, .3, {scaleX:this.parent.coefOver, scaleY:this.parent.coefOver, useStyle:false});
@@ -219,6 +268,7 @@ Class.define(PieChartPart, [Container],
 	},
 	_outHandler:function()
 	{
+        var ref = this;
 		M4Tween.killTweensOf(this);
 		M4Tween.killTweensOf(this.toolTip);
 		M4Tween.to(this, .3, {scaleX:1, scaleY:1, useStyle:false});
@@ -233,7 +283,6 @@ Class.define(PieChartPart, [Container],
 		this.drawArc(0, 0, this.radius, 0, this.angle);
 		this.endFill();
 		this.toolTip = new ChartToolTip(this.label, this.fontFace, "12px", "rgb(255, 255, 255)", "rgba(0, 0, 0, .55)", 5, 5);
-		this.parent.addChild(this.toolTip);
 		this.toolTip.alpha = 0;
 		var a = M4.geom.DEGREE_TO_RADIAN * (this.rotation+(this.angle>>1));
 		this.toolTip.x = Math.round(Math.cos(a) * this.radius);
@@ -251,6 +300,7 @@ Class.define(PieChartPart, [Container],
 		M4Tween.to(this, .3, {scaleX:1, scaleY:1, useStyle:false});
 		this.addEventListener(MouseEvent.MOUSE_OVER, this._overHandler.proxy(this));
 		this.addEventListener(MouseEvent.MOUSE_OUT, this._outHandler.proxy(this));
+        this.stage.addEventListener(MouseEvent.MOUSE_OUT, this._outHandler.proxy(this));
 	}
 });
 
@@ -278,5 +328,22 @@ Class.define(ChartToolTip, [Sprite],
 		this.drawRoundRect(- (w>>1) - this.xPadding, 0, w + (this.xPadding<<1), 17, this.borderRadius, this.borderRadius, this.borderRadius, this.borderRadius);
 		this.endFill();
 		this.drawText(this.label,- (w>>1));
-	}
+    },
+    getWidth:function()
+    {
+        this.setFont(this.fontFace, this.fontSize, this.fontColor);
+        var w = this.measureText(this.label, this.fontFace, this.fontSize);
+        return w + (this.xPadding<<1);
+    }
 });
+
+function StageChartEvent(pType, pBubbles, pPart)
+{
+    this.part = pPart;
+    this.super("constructor", pType, pBubbles);
+}
+
+Class.define(StageChartEvent, [Event], {
+    part:null
+});
+StageChartEvent.PART_CLICK = "stagechart_evt_part_clicked";
