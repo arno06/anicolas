@@ -1,0 +1,37 @@
+[
+    {
+        "url":"medicaments/vidal-famille/medicament-{$id}-{$permalink}.html",
+        "controller":"medicaments",
+        "action":"details",
+        "parameters":
+        {
+            "id":"[a-zA-Z0-9]+",
+            "permalink":"[a-zA-Z0-9\\-]+"
+        }
+    },
+    {
+        "url":"medicaments/alphabetique/recherche/liste-medicament-{$value}.html",
+        "controller":"medicaments",
+        "action":"alphabetique",
+        "parameters":
+        {
+            "value":"[A-Z]"
+        }
+    },
+    {
+        "url":"{$controller}.html",
+        "action":"index",
+        "parameters":
+        {
+            "controller":"[a-zA-z0-9\\-]+"
+        }
+    },
+    {
+        "url":"{$controller}/{$action}.html",
+        "parameters":
+        {
+            "controller":"[a-zA-z0-9\\-]+",
+            "action":"[a-zA-z0-9\\-]+"
+        }
+    }
+]

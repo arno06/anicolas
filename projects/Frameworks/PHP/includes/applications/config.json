@@ -1,0 +1,45 @@
+{
+    "site": {
+        "async": "",
+        "application": "main",
+        "theme": "default",
+        "devmode": true,
+        "explainOnSelect": "",
+        "multilanguage": "",
+        "emailContact": "me@arnaud-nicolas.fr",
+        "translateURL": "",
+        "defaultLanguage": "fr",
+        "currentLanguage": "fr",
+        "template404": "template.404.tpl",
+        "backoffice": "admin",
+        "session": "vidal_gp",
+        "inlineHTMLCode": ""
+    },
+    "server": {
+        "smtp": ""
+    },
+    "db": false,
+    "application":
+    {
+        "autoload":
+        {
+            "packages":
+            {
+                "vidalgp":
+                {
+                    "models":"includes/libs/vidalgp/models/",
+                    "class":"includes/libs/vidalgp/"
+                }
+            }
+        }
+    },
+    "authentification":
+    {
+        "tableName": "%s_user",
+        "tableId": "id_user",
+        "fieldPassword": "mdp_user",
+        "fieldLogin": "login_user",
+        "fieldPermissions": "permissions_user",
+        "useGroup": ""
+    }
+}

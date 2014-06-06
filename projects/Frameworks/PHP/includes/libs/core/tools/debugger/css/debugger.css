@@ -1,0 +1,43 @@
+#debug,#debug *{font-family:Arial, Helvetica, sans-serif;font-size:12px;outline: none;}
+#debug b,#debug strong{font-weight:bold;}
+#debug .clean{clear:both;}
+#debug{z-index:10000;left:0;bottom:0;height:20px;position:fixed;width:100%;background:#efefef;overflow:hidden;border-top:#999999 solid 1px;}
+#debug a{text-decoration: none;color:black;font-size:12px;}
+#debug a:hover{text-decoration:underline;cursor:pointer;}
+#debug .debug_content{margin-top:10px;position:absolute;top:50px;left:0;right:0;height:100%;}
+#debug .debug_console{width:70%;float:left;height:100%;overflow: auto;border-right: #ccc solid 1px;}
+#debug table.console{width:100%;}
+#debug table tr:first-child td{border-top: none;}
+#debug table tr td{border-top: 1px solid #ddd;padding: 5px 10px;}
+#debug table td.date{width:90px;color:#666;}
+#debug table td.message{padding-left:15px;}
+#debug table td.file{width:160px;text-align: right;}
+#debug table td.error,div[rel=error] span{background: #ff0000;}
+#debug table td.warning,div[rel=warning] span{background: #ff9900;}
+#debug table td.notice,div[rel=notice] span{background: #ffff66;}
+#debug table td.trace,div[rel=trace] span{background: #555;}
+#debug table td.query,div[rel=query] span{background: #00ffff;}
+#debug table td.error,
+#debug table td.warning,
+#debug table td.notice,
+#debug table td.trace,
+#debug table td.query{width:7px;padding: 0;border-top: none;}
+#debug_control{float:right;padding:0 4px 0 0;}
+#debug #debug_global{padding: 0 0 0 4px;float:left;}
+#debug #debug_buttons{margin-top:10px;height:30px;width:100%;}
+#debug #debug_buttons div:hover{cursor:pointer;}
+#debug #debug_buttons div:focus{border: #eee solid 1px;}
+#debug #debug_buttons div:active{border: #ddd solid 1px;}
+#debug #debug_buttons div{margin-right:5px;border-radius:5px;height:17px;padding: 2px 5px 6px 15px;width:auto;float:left;position: relative;background-color:#fafafa;background-image: -o-linear-gradient(top, #999 0%, #222 100%);background-image: -moz-linear-gradient(top, #fff 0%, #ddd 100%);background-image: -webkit-linear-gradient(top, #fff 0%, #ddd 100%);background-image: -ms-linear-gradient(top, #fff 0%, #ddd 100%);border: #fff solid 1px;box-shadow: 0 1px 2px rgba(0, 0, 0, .4);}
+#debug #debug_buttons div.vars{float:right;padding-left:5px;}
+#debug #debug_buttons div.disabled{opacity: .5;}
+#debug #debug_buttons div span{position:absolute;display:block;width:7px;height:23px;margin-left:-11px;margin-top:-1px;}
+#debug #debug_buttons div span.count{display:inline;width:auto;height:auto;position:relative;margin: 0;color:#666;background: none;}
+#debug .debug_vars{width:28%;float:right;height:286px;overflow: auto;padding-left:1%;}
+@media screen and (max-width:679px){
+    #debug{top:0;}
+    #debug #debug_global,#debug #debug_global *,#debug #debug_control a{font-size:9px;}
+}
+@media print{
+    #debug{display:none;}
+}

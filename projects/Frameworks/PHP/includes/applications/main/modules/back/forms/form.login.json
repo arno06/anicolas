@@ -1,0 +1,28 @@
+{
+	"login":{
+		"require":true,
+		"label":"Login",
+		"regExp":"TextNoHtml",
+		"balise":"input",
+		"attributes":{
+			"type":"text"
+		}
+	},
+	"mdp":{
+		"require":true,
+		"label":"Mot de passe",
+		"regExp":"TextNoHtml",
+		"balise":"input",
+		"attributes":{
+			"type":"password"
+		}
+	},
+	"submit":{
+		"balise":"input",
+		"attributes":{
+			"type":"submit",
+			"value":"Valider",
+			"class":"button-medium"
+		}
+	}
+}
