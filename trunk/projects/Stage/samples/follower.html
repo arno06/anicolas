@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Sprite Demo</title>
+		<script src="../../Dependencies/src/?need=Stage"></script>
+		<style type="text/css">
+			canvas{display:block;width:1584px;height:1178px;margin:0 auto;background: #eeeeee;}
+		</style>
+		<script type="text/javascript">
+			window.addEventListener("load", init, false);
+
+			var _stage, _loader, _s;
+
+			function init()
+			{
+
+				_stage = new Stage(1584, 1178, "#container");
+
+                _s = new Sprite();
+                _s.beginFill("rgb(0, 0, 0)");
+                _s.drawCircle(0, 0, 10);
+                _s.endFill();
+
+                _stage.addChild(new FPS());
+
+                _stage.addChild(_s);
+
+                _stage.addEventListener(Event.ENTER_FRAME, frameHandler);
+			}
+
+            function frameHandler()
+            {
+                var coef = .3;
+                _s.x += ((_stage.mouseX - _s.x)>>1) * coef;
+                _s.y += ((_stage.mouseY - _s.y) >> 1) * coef;
+                console.log(_stage.mouseY);
+            }
+
+		</script>
+	</head>
+	<body>
+	<div id="container" class="content"></div>
+	</body>
+</html>

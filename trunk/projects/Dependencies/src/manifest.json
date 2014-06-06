@@ -83,6 +83,13 @@
 			"Stage/src/Stage3DIso.js"
 		]
 	},
+    "StageChart":
+    {
+        "need":["Stage"],
+        "src":[
+            "Stage/src/StageChart.js"
+        ]
+    },
 	"Template":
 	{
 		"need":["Class", "Event"],

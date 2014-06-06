@@ -1,0 +1,20 @@
+{
+	"name":"Sample",
+	"version":"1.0",
+	"description":"Exemple d'un module de backoffice",
+	"author":
+	{
+		"http:\/\/www.arnaud-nicolas.fr\/":"A. Nicolas"
+	},
+	"files":
+	{
+		"model.ModelSample.php":"%app%/models/model.ModelSample.php",
+		"controller.sample.php":"%app%/modules/back/controllers/controller.sample.php",
+		"form.sample.json":"%app%/modules/back/forms/form.sample.json"
+	},
+	"sql_dump":
+	{
+		"install":"install.dump",
+		"uninstall":"uninstall.dump"
+	}
+}
