@@ -13,12 +13,11 @@ abstract class RewriteURLHandler implements InterfaceRewriteURLHandler
 	const REGEXP_CONTROLLER = '/^([a-z\-]{1,})\//';
 	const REGEXP_ACTION     = '/^([a-z\-]{1,})\//';
 	const REGEXP_PARAMETERS = '/^(([a-z][a-z0-9\_\-]*:.*)*)\//i';
-    const SEPARATOR = " ";
 
 	/**
 	 * Méthode de parsing d'une url
-	 * Renvoie nécessairement un tableau contenant les informations :  controller - action - application - param&egrave;tre - langue
-	 * @param String $pUrl		Url &agrave; parser
+	 * Renvoie nécessairement un tableau contenant les informations :  controller - action - application - paramètre - langue
+	 * @param String $pUrl		Url à parser
 	 * @return array
 	 */
 	static public function parse($pUrl)
@@ -157,7 +156,7 @@ abstract class RewriteURLHandler implements InterfaceRewriteURLHandler
 	static public function getAlias($pValue = "")
 	{
 		if(!Core::$isBackoffice&&Configuration::$site_translateURL)
-			return preg_replace('/(\_)/', "-", Dictionnary::getAliasFor($pValue));
+			return preg_replace('/(\_)/', "-", Dictionary::getAliasFor($pValue));
 		else
 			return preg_replace('/(\_)/', "-", $pValue);
 	}
@@ -210,7 +209,7 @@ abstract class RewriteURLHandler implements InterfaceRewriteURLHandler
             &&Configuration::$site_translateURL
             &&!Core::$isBackoffice)
 		{
-			$controller = Dictionnary::getAliasFrom($controller);
+			$controller = Dictionary::getAliasFrom($controller);
 			if(empty($controller))
 				Go::to404();
         }
@@ -230,7 +229,7 @@ abstract class RewriteURLHandler implements InterfaceRewriteURLHandler
             &&Configuration::$site_translateURL
             &&!Core::$isBackoffice)
 		{
-			$action = Dictionnary::getAliasFrom($action);
+			$action = Dictionary::getAliasFrom($action);
 			if(empty($action))
 				Go::to404();
         }
@@ -239,7 +238,7 @@ abstract class RewriteURLHandler implements InterfaceRewriteURLHandler
 
 
 	/**
-	 * Méthode permettant de dépiler une chaine de caract&egrave;res de l'url passée en param&egrave;tre et respectant l'expression réguli&egrave;re souhaitée
+	 * Méthode permettant de dépiler une chaine de caractères de l'url passée en paramètre et respectant l'expression régulière souhaitée
 	 * @static
 	 * @param  $pURL
 	 * @param  $pRegExp
@@ -291,8 +290,8 @@ abstract class RewriteURLHandler implements InterfaceRewriteURLHandler
 
 
 	/**
-	 * Méthode permettant de filtrer une chaine de caract&egrave;res pour son utilisation dans une url
-	 * @param String $pTexte			Chaine de caract&egrave;res a filtrer
+	 * Méthode permettant de filtrer une chaine de caractères pour son utilisation dans une url
+	 * @param String $pTexte			Chaine de caractères a filtrer
 	 * @param bool $pLower
 	 * @return String
 	 */

@@ -1,9 +1,9 @@
 var BO = {};
 BO.init = function(e)
 {
-	$each(".td-liste", "click", BO.tdListeClickHandler, false);
-	$each(".target-blank", "click", BO.aBlankClick, false);
-	$each(".a-delete", "click", BO.aDeleteClickHandler, false);
+	document.querySelectorAll(".td-liste").forEach(function(pItem){pItem.addEventListener("click", BO.tdListeClickHandler);});
+	document.querySelectorAll(".target-blank").forEach(function(pItem){pItem.addEventListener("click", BO.aBlankClick);});
+	document.querySelectorAll(".a-delete").forEach(function(pItem){pItem.addEventListener("click", BO.aDeleteClickHandler);});
 };
 
 BO.aDeleteClickHandler = function(e)

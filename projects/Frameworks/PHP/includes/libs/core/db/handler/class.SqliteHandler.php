@@ -45,21 +45,21 @@ class SqliteHandler implements InterfaceDatabaseHandler
 	 * @var Int
 	 */
 	public $lastId;
-	
-	/**
-	 * Constructor
-	 * Effectue la connexion avec la base
-	 * @param PrivateClass $pInstance
-	 */
-	public function __construct($pInstance)
+
+
+    /**
+     * @param $pHost
+     * @param $pUser
+     * @param $pPassword
+     * @param $pName
+     */
+    public function __construct($pHost, $pUser, $pPassword, $pName)
 	{
-		if(!$pInstance instanceOf PrivateClass)
-			trigger_error("Il est interdit d'instancier un objet de type <i>Singleton</i> - Merci d'utiliser la méthode static <i>".__CLASS__."::getInstance()</i>", E_USER_ERROR);
-		$this->host = Configuration::$db_host;
-		$this->user = Configuration::$db_user;
-		$this->mdp = Configuration::$db_password;
-		$this->bdd = Configuration::$db_name;
-		$this->connect();
+		$this->host = $pHost;
+        $this->user = $pUser;
+        $this->mdp = $pPassword;
+        $this->bdd = $pName;
+        $this->connect();
 	}
 	
 	/**
@@ -86,11 +86,11 @@ class SqliteHandler implements InterfaceDatabaseHandler
 	/**
 	 * Méthode permettant de centraliser les commandes &agrave; effectuer avant l'excécution d'une requ�te
 	 * @param String $pQuery				Requ�te &agrave; excécuter
-	 * @return Ressource
+	 * @return resource
 	 */
-	protected function execute($pQuery)
+	public function execute($pQuery)
 	{
-		array_push(self::$queries,$pQuery);
+        Debugger::query($pQuery, "db", $this->bdd);
 		return $this->sqlite->exec($pQuery);
 	}
 	
@@ -160,16 +160,6 @@ class SqliteHandler implements InterfaceDatabaseHandler
 	public function filterOut($pValue)
 	{
 		return $pValue;
-	}
-	
-	/**
-	 * Singleton
-	 * @param String $pClass [optional]
-	 * @return SqliteHandler
-	 */
-	static public function getInstance($pClass = "")
-	{
-		return parent::getInstance(__CLASS__);
 	}
 	
 	

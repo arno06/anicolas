@@ -266,7 +266,7 @@ class Form
 				}
 			}
 			if($parseLabels&&!empty($input["label"]))
-				$input["label"] = Dictionnary::term($input["label"]);
+				$input["label"] = Dictionary::term($input["label"]);
 		}
 	}
 	
@@ -609,13 +609,13 @@ class Form
 		}
 		if($nb==1)
         {
-            $format = Dictionnary::term($pLibelle.$pArray[0]);
-            if ($format == Dictionnary::UNDEFINED)
-                $format = Dictionnary::term($pLibelle);
+            $format = Dictionary::term($pLibelle.$pArray[0]);
+            if ($format == Dictionary::UNDEFINED)
+                $format = Dictionary::term($pLibelle);
         }
 		else
         {
-            $format = Dictionnary::term($pLibelles);
+            $format = Dictionary::term($pLibelles);
         }
         return "<p>".sprintf($format, $error)."</p>";
 	}
@@ -690,17 +690,19 @@ class Form
 		$this->cleanDatas();
 		if(isset($this->post))
 			$this->injectValues($this->post);
-		Autoload::addScript("prototype.js");
-		Autoload::addScript("cbi/Form.js");
+		Autoload::addScript("core/Form.js");
 		$this->countMendatory = 0;
 		foreach($this->data as $name=>&$data)
 		{
 			switch($data["balise"])
 			{
                 case self::TAG_RICHEDITOR:
+                    /** @ todo **/
+                    trace("you must handle richeditor");
                     Autoload::addScript("ckeditor/ckeditor.js");
                 break;
 				case self::TAG_UPLOAD:
+                    trace("you must handle upload");
 					Autoload::addScript("swfobject.js");
 					$this->hasUpload = true;
 				break;
@@ -718,7 +720,7 @@ class Form
 					   && $data["attributes"]["type"]=="submit"
 						&& Configuration::$site_multilanguage)
 					{
-						$data["attributes"]["value"] = Dictionnary::term($data["attributes"]["value"]);
+						$data["attributes"]["value"] = Dictionary::term($data["attributes"]["value"]);
 					}
 				break;
 				case self::TAG_DATEPICKER:
@@ -905,9 +907,9 @@ class Form
 		{
 			$output .= "<div class='mandatory'>*&nbsp;";
 			if($this->countMendatory==1)
-				$output .= Dictionnary::term("global.forms.inputRequire");
+				$output .= Dictionary::term("global.forms.inputRequire");
 			else
-				$output .= Dictionnary::term("global.forms.inputsRequire");
+				$output .= Dictionary::term("global.forms.inputsRequire");
 			$output .= "</div>";
 		}
 		foreach($this->data as $n=>$d)
@@ -1145,7 +1147,7 @@ class FormHelpers
 			}
 		}
 		else
-			$component .= "<tr class='empty'><td>".Dictionnary::term("global.forms.noAvailableValue")."</td></tr>";
+			$component .= "<tr class='empty'><td>".Dictionary::term("global.forms.noAvailableValue")."</td></tr>";
 		$component .= '</table></div>';
 		$input = self::getLabel($pData["label"].$pRequire, $pId);
 		$input .= self::getComponent($component);
@@ -1173,7 +1175,7 @@ class FormHelpers
 			else
 				$file .= $value;
             
-            $extra = '<br/>&nbsp;&nbsp;<a href="'.$file.'" class="target-blank">'.Dictionnary::term("global.forms.seeFile").'</a>';
+            $extra = '<br/>&nbsp;&nbsp;<a href="'.$file.'" class="target-blank">'.Dictionary::term("global.forms.seeFile").'</a>';
 		}
 
 		if (!isset($pData["notAsync"])||!$pData["notAsync"])
@@ -1185,10 +1187,10 @@ class FormHelpers
                 $swf .= '
                     <div class="progress">
                         <div class="bar" style="">
-                            <span class="caption_top">'.Dictionnary::term('global.forms.upload.noFile').'</span>
+                            <span class="caption_top">'.Dictionary::term('global.forms.upload.noFile').'</span>
                         </div>
                     </div>
-                    <div class="button_clicker" style=""><div class="flash"><div id="'.$button.'"></div></div><div class="text_button">'.Dictionnary::term('global.forms.upload.browse').'</div></div>';
+                    <div class="button_clicker" style=""><div class="flash"><div id="'.$button.'"></div></div><div class="text_button">'.Dictionary::term('global.forms.upload.browse').'</div></div>';
                 $swf .= self::script("window.params_".$button." = {server_url:'http://".Configuration::$server_domain."/".Configuration::$server_folder."/',application:'".Configuration::$site_application."',file_type:'".$pData["fileType"]."',script_upload:'".Configuration::$server_url."statique/upload-async/', form_name:'".$pData["form_name"]."', input_name:'".$pData["field_name"]."', id_div:'container_upload_".$pId."', is_backoffice:'".Core::$isBackoffice."'};swfobject.embedSWF('".Core::$path_to_flash."/upload/browser.swf', '".$button."', '100%', '100%', '9.0.0','', params_".$button.",{'wmode':'transparent'});");
                 $swf .= '<div class="clean"></div>
                     <span class="caption_bot"></span>';
@@ -1199,13 +1201,13 @@ class FormHelpers
                 $swf .= '<img id="file_upload" src="'.(($file && $file != $server_url) ? $file : $server_url.'images/avatar/').'" alt="">';
             }
             else
-                $swf .='<a href="'.$file.'" class="see_file"'.$style.' target="_blank">'.Dictionnary::term('global.forms.upload.seeFile').'</a>&nbsp;';
+                $swf .='<a href="'.$file.'" class="see_file"'.$style.' target="_blank">'.Dictionary::term('global.forms.upload.seeFile').'</a>&nbsp;';
 
 			if(isset($pData["deleteFile"]) && !empty($pData["deleteFile"]))
 			{
 				if(!empty($value) && is_numeric($value))
 					$pData["deleteFile"] = preg_replace("/\{id\}/", $value, $pData["deleteFile"]);
-				$swf .='<a href="'.$pData["deleteFile"].'" class="delete_file"'.$style.'>'.Dictionnary::term('global.forms.upload.deleteFile').'</a>';
+				$swf .='<a href="'.$pData["deleteFile"].'" class="delete_file"'.$style.'>'.Dictionary::term('global.forms.upload.deleteFile').'</a>';
 			}
 			if(!empty($value) && !$disabled)
 				$swf .= "<input type='hidden' name='".$pName."' value='".$value."'/>";
@@ -1306,7 +1308,7 @@ class FormHelpers
 			}
 		}
 		else
-			$group .= "<span class='empty'>".Dictionnary::term("global.forms.noAvailableValue")."</span>";
+			$group .= "<span class='empty'>".Dictionary::term("global.forms.noAvailableValue")."</span>";
 		$group .= "</div>";
 		$input = self::getLabel($pData["label"].$pRequire, $pId);
 		$input .= self::getComponent($group);
@@ -1361,8 +1363,8 @@ class FormHelpers
 	static private function captcha($pName, $pId, $pData, $pRequire = "")
 	{
 		$l = "' onclick='return reloadCaptcha(this);";
-		$r = self::getLabel("<span class='captcha'><img src='statique/captcha/form:".$pData["form_name"]."/input:".$pData["field_name"]."/' alt=''/><br/><span class='reload_captcha'>".Dictionnary::term("global.forms.infosCaptcha").$pRequire."</span></span>", $pId);
-		$r .= self::getComponent("<p class='input'><input type='text' name='".$pName."' id='".$pId."'/><br/><span class='details_captcha'>".sprintf(Dictionnary::term("global.forms.reloadCaptcha"),$l)."</span></p>");
+		$r = self::getLabel("<span class='captcha'><img src='statique/captcha/form:".$pData["form_name"]."/input:".$pData["field_name"]."/' alt=''/><br/><span class='reload_captcha'>".Dictionary::term("global.forms.infosCaptcha").$pRequire."</span></span>", $pId);
+		$r .= self::getComponent("<p class='input'><input type='text' name='".$pName."' id='".$pId."'/><br/><span class='details_captcha'>".sprintf(Dictionary::term("global.forms.reloadCaptcha"),$l)."</span></p>");
 		return $r;
 	}
 
@@ -1456,8 +1458,8 @@ class FormHelpers
 			case "select":
 				if(isset($pData["chosen"]) && $pData["chosen"] == true)
 				{
-					$no_result = Dictionnary::term("global.forms.chosen.no_result_text");
-					$default_text =Dictionnary::term("global.forms.chosen.default_text");
+					$no_result = Dictionary::term("global.forms.chosen.no_result_text");
+					$default_text =Dictionary::term("global.forms.chosen.default_text");
 					if(isset($pData["parameters"]["no_result_text"]))
 						$no_result = $pData["parameters"]["no_result_text"];
 					if(isset($pData["parameters"]["default_text"]))

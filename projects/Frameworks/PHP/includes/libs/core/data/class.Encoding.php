@@ -11,7 +11,7 @@ abstract class Encoding
 	/**
 	 * Méthode static d'encodage récursif de valeurs dans leurs valeur numériques (é ==> &#233;)
 	 * @param object $pValue
-	 * @return object
+	 * @return string|array
 	 */
 	static public function toNumericEntities($pValue)
 	{
@@ -54,14 +54,14 @@ abstract class Encoding
 	}
 
 
-	/**
-	 * Méthode static d'encodage récursif de valeurs dans leurs valeur HTML (é ==> é)
-	 * @param object $pValue
-	 * @param int $pQuote
-	 * @param string $pCharset
-	 * @return object
-	 */
-	static public function toHTMLEntities($pValue, $pQuote = ENT_QUOTES, $pCharset = false)
+    /**
+     * Méthode static d'encodage récursif de valeurs dans leurs valeur HTML (é ==> &eacute;)
+     * @param $pValue
+     * @param int $pQuote
+     * @param bool $pCharset
+     * @return string
+     */
+    static public function toHTMLEntities($pValue, $pQuote = ENT_QUOTES, $pCharset = false)
 	{
 		if(!$pCharset)
 			$pCharset = Configuration::$site_encoding;
@@ -72,14 +72,15 @@ abstract class Encoding
 		return $pValue;
 	}
 
-	/**
-	 * Méthode static de décodage récursif d'entité HTML dans leur version ISO-8859-1
-	 * @param  $pValue
-	 * @param int $pQuote
-	 * @param string $pCharset
-	 * @return string
-	 */
-	static public function fromHTMLEntities($pValue, $pQuote = ENT_QUOTES, $pCharset = false)
+
+    /**
+     * Méthode static de décodage récursif d'entité HTML dans leur version ISO-8859-1
+     * @param $pValue
+     * @param int $pQuote
+     * @param bool $pCharset
+     * @return string
+     */
+    static public function fromHTMLEntities($pValue, $pQuote = ENT_QUOTES, $pCharset = false)
 	{
 		if(!$pCharset)
 			$pCharset = Configuration::$site_encoding;
@@ -93,8 +94,8 @@ abstract class Encoding
 
 	/**
 	 * @static
-	 * @param misc $pValue
-	 * @return misc
+	 * @param array|string $pValue
+	 * @return array|string
 	 */
 	static public function fromUTF8($pValue)
 	{

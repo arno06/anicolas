@@ -12,7 +12,7 @@
         "currentLanguage": "fr",
         "template404": "template.404.tpl",
         "backoffice": "admin",
-        "session": "vidal_gp",
+        "session": "php_fw",
         "inlineHTMLCode": ""
     },
     "server": {
@@ -25,10 +25,10 @@
         {
             "packages":
             {
-                "vidalgp":
+                "someAddtionalPackage":
                 {
-                    "models":"includes/libs/vidalgp/models/",
-                    "class":"includes/libs/vidalgp/"
+                    "models":"includes/libs/additionalPackage/models/",
+                    "class":"includes/libs/additionalPackage/"
                 }
             }
         }

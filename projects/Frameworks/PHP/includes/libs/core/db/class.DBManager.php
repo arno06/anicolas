@@ -13,41 +13,45 @@ class DBManager
 
 	/**
 	 * @static
-	 * @param string $pIdentifiant
+	 * @param string $pName
 	 * @return InterfaceDatabaseHandler
 	 */
-	static public function get($pIdentifiant = "default")
+	static public function get($pName = "default")
 	{
-		if(!isset(self::$handlers[$pIdentifiant]))
-			trigger_error("L'identifiant \"".$pIdentifiant."\" ne correspond &agrave; aucun gestionnaire stocké.");
-		return self::$handlers[$pIdentifiant];
+		if(!array_key_exists($pName, self::$handlers))
+        {
+            trigger_error("L'identifiant \"".$pName."\" ne correspond &agrave; aucun gestionnaire stocké.");
+            return null;
+        }
+		return self::$handlers[$pName];
 	}
 
 	/**
 	 * @static
-	 * @param $pIdentifiant
+	 * @param $pName
 	 * @param $pInfos
 	 * @return void
 	 */
-	static public function set($pIdentifiant, $pInfos)
+	static public function set($pName, $pInfo)
 	{
-		if(isset(self::$handlers[$pIdentifiant]))
-			trigger_error("L'identifiant \"".$pIdentifiant."\" est déj&agrave; utilisé. Impossible de stocker le gestionnaire créé.");
+		if(isset(self::$handlers[$pName]))
+			trigger_error("L'identifiant \"".$pName."\" est déj&agrave; utilisé. Impossible de stocker le gestionnaire créé.");
 		$d = array("handler", "host", "user", "password", "name");
 		foreach($d as $l)
 		{
-			if(!isset($pInfos[$l]))
-				$pInfos[$l] = "";
+			if(!isset($pInfo[$l]))
+                $pInfo[$l] = "";
 		}
 		try
 		{
-			$instance = new $pInfos["handler"]($pInfos["host"], $pInfos["user"], $pInfos["password"], $pInfos["name"]);
+			$instance = new $pInfo["handler"]($pInfo["host"], $pInfo["user"], $pInfo["password"], $pInfo["name"]);
 		}
 		catch(Exception $e)
 		{
-			trigger_error("Une erreur est apparue lors de l'initialisation du gestionnaire \"".$pIdentifiant."\". Merci de vérifier les informations saisie.");
+			trigger_error("Une erreur est apparue lors de l'initialisation du gestionnaire \"".$pName."\". Merci de vérifier les informations saisie.", E_USER_ERROR);
+            return;
 		}
-		self::$handlers[$pIdentifiant] = $instance;
+		self::$handlers[$pName] = $instance;
 	}
 
 	/**

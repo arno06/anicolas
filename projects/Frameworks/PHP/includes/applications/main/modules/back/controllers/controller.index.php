@@ -8,7 +8,8 @@ class index extends FrontController implements InterfaceController
  	
 	public function index()
 	{
-
+        if(!AuthentificationHandler::is(AuthentificationHandler::ADMIN))
+            Go::toBack("index", "connexion");
 	}
 	
 	public function connexion()
@@ -20,16 +21,14 @@ class index extends FrontController implements InterfaceController
 		$form = new Form("login");
 		if($form->isValid())
 		{
-			$datas = $form->getValues();
-//            if(VidalIDHandler::getInstance()->login($datas["login"], md5($datas["mdp"]), true) && VidalIDHandler::isLoggedToBack())
-            if(VidalIDHandler::getInstance()->login($datas["login"], $datas["mdp"], true) && (VidalIDHandler::isLoggedToBack() || VidalIDHandler::isSubstanceUser() || VidalIDHandler::isPhotoUser()))
+			$data = $form->getValues();
+            if(AuthentificationHandler::getInstance()->setAdminSession($data["login"], md5($data["mdp"])))
             {
-                VidalIDHandler::getInstance()->createSession(true);
                 Go::toBack();
             }
 			else
 			{
-				Logs::write("Tentative de connexion au backoffice <".$datas["login"].":".$datas["mdp"].">", Logs::WARNING);
+				Logs::write("Tentative de connexion au backoffice <".$data["login"].":".$data["mdp"].">", Logs::WARNING);
 				$this->addContent("error", "Le login ou le mot de passe est incorrect");
 			}
 		}

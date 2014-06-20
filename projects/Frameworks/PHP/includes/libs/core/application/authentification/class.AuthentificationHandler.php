@@ -1,6 +1,6 @@
 <?php
 /**
- * Class AuthentificationHandler g&egrave;re les différentes authentifications des applications
+ * Class AuthentificationHandler gère les différentes authentifications des applications
  * 
  * @author Arnaud NICOLAS - arno06@gmail.com
  * @version .3
@@ -32,7 +32,7 @@ class AuthentificationHandler extends Singleton
 	 * Données relatives &agrave; l'utilisateur connecté
 	 * @var array
 	 */
-	static public $datas;
+	static public $data;
 	
 	/**
 	 * Instance Authenficiation configurée pour un utilisateur
@@ -61,7 +61,7 @@ class AuthentificationHandler extends Singleton
 	protected function parseUserSession()
 	{
 		$this->userAuth = new Authentification();
-		self::$datas = $this->userAuth->datas;
+		self::$data = $this->userAuth->data;
 	}
 	
 	/**
@@ -102,56 +102,21 @@ class AuthentificationHandler extends Singleton
 	
 	/**
 	 * Méthode permettant de savoir si l'utilisateur en cours a le niveau de permission demandé
-	 * @param String $pNiveau Niveau de permissions &agrave; tester (peuvent �tre définit dans le fichier de configuration)
+	 * @param String $pLevel Niveau de permissions &agrave; tester (peuvent être définit dans le fichier de configuration)
 	 * @return boolean
 	 */
-	static public function is($pNiveau)
+	static public function is($pLevel)
 	{
 		$i = self::getInstance();
-		if(Configuration::$authentification_useGroup)
-		{
-			if($pNiveau==self::DEVELOPER)
-				return $i->userAuth->permissions&self::$permissions[$pNiveau];
-			return strtolower(self::$datas["group"]["name_group"]) == strtolower($pNiveau);
-		}
-		if(!isset(self::$permissions[$pNiveau]))
+
+		if(!isset(self::$permissions[$pLevel]))
 			return false;
-		return $i->userAuth->permissions&self::$permissions[$pNiveau];
+		return $i->userAuth->permissions&self::$permissions[$pLevel];
 	}
-
-	static public function access($pController, $pAction)
-	{
-		if(!Configuration::$authentification_useGroup)
-			return true;
-		$permissions = self::$datas["group"]["permissions"];
-		$can = false;
-		foreach($permissions as $p)
-		{
-			if ($p["controller_permission"] == $pController && $p["action_permission"] == $pAction)
-				$can = true;
-		}
-		return $can;
-	}
-
-	static public function can($pPermissionName)
-	{
-		if(!Configuration::$authentification_useGroup)
-			return true;
-		$permissions = self::$datas["group"]["permissions"];
-		$can = false;
-		foreach($permissions as $p)
-		{
-			if ($p["name_permission"] == $pPermissionName)
-				$can = true;
-		}
-		return $can;
-	}
-
 
 	static public function isLoggedToBack()
 	{
-		return ((!Configuration::$authentification_useGroup && AuthentificationHandler::is(AuthentificationHandler::ADMIN))
-				||(Configuration::$authentification_useGroup && !AuthentificationHandler::is(AuthentificationHandler::INVITE)));
+		return (AuthentificationHandler::is(AuthentificationHandler::ADMIN));
 	}
 	
 	/**
@@ -180,7 +145,7 @@ class AuthentificationHandler extends Singleton
 	 */
 	public function __destruct()
 	{
-		self::$datas = null;
+		self::$data = null;
 		self::$permissions = null;
 	}
 }

@@ -83,7 +83,7 @@ class MysqliHandler extends MysqlHandler
 	 * @param String $pQuery				Requ�te &agrave; excécuter
 	 * @return mysqli_result
 	 */
-	protected function execute($pQuery)
+	public function execute($pQuery)
 	{
 		Debugger::query($pQuery, "db", $this->bdd);
 		return $this->mysqliInstance->query($pQuery);

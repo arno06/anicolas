@@ -31,22 +31,10 @@ abstract class BaseModel
 	private $joins;
 	
 	/**
-	 * Méthode de récupération de tous les champs sur la table du model avec possibilité d'ajouter une condition
-	 * Renvoie le resultat de la requ�te
-	 * @param QueryCondition $pCondition			Condition SQL (WHERE, ORDER...)
-	 * @param string $pChamps
-	 * @return Array
-	 */
-	public function listAll($pCondition=null, $pChamps = "*")
-	{
-		return $this->all($pCondition, $pChamps);
-	}
-	
-	/**
 	 * Méthode d'insertion de données dans la table du model
-	 * Renvoie le resultat de la requ�te
+	 * Renvoie le resultat de la requête
 	 * @param array $pValues				Tableau associatif des données &agrave; insérer
-	 * @return Ressource
+	 * @return resource
 	 */
 	public function insert(array $pValues)
 	{
@@ -62,7 +50,7 @@ abstract class BaseModel
 	/**
 	 * Méthode d'insertion multiple d'entrées pour un m�me model
 	 * @param array $pValues				Tableau multi-dimensionnel contenant les données &agrave; insérer
-	 * @return Ressource
+	 * @return resource
 	 */
 	public function insert_multiple(array $pValues)
 	{
@@ -71,11 +59,11 @@ abstract class BaseModel
 	
 	
 	/**
-	* Méthode de modification d'une ou plusieurs entrées dans la table du mod&egrave;le en cours
+	* Méthode de modification d'une ou plusieurs entrées dans la table du modèle en cours
 	* @param Array              $pValues			Tableau associatif contenant les données
 	* @param QueryCondition     $pCondition			Condition permettant de cibler la modification
     * @param Boolean $escape
-	* @return Ressource
+	* @return resource
 	**/
 	public function update(array $pValues, $pCondition = null, $escape = true)
 	{
@@ -83,8 +71,8 @@ abstract class BaseModel
 	}
 	
 	/**
-	 * Méthode de récupération d'une tuple particuli&egrave;re de la table en fonction de la valeur de sa clé primaire
-	 * Renvoie un tableau associatif des données correspondant au résultat de la requ�te
+	 * Méthode de récupération d'une tuple particulière de la table en fonction de la valeur de sa clé primaire
+	 * Renvoie un tableau associatif des données correspondant au résultat de la requête
 	 * @param string $pId				Valeur de clé primaire &agrave; cibler
 	 * @param string $pFields
 	 * @return Array
@@ -95,10 +83,10 @@ abstract class BaseModel
 	}
 	
 	/**
-	 * Méthode permettant de générer facilement une requ�te d'update &agrave; partir de valeur de clé primaire et d'un tableau associatif des valeurs
+	 * Méthode permettant de générer facilement une requête d'update &agrave; partir de valeur de clé primaire et d'un tableau associatif des valeurs
 	 * @param String $pId		Valeur de clé primaire &agrave; cibler
 	 * @param Array $pValues	Tableau associatif des champs et de leurs nouvelles valeurs
-	 * @return Ressource
+	 * @return resource
 	 */
 	public function updateById($pId, array $pValues)
 	{
@@ -109,7 +97,7 @@ abstract class BaseModel
 	/**
 	 * Méthode de suppression d'une typle en fonction de la valeur de sa clé primaire
 	 * @param String $pId				Valeur de clé primaire &agrave; cibler
-	 * @return Ressource
+	 * @return resource
 	 */
 	public function deleteById($pId)
 	{
@@ -119,7 +107,7 @@ abstract class BaseModel
 	/**
 	* Méthode permettant la suppression d'une ou plusieurs entrées
 	* @param QueryCondition     $pCondition			Condition permettant de cibler l'entrée cible de la suppression
-	* @return Ressource
+	* @return resource
 	**/
 	public function delete($pCondition)
 	{
@@ -171,7 +159,7 @@ abstract class BaseModel
 	}
 
 	/**
-	 * Méthode d'ajout de jointure par défaut aux requ�tes de type SELECT
+	 * Méthode d'ajout de jointure par défaut aux requêtes de type SELECT
 	 * @param String $pTable
 	 * @param null $pType
 	 * @param null $pOn
@@ -217,7 +205,7 @@ abstract class BaseModel
 	/**
 	 * @param null|QueryCondition $pCond
 	 * @param string $pFields
-	 * @return array|Ressource
+	 * @return array|resource
 	 */
 	public function all($pCond = null, $pFields = "*")
 	{

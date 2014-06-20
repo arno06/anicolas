@@ -14,9 +14,9 @@ function smarty_function_getPagination($params, &$smarty)
 
 	echo '<div class="pagination"><div class="previous">';
 	if ($info["currentPage"]==1)
-		echo Dictionnary::term("global.pagination.previous")." ";
+		echo Dictionary::term("global.pagination.previous")." ";
 	else
-		echo '<a href="'.Core::rewriteURL(Core::$controller,Core::$action,$_GET).'">'.Dictionnary::term("global.pagination.previous").'</a> ';
+		echo '<a href="'.Core::rewriteURL(Core::$controller,Core::$action,$_GET).'">'.Dictionary::term("global.pagination.previous").'</a> ';
 	echo '</div><div class="pages">';
     if ($noPage)
     {
@@ -44,9 +44,9 @@ function smarty_function_getPagination($params, &$smarty)
 	$_GET["page"] = $info["currentPage"]+1;
 	echo '<div class="next">';
 	if($info["currentPage"]==$info["nbPages"]||!$info["nbPages"])
-		echo Dictionnary::term("global.pagination.next");
+		echo Dictionary::term("global.pagination.next");
 	else
-		echo '<a href="'.Core::rewriteURL(Core::$controller,Core::$action,$_GET).'">'.Dictionnary::term("global.pagination.next").'</a>';
+		echo '<a href="'.Core::rewriteURL(Core::$controller,Core::$action,$_GET).'">'.Dictionary::term("global.pagination.next").'</a>';
 	echo "</div></div>";
 	if(!$test)
 		unset($_GET["page"]);

@@ -46,7 +46,7 @@ class ModelUpload extends BaseModel
 	/**
 	 * Méthode static de création de la table d'upload
 	 * @param String $pApplication [optional] Nom de l'application sur laquelle on souhaite ajouter la table
-	 * @return Ressource
+	 * @return resource
 	 */
 	static public function create($pApplication = "main")
 	{

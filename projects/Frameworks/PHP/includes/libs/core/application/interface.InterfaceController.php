@@ -14,7 +14,7 @@ interface InterfaceController
 	function __construct();
 	
 	/**
-	 * Méthode appelé par défault lorsqu'aucune action n'a été appelée
+	 * Méthode appelée par défault lorsqu'aucune action n'a été appelée
 	 * @return void
 	 */
 	function index();

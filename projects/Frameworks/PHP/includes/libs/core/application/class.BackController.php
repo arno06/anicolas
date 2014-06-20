@@ -145,7 +145,7 @@ abstract class BackController extends FrontController implements InterfaceContro
 			if($this->model->insert($form->getValues()))
 			{
                 $id = $this->model->getInsertId();
-                $this->addContent("confirmation", Dictionnary::term("backoffice.forms.addDone"));
+                $this->addContent("confirmation", Dictionary::term("backoffice.forms.addDone"));
                 if ($id && $this->has->modify)
                     $this->dispatchEvent(new Event(self::EVENT_SUCCESSFUL_ADD, $id));
                 else
@@ -153,7 +153,7 @@ abstract class BackController extends FrontController implements InterfaceContro
 			}
 			else
 			{
-				$this->addContent("error", Dictionnary::term("backoffice.forms.errorSQL"));
+				$this->addContent("error", Dictionary::term("backoffice.forms.errorSQL"));
 				$this->dispatchEvent(new Event(self::EVENT_FAILED_ADD));
 			}
 			$id = $this->model->getInsertId();
@@ -168,7 +168,7 @@ abstract class BackController extends FrontController implements InterfaceContro
 	/**
 	 * Méthode permettant de lister toutes les entrées du model
 	 * Gestion automatique du ORDER BY
-	 * @param String $pCondition		Condition souhaitée pour la requ�te SQL
+	 * @param String $pCondition		Condition souhaitée pour la requête SQL
 	 * @return void
 	 */
 	public function lister($pCondition = null)
@@ -197,11 +197,11 @@ abstract class BackController extends FrontController implements InterfaceContro
 			$currentPage = isset($_GET["page"])?$_GET["page"]:1;
 			$pagination = new PaginationHandler($currentPage, $this->nbItemsByPage, $nbDatas);
 			$pCondition->limit($pagination->first, $pagination->number);
-            $data = $this->model->listAll($pCondition);
+            $data = $this->model->all($pCondition);
 			$this->addContent("paginationInfo", $pagination->getPaginationInfo());
 		}
 		else
-			$data =  $this->model->listAll($pCondition);
+			$data =  $this->model->all($pCondition);
 		$this->addContent("liste", $data);
 		$this->addContent("h1", $this->h1->listing);
 	}
@@ -230,12 +230,12 @@ abstract class BackController extends FrontController implements InterfaceContro
 		{
 			if($this->model->updateById($_GET["id"],$form->getValues()))
 			{
-				$this->addContent("confirmation", Dictionnary::term("backoffice.forms.modificationDone"));
+				$this->addContent("confirmation", Dictionary::term("backoffice.forms.modificationDone"));
 				$this->dispatchEvent(new Event(self::EVENT_SUCCESSFUL_MODIFY));
 			}
 			else
 			{
-				$this->addContent("error", Dictionnary::term("backoffice.forms.errorSQL"));
+				$this->addContent("error", Dictionary::term("backoffice.forms.errorSQL"));
 				$this->dispatchEvent(new Event(self::EVENT_FAILED_MODIFY));
 			}
 			$id = $_GET["id"];
@@ -303,9 +303,9 @@ class BOLabelList
 	 */
 	public function __construct($pId, $pClass)
 	{
-		$this->add = sprintf(Dictionnary::term("backoffice.".$pId.".add"), $pClass);
-		$this->modify = sprintf(Dictionnary::term("backoffice.".$pId.".modify"), $pClass);
-		$this->listing = sprintf(Dictionnary::term("backoffice.".$pId.".listing"), $pClass);
+		$this->add = sprintf(Dictionary::term("backoffice.".$pId.".add"), $pClass);
+		$this->modify = sprintf(Dictionary::term("backoffice.".$pId.".modify"), $pClass);
+		$this->listing = sprintf(Dictionary::term("backoffice.".$pId.".listing"), $pClass);
 	}
 }
 

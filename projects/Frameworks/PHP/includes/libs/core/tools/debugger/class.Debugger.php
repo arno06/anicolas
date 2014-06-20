@@ -291,9 +291,7 @@ class Debugger extends Singleton
 	 */
 	static public function prepare()
 	{
-		Autoload::addScript("prototype.js");
-		Autoload::addScript("Minuit4/M4Tween.js");
-		Autoload::addScript("cbi/Debugger.js");
+		Autoload::addScript("Debugger");
 	}
 	
 	/**

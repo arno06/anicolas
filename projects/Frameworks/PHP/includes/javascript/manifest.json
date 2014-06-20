@@ -1,0 +1,21 @@
+{
+	"config":
+	{
+		"relative":"./"
+	},
+	"M4Tween":
+	{
+		"src":
+		[
+			"Minuit4/M4Tween.js"
+		]
+	},
+    "Debugger":
+    {
+        "need":["M4Tween"],
+        "src":
+        [
+            "core/Debugger.js"
+        ]
+    }
+}

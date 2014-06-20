@@ -39,9 +39,6 @@ abstract class SimpleExcel implements InterfaceData
 	{
 		switch(strtolower(File::getExtension($pFile)))
 		{
-			case "xls":
-				return self::import_xls($pFile);
-			break;
 			case "xlsx";
 				return self::import_xlsx($pFile);
 			break;
@@ -49,7 +46,11 @@ abstract class SimpleExcel implements InterfaceData
 		return false;
 	}
 
-	static private function import_xlsx($pFile)
+    /**
+     * @param $pFile
+     * @return array|bool
+     */
+    static private function import_xlsx($pFile)
 	{
 		$xlsxHandler = new XLSXHandler($pFile);
 		$data = $xlsxHandler->read();
@@ -65,23 +66,6 @@ abstract class SimpleExcel implements InterfaceData
 		}
 		return $return;
 	}
-
-	static private function import_xls($pFile)
-	{
-		$return = array();
-		$xls = new Spreadsheet_Excel_Reader($pFile);
-		for($i = 2, $max = $xls->rowcount(), $maxj = $xls->colcount(); $i<=$max; $i++)
-		{
-			$ligne = array();
-			for($j = 1; $j<=$maxj; $j++)
-			{
-				$ligne[$xls->value(1, $j)] = $xls->value($i, $j);
-			}
-			$return[] = $ligne;
-		}
-		return $return;
-	}
-
 }
 
 class XLSXHandler

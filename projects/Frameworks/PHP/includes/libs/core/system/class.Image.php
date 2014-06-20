@@ -4,7 +4,7 @@
  * Permet de gérer les traitements en rapport avec les fichiers de type Image
  *
  * @author Arnaud NICOLAS - arno06@gmail.com
- * @version .4
+ * @version 1.0
  * @package system
  */
 class Image extends TracingCommands
@@ -110,6 +110,21 @@ class Image extends TracingCommands
 		header('Content-Type: image/'.$this->type);
 		$this->draw();
 	}
+
+    /**
+     * @param $pFile
+     * @return void
+     */
+    public function save($pFile)
+    {
+        ob_start();
+        $this->draw();
+        $rawdata = ob_get_contents();
+        ob_end_clean();
+        File::delete($pFile);
+        File::create($pFile);
+        File::append($pFile, $rawdata);
+    }
 
 
 	/**
@@ -228,40 +243,6 @@ class Image extends TracingCommands
         imagedestroy($ImageTampon2);
         chmod($pFinalImage, 0666);
         return true;
-    }
-
-    static public function addWaterMark(&$pSourceStamp, $pWaterMark)
-    {
-        if (!$pWaterMark || !is_array($pWaterMark) || !isset($pWaterMark["file"]) || !isset($pWaterMark["x"]) || !isset($pWaterMark["y"]))
-            return false;
-        if (!file_exists($pWaterMark["file"]))
-            return false;
-        if (!$type = self::isImage($pWaterMark["file"]))
-            return false;
-        switch ($type) {
-            case self::JPG:
-            case self::JPEG:
-                $ImageTampon2 = imagecreatefromjpeg($pWaterMark["file"]);
-                break;
-            case self::GIF:
-                $ImageTampon2 = imagecreatefromgif($pWaterMark["file"]);
-                break;
-            case self::PNG:
-                $ImageTampon2 = imagecreatefrompng($pWaterMark["file"]);
-                break;
-            default:
-                return false;
-                break;
-        }
-        $x = $pWaterMark["x"];
-        $y = $pWaterMark["y"];
-        if ($pWaterMark["x"] < 0)
-            $x = imagesx($pSourceStamp) + $pWaterMark["x"];
-        if ($pWaterMark["y"] < 0)
-            $y = imagesy($pSourceStamp) + $pWaterMark["y"];
-        imagecopy($pSourceStamp, $ImageTampon2, $x, $y, 0, 0, imagesx($ImageTampon2), imagesy($ImageTampon2));
-        imagedestroy($ImageTampon2);
-        return $pSourceStamp;
     }
 
 
@@ -446,14 +427,22 @@ class TracingCommands
 		$this->command[] = array("type"=>self::COMMAND_BEGINFILL, "r"=>$pR, "g"=>$pG, "b"=>$pB);
 	}
 
+
     /**
      * @param $pSrc
-     * @param $pWidth
-     * @param $pHeight
+     * @param null $pWidth
+     * @param null $pHeight
+     * @param int $pX
+     * @param int $pY
      */
-    public function drawImage($pSrc, $pWidth, $pHeight)
+    public function drawImage($pSrc, $pWidth = null, $pHeight = null, $pX = 0, $pY = 0)
     {
-        $this->command[] = array("type"=>self::COMMAND_DRAWIMAGE, "src"=>$pSrc, "width"=>$pWidth, "height"=>$pHeight);
+        $srcSize = Image::getSize($pSrc);
+        if(!$pWidth)
+            $pWidth = $srcSize[0];
+        if(!$pHeight)
+            $pHeight = $srcSize[1];
+        $this->command[] = array("type"=>self::COMMAND_DRAWIMAGE, "src"=>$pSrc, "srcWidth"=>$srcSize[0], "srcHeight"=>$srcSize[1], "width"=>$pWidth, "height"=>$pHeight, "x"=>$pX, "y"=>$pY);
     }
 
     /**
@@ -604,7 +593,7 @@ class TracingCommands
                 case self::COMMAND_DRAWIMAGE:
                     $type = Image::isImage($cmd["src"]);
                     if(empty($type))
-                        trigger_error("L'image � copier ne correspond pas � un type compatible", E_USER_ERROR);
+                        trigger_error("L'image à copier ne correspond pas à un type compatible", E_USER_ERROR);
                     $ress = null;
                     switch($type)
                     {
@@ -619,12 +608,12 @@ class TracingCommands
                             $ress = imagecreatefromgif($cmd["src"]);
                             break;
                     }
-                    imagecopyresampled($pRessource, $ress, 0, 0, 0, 0, $cmd["width"], $cmd["height"], $cmd["width"], $cmd["height"]);
+                    imagecopyresampled($pRessource, $ress, $cmd["x"], $cmd["y"], 0, 0, $cmd["width"], $cmd["height"], $cmd["srcWidth"], $cmd["srcHeight"]);
                     break;
                 case self::COMMAND_CREATEIMAGE:
                     $type = Image::isImage($cmd["src"]);
                     if(empty($type))
-                        trigger_error("L'image � copier ne correspond pas � un type compatible", E_USER_ERROR);
+                        trigger_error("L'image à copier ne correspond pas à un type compatible", E_USER_ERROR);
                     $ress = null;
                     switch($type)
                     {

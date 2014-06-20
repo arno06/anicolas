@@ -11,7 +11,7 @@ class Autoload extends Singleton
 	/**
 	 * @type string
 	 */
-	const FOLDER_LIBS = "includes/libs/cbi/";
+	const FOLDER_LIBS = "includes/libs/core/";
 
 	/**
 	 * @type string
@@ -21,7 +21,7 @@ class Autoload extends Singleton
 	/**
 	 * @type string
 	 */
-	const FOLDER_MODEL_LIBS = "includes/libs/cbi/models/";
+	const FOLDER_MODEL_LIBS = "includes/libs/core/models/";
 
 	/**
 	 * @type string
@@ -43,6 +43,11 @@ class Autoload extends Singleton
 	 */
 	private $scripts;
 
+    /**
+     * @var array
+     */
+    private $scriptDependencies;
+
 	/**
 	 * @var array
 	 */
@@ -61,6 +66,7 @@ class Autoload extends Singleton
 	public function __construct()
 	{
 		$this->scripts = array();
+        $this->scriptDependencies = array();
 		$this->styles = array();
 		$this->packageFolders = array("",
 					"data/",
@@ -88,7 +94,8 @@ class Autoload extends Singleton
 	 */
 	public function load($pClassName)
 	{
-        if(key_exists($pClassName, $this->exeptions))
+        Debugger::trace("loading  : ".$pClassName);
+        if(array_key_exists($pClassName, $this->exeptions))
         {
 	        require_once($this->exeptions[$pClassName]);
             return true;
@@ -166,9 +173,17 @@ class Autoload extends Singleton
 	 */
 	static public function addScript($pScript)
 	{
-        $script = (strpos($pScript, "http") === 0) ? $pScript : Core::$path_to_js . "/" . $pScript;
-        if(!in_array($script, self::getInstance()->scripts, true))
-			self::getInstance()->scripts[] = $script;
+        if(preg_match("/\.js$/", $pScript))
+        {
+            $script = (strpos($pScript, "http") === 0) ? $pScript : Core::$path_to_js . "/" . $pScript;
+            if(!in_array($script, self::getInstance()->scripts, true))
+                self::getInstance()->scripts[] = $script;
+        }
+        else
+        {
+            if(!in_array($pScript, self::getInstance()->scriptDependencies, true))
+                self::getInstance()->scriptDependencies[] = $pScript;
+        }
 	}
 
 
@@ -193,6 +208,8 @@ class Autoload extends Singleton
 	 */
 	static public function scripts()
 	{
+        if(!empty(self::getInstance()->scriptDependencies))
+            self::getInstance()->scripts[] = "statique/dependencies/?need=".implode(',', self::getInstance()->scriptDependencies);
 		return self::getInstance()->scripts;
 	}
 
