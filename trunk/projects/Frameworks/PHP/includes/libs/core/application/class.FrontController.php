@@ -82,11 +82,11 @@ class FrontController extends EventDispatcher
 				Go::to404();
 		}
 		$conf = get_class_vars("Configuration");
-		$terms = Dictionnary::terms();
+		$terms =Dictionary::terms();
 		$globalVars = $this->getGlobalVars();
 		$smarty->assign_by_ref("configuration", $conf);
 		$smarty->assign_by_ref("request_async", Core::$request_async);
-		$smarty->assign_by_ref("dictionnary", $terms);
+		$smarty->assign_by_ref("dictionary", $terms);
 		foreach($this->forms as $n=>&$form)
 		{
 			$smarty->register_object("form_".$n, $form, array("display", "name", "getValue", "getLabel", "getOptions", "isChecked"));

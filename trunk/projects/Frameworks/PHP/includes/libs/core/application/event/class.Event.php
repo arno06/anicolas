@@ -18,6 +18,9 @@ class Event
      */
     public $target;
 
+    /**
+     * @param $pType
+     */
     public function __construct($pType)
     {
         $this->type = $pType;
@@ -33,13 +36,19 @@ class Event
         }
     }
 
+    /**
+     * @return Event
+     */
     public function __clone()
     {
         return new Event($this->type);
     }
 
+    /**
+     * @return string
+     */
     public function __toString()
     {
-        return "Event ".$this->type;
+        return "[Event type='".$this->type."']";
     }
 }

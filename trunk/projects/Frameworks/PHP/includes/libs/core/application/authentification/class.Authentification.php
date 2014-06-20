@@ -44,7 +44,7 @@ class Authentification
 	 * Données de l'utilisateur si son authentification est vérifiée
 	 * @var	Array
 	 */
-	public $datas;
+	public $data;
 	
 	/**
 	 * Constructor
@@ -76,8 +76,8 @@ class Authentification
 		$token = $this->getToken($this->mdp_user);
 		if(ModelAuthentification::isUser($this->login_user, $this->mdp_user)&&$token==$this->token)
 		{
-			$this->permissions = ModelAuthentification::$datas[Configuration::$authentification_fieldPermissions];
-			$this->datas = ModelAuthentification::$datas;
+			$this->permissions = ModelAuthentification::$data[Configuration::$authentification_fieldPermissions];
+			$this->data = ModelAuthentification::$data;
 		}
 		else
 			$this->unsetAuthentification();
@@ -88,10 +88,8 @@ class Authentification
 	 */
 	private function checkIfNoLogged()
 	{
-		if(!Configuration::$authentification_useGroup)
-			return;
 		ModelAuthentification::isUser($this->login_user, $this->mdp_user);
-		$this->datas = ModelAuthentification::$datas;
+		$this->data = ModelAuthentification::$data;
 	}
 
 	
@@ -107,17 +105,11 @@ class Authentification
 		$pMdp = md5($pMdp);
 		if(ModelAuthentification::isUser($pLogin, $pMdp))
 		{
-			if(Configuration::$authentification_useGroup)
-			{
-				$isAutorized = ModelAuthentification::$datas["group"]["backoffice_group"];
-			}
-			else
-			{
-				$lvl = AuthentificationHandler::$permissions[AuthentificationHandler::USER];
-				if($pAdmin)
-					$lvl = AuthentificationHandler::$permissions[AuthentificationHandler::ADMIN];
-				$isAutorized = $lvl&ModelAuthentification::$datas[Configuration::$authentification_fieldPermissions];
-			}
+            $lvl = AuthentificationHandler::$permissions[AuthentificationHandler::USER];
+            if($pAdmin)
+                $lvl = AuthentificationHandler::$permissions[AuthentificationHandler::ADMIN];
+            $isAutorized = $lvl&ModelAuthentification::$data[Configuration::$authentification_fieldPermissions];
+
 			if($isAutorized)
 			{
 				$token = $this->getToken($pMdp);
@@ -125,8 +117,7 @@ class Authentification
 				return true;
 			}
 		}
-		else
-			return false;
+        return false;
 	}
 
 

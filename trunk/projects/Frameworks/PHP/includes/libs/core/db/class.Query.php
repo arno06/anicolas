@@ -92,23 +92,26 @@ class Query
 	);
 
 	/**
-	 * Méthode d'execution d'une requ�tes SQL
+	 * Méthode d'execution d'une requêtes SQL
 	 * @param  String $pQuery
 	 * @param  String $pHandler
-	 * @return array|Ressource
+	 * @return array|resource
 	 */
 	static public function execute($pQuery, $pHandler = "default")
 	{
 		if(!is_string($pQuery))
 			return null;
+        $dbHandler = DBManager::get($pHandler);
+        if(!$dbHandler)
+            return false;
 		if(preg_match("/^(select|show|describe|explain)/i", $pQuery, $matches))
-			return DBManager::get($pHandler)->getResult($pQuery);
+			return $dbHandler->getResult($pQuery);
 		else
-			return DBManager::get($pHandler)->execute($pQuery);
+			return $dbHandler->execute($pQuery);
 	}
 	
 	/**
-	 * Méthode de création d'une requ�te SQL SELECT
+	 * Méthode de création d'une requête SQL SELECT
 	 * @param String $pFields
 	 * @param String $pTables
 	 * @return QuerySelect
@@ -141,7 +144,7 @@ class Query
 	}
 	
 	/**
-	 * Méthode de création d'une requ�te 'INSERT' d'insertion d'une tuple
+	 * Méthode de création d'une requête 'INSERT' d'insertion d'une tuple
 	 * @param Array $pValues
 	 * @return QueryInsert
 	 */
@@ -151,7 +154,7 @@ class Query
 	}
 
 	/**
-	 * Méthode de création d'une requ�te 'INSERT' d'insertion de N tuples
+	 * Méthode de création d'une requête 'INSERT' d'insertion de N tuples
 	 * @param Array $pValues
 	 * @return QueryInsert
 	 */
@@ -181,7 +184,7 @@ class Query
 	}
 	
 	/**
-	 * Méthode de création d'une requ�te DELETE
+	 * Méthode de création d'une requête DELETE
 	 * @return QueryDelete
 	 */
 	static public function delete()
@@ -190,7 +193,7 @@ class Query
 	}
 	
 	/**
-	 * Méthode de création d'une requ�te UPDATE
+	 * Méthode de création d'une requête UPDATE
 	 * @param String $pTable
 	 * @return QueryUpdate
 	 */
@@ -200,7 +203,7 @@ class Query
 	}
 
 	/**
-	 * Méthode de création d'une requ�te DROP TABLE
+	 * Méthode de création d'une requête DROP TABLE
 	 * @param  $pTable
 	 * @return QueryDrop
 	 */
@@ -210,7 +213,7 @@ class Query
 	}
 
 	/**
-	 * Méthode de création d'une requ�te TRUNCATE TABLE
+	 * Méthode de création d'une requête TRUNCATE TABLE
 	 * @param  $pTable
 	 * @return QueryTruncate
 	 */
@@ -303,16 +306,16 @@ class BaseQuery
 
 	/**
 	 * @throws Exception
-	 * @return void
+	 * @return string
 	 */
 	public function get()
 	{
-		throw new Exception("La méthode 'get' doit �tre surchargée.");
+		throw new Exception("La méthode 'get' doit être surchargée.");
 	}
 
 	/**
 	 * @var String $pHandler
-	 * @return array|Ressource
+	 * @return array|resource
 	 */
 	public function execute($pHandler = "default")
 	{
@@ -404,14 +407,15 @@ class QueryCondition
 		return $this;
 	}
 
-	/**
-	 * Méthode d'ajout d'une condition 'OR' &agrave; l'instance de condition en cours
-	 * @param String $pField
-	 * @param String $pType
-	 * @param String $pValue
-	 * @return QueryCondition
-	 */
-	public function orWhere	($pField, $pType, $pValue, $pEscape = true)
+    /**
+     * Méthode d'ajout d'une condition 'OR' à l'instance de condition en cours
+     * @param $pField
+     * @param $pType
+     * @param $pValue
+     * @param bool $pEscape
+     * @return $this
+     */
+    public function orWhere	($pField, $pType, $pValue, $pEscape = true)
 	{
 		if($pEscape)
 		$pValue = Query::escapeValue($pValue);
@@ -420,7 +424,7 @@ class QueryCondition
 	}
 
 	/**
-	 * Méthode d'ajout d'une condition 'AND' &agrave; l'instance de condition en cours
+	 * Méthode d'ajout d'une condition 'AND' à l'instance de condition en cours
 	 * @param String $pField
 	 * @param String $pType
 	 * @param String $pValue
@@ -461,7 +465,7 @@ class QueryCondition
 
 
 	/**
-	* Méthode d'ajout d'un HAVING 'OR' &agrave; l'instance de condition en cours
+	* Méthode d'ajout d'un HAVING 'OR' à l'instance de condition en cours
 	* @param String $pField
 	* @return QueryCondition
 	*/
@@ -472,7 +476,7 @@ class QueryCondition
 	}
 
 	/**
-	 * Méthode d'ajout d'un HAVING 'AND' &agrave; l'instance de condition en cours
+	 * Méthode d'ajout d'un HAVING 'AND' à l'instance de condition en cours
 	 * @param String $pField
 	 * @return QueryCondition
 	 */
@@ -624,7 +628,7 @@ class QueryWithCondition extends BaseQuery
 
 
 	/**
-	 * Méthode de définition de la condition d'une requ�te SELECT
+	 * Méthode de définition de la condition d'une requête SELECT
 	 * @param QueryCondition $pConditionInstance
 	 * @return QueryWithCondition
 	 */
@@ -667,7 +671,7 @@ class QueryWithCondition extends BaseQuery
 	}
 
 	/**
-	 * Méthode d'ajout d'une condition 'WHERE' &agrave; la requ�te SELECT en cours
+	 * Méthode d'ajout d'une condition 'WHERE' à la requête SELECT en cours
 	 * @param String $pField
 	 * @param String $pType
 	 * @param String $pValue
@@ -681,7 +685,7 @@ class QueryWithCondition extends BaseQuery
 	}
 
 	/**
-	 * Méthode d'ajout d'une condition 'AND' &agrave; la requ�te SELECT en cours
+	 * Méthode d'ajout d'une condition 'AND' à la requête SELECT en cours
 	 * @param String $pField
 	 * @param String $pType
 	 * @param String $pValue
@@ -690,12 +694,12 @@ class QueryWithCondition extends BaseQuery
 	 */
 	public function andWhere($pField, $pType, $pValue, $pEscape = true)
 	{
-		$this->getCondition()->andWhere($pField, $pType, $pValue);
+		$this->getCondition()->andWhere($pField, $pType, $pValue, $pEscape);
 		return $this;
 	}
 
 	/**
-	 * Méthode d'ajout d'une condition 'OR' &agrave; la requ�te SELECT en cours
+	 * Méthode d'ajout d'une condition 'OR' à la requête SELECT en cours
 	 * @param String $pField
 	 * @param String $pType
 	 * @param String $pValue
@@ -749,7 +753,7 @@ class QueryWithCondition extends BaseQuery
 
 
 	/**
-	 * Méthode d'ajout d'une condition imbriquée dans la condition de la requ�te en cours
+	 * Méthode d'ajout d'une condition imbriquée dans la condition de la requête en cours
 	 * @param QueryCondition $pCondition
 	 * @return QueryWithCondition
 	 */
@@ -898,7 +902,7 @@ class QuerySelect extends QueryWithCondition
 	}
 
 	/**
-	 * Méthode de génération de la requ�te
+	 * Méthode de génération de la requête
      * @param Boolean $pSemicolon
 	 * @return String
 	 */
@@ -921,7 +925,7 @@ class QuerySelect extends QueryWithCondition
 
 	/**
 	 * @param string $pHandler
-	 * @return array|Ressource
+	 * @return array|resource
 	 */
 	public function execute($pHandler = "default")
 	{
@@ -934,7 +938,7 @@ class QuerySelect extends QueryWithCondition
 	/**
 	 * @Author Alain LEE - alee@cbi-multimedia.com
 	 * @param string $pHandler
-	 * @return array|Ressource
+	 * @return array|resource
 	 */
     public function explain($pHandler = "default")
     {
@@ -970,11 +974,11 @@ class QuerySelect extends QueryWithCondition
             $errors[] = "Utilisation d'une table temporaire";
 
         if ($useFileSort)
-            $errors[] = "Un tri nécessite un deuxi&egrave;me passage dans les résultats et peut ralentir la requ�te";
+            $errors[] = "Un tri nécessite un deuxi&egrave;me passage dans les résultats et peut ralentir la requête";
 
         if (!empty($errors))
         {
-            $displayError = "La requ�te \"<b>".$query."</b>\" peut présenter des lenteurs :";
+            $displayError = "La requête \"<b>".$query."</b>\" peut présenter des lenteurs :";
             foreach($errors as $e)
                 $displayError .= "<br/>- ".$e;
             trigger_error($displayError, E_USER_WARNING);
@@ -993,7 +997,7 @@ class QuerySelect extends QueryWithCondition
 class QueryReplace extends QueryInsert
 {
 	/**
-	 * Méthode de génération de la requ�te
+	 * Méthode de génération de la requête
 	 * @return String
 	 */
 	public function get()
@@ -1012,20 +1016,21 @@ class QueryReplace extends QueryInsert
 class QueryUpdate extends QueryWithCondition
 {
 	/**
-	 * Tableau des valeurs &agrave; mettre-&agrave;-jour
-	 * @var unknown_type
+	 * Tableau des valeurs à mettre-à-jour
+	 * @var array
 	 */
 	private $values = array();
 
 	/**
-	 * Méthode de définition des champs &agrave; mettre-&agrave;-jour
+	 * Méthode de définition des champs à mettre-à-jour
 	 * @param Array $pValues
+     * @param bool $pEscape
 	 * @return QueryUpdate
 	 */
-	public function values($pValues, $escape = true)
+	public function values($pValues, $pEscape = true)
 	{
 		foreach($pValues as $field=>$value)
-			array_push($this->values, $field."=".Query::escapeValue($value, $escape));
+			array_push($this->values, $field."=".Query::escapeValue($value, $pEscape));
 		return $this;
 	}
 	
@@ -1059,12 +1064,12 @@ class QueryInsert extends BaseQuery
 	const MULTIPLE = "MULTIPLE";
 
 	/**
-	 * Chaine de caract&egrave;res des champs de la table &agrave; remplir
+	 * Chaine de caract&egrave;res des champs de la table à remplir
 	 * @var String
 	 */
 	protected $fields = "";
 	/**
-	 * Tableau de chaines de caract&egrave;res des valeurs &agrave; insérer
+	 * Tableau de chaines de caract&egrave;res des valeurs à insérer
 	 * @var Array
 	 */
 	protected $values = array();
@@ -1104,7 +1109,7 @@ class QueryInsert extends BaseQuery
 	}
 	
 	/**
-	 * Méthode de définition et d'échappement des valeurs &agrave; insérer
+	 * Méthode de définition et d'échappement des valeurs à insérer
 	 * @param Array $pTuples
 	 * @return QueryInsert
 	 */
@@ -1130,7 +1135,7 @@ class QueryInsert extends BaseQuery
 	}
 	
 	/**
-	 * Méthode de génération de la requ�te
+	 * Méthode de génération de la requête
 	 * @return String
 	 */
 	public function get()
@@ -1155,7 +1160,7 @@ class QueryDelete extends QueryWithCondition
 	public function __construct(){}
 	
 	/**
-	 * Méthode de définition de la table &agrave; cibler pour la suppression
+	 * Méthode de définition de la table à cibler pour la suppression
 	 * @param String $pTable
 	 * @return QueryDelete
 	 */
@@ -1166,7 +1171,7 @@ class QueryDelete extends QueryWithCondition
 	}
 	
 	/**
-	 * Méthode de génération de la requ�te
+	 * Méthode de génération de la requête
 	 * @return String
 	 */
 	public function get()
@@ -1180,7 +1185,7 @@ class QueryDelete extends QueryWithCondition
 class QueryTruncate extends BaseQuery
 {
 	/**
-	 * Méthode de génération de la requ�te
+	 * Méthode de génération de la requête
 	 * @return String
 	 */
 	public function get()
@@ -1193,7 +1198,7 @@ class QueryTruncate extends BaseQuery
 class QueryDrop extends BaseQuery
 {
 	/**
-	 * Méthode de génération de la requ�te
+	 * Méthode de génération de la requête
 	 * @return String
 	 */
 	public function get()
@@ -1204,14 +1209,22 @@ class QueryDrop extends BaseQuery
 
 class QueryCreate extends QueryStructure
 {
-	public function __construct($pTable, $pStorageEngine, $pCollation)
+    /**
+     * @param string $pTable
+     * @param $pStorageEngine
+     * @param $pCollation
+     */
+    public function __construct($pTable, $pStorageEngine, $pCollation)
 	{
 		parent::__construct($pTable);
 		$this->storage_engine = $pStorageEngine;
 		$this->collation = $pCollation;
 	}
 
-	public function get()
+    /**
+     * @return string
+     */
+    public function get()
 	{
 		$query = "CREATE TABLE IF NOT EXISTS `".$this->table."` (";
 		if(!empty($this->primary))
@@ -1228,27 +1241,58 @@ class QueryCreate extends QueryStructure
 
 class QueryAlter extends QueryStructure
 {
-	private $change_fields = "";
+    /**
+     * @var string
+     */
+    private $change_fields = "";
 
-	public function addField($pName, $pType, $pSize = "", $pDefaultValue = "", $pNull = false, $pAI = false, $pIndex = "", $pComments = "", $pWhere = "")
+    /**
+     * @param $pName
+     * @param $pType
+     * @param string $pSize
+     * @param string $pDefaultValue
+     * @param bool $pNull
+     * @param bool $pAI
+     * @param string $pIndex
+     * @param string $pComments
+     * @param string $pWhere
+     * @return $this|QueryStructure
+     * @throws Exception
+     */
+    public function addField($pName, $pType, $pSize = "", $pDefaultValue = "", $pNull = false, $pAI = false, $pIndex = "", $pComments = "", $pWhere = "")
 	{
 		if(!empty($this->change_fields))
-			throw new Exception("Impossible de faire appel &agrave; la commande SQL ADD lorsque la commande CHANGE est définie");
+			throw new Exception("Impossible de faire appel à la commande SQL ADD lorsque la commande CHANGE est définie");
 		parent::addField($pName, $pType, $pSize, $pDefaultValue, $pNull, $pAI, $pIndex, $pComments, $pWhere);
 		return $this;
 	}
 
-	public function changeField($pName, $pType, $pSize = "", $pDefaultValue = "", $pNull = false, $pAI = false, $pIndex = "", $pComments = "")
+    /**
+     * @param $pName
+     * @param $pType
+     * @param string $pSize
+     * @param string $pDefaultValue
+     * @param bool $pNull
+     * @param bool $pAI
+     * @param string $pIndex
+     * @param string $pComments
+     * @return $this
+     * @throws Exception
+     */
+    public function changeField($pName, $pType, $pSize = "", $pDefaultValue = "", $pNull = false, $pAI = false, $pIndex = "", $pComments = "")
 	{
 		if(!empty($this->change_fields))
-			throw new Exception("Impossible de faire appel &agrave; la commande SQL CHANGE sur plusieurs champs simultamément");
+			throw new Exception("Impossible de faire appel à la commande SQL CHANGE sur plusieurs champs simultamément");
 		if(!empty($this->add_fields))
-			throw new Exception("Impossible de faire appel &agrave; la commande SQL CHANGE lorsque la commande ADD est définie");
+			throw new Exception("Impossible de faire appel à la commande SQL CHANGE lorsque la commande ADD est définie");
 		$this->change_fields[] = "`".$pName."` ".$this->setupField($pName, $pType, $pSize, $pDefaultValue, $pNull, $pAI, $pIndex, $pComments);
 		return $this;
 	}
 
-	public function get()
+    /**
+     * @return string
+     */
+    public function get()
 	{
 		$add = "";
 		if(!empty($this->add_fields))
@@ -1262,11 +1306,30 @@ class QueryAlter extends QueryStructure
 
 class QueryStructure extends BaseQuery
 {
-	protected $add_fields = array();
-	protected $storage_engine = "";
-	protected $collation = "";
-	protected $primary = array();
-	protected $hasAI = false;
+    /**
+     * @var array
+     */
+    protected $add_fields = array();
+
+    /**
+     * @var string
+     */
+    protected $storage_engine = "";
+
+    /**
+     * @var string
+     */
+    protected $collation = "";
+
+    /**
+     * @var array
+     */
+    protected $primary = array();
+
+    /**
+     * @var bool
+     */
+    protected $hasAI = false;
 
 	/**
 	 * @param $pName

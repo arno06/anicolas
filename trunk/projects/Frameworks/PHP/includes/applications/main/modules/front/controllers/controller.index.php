@@ -6,8 +6,8 @@ class index extends FrontController
 
  	}
 
-	public function index()
-	{
+    public function index()
+    {
 
     }
 }

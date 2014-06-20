@@ -26,7 +26,7 @@ abstract class Singleton
 	public static function getInstance($pClassName = "")
 	{
 		if(empty($pClassName))
-			return;
+			return null;
 		if(!isset(self::$instances[$pClassName]))
 			self::$instances[$pClassName] = new $pClassName(new PrivateClass());
 		return self::$instances[$pClassName];
@@ -39,7 +39,7 @@ abstract class Singleton
 	 */
 	public static function dispose()
 	{
-		foreach(self::$instances as $name=>$i)
+		foreach(self::$instances as &$i)
 			unset($i);
 		self::$instances = null;
 	}

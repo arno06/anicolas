@@ -9,12 +9,13 @@
  */
 abstract class SimpleJSON implements InterfaceData
 {
-	/**
-	 * Méthode de chargement et de décodage d'un fichier JSON
-	 * @param String $pFile				Url du fichier Json &agrave; charger
-	 * @return array
-	 */
-	static public function import($pFile)
+    /**
+     * Méthode de chargement et de décodage d'un fichier JSON
+     * @param String $pFile
+     * @return Array
+     * @throws Exception
+     */
+    static public function import($pFile)
 	{
 		try
 		{

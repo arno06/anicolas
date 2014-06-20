@@ -7,22 +7,22 @@ Uploader.updateProgress = function (pIdDiv, pPourcent, pSpeed)
 	if(pSpeed != "")
 		pSpeed = "&nbsp;("+pSpeed+"/s)";
 	Uploader.bar(pIdDiv).innerHTML = "<span>"+pPourcent+"%"+pSpeed+"</span>";
-	Uploader.bar(pIdDiv).removeClassName('fail');
+	Uploader.bar(pIdDiv).classList.remove('fail');
 };
-Uploader.bar = function(pIdDiv){return $one('#'+pIdDiv+' .progress .bar');};
+Uploader.bar = function(pIdDiv){return document.querySelector('#'+pIdDiv+' .progress .bar');};
 function uploadInit(pFile, pIdDiv)
 {
     UPLOADS[pIdDiv] = {fileName:pFile, date:new Date().getTime(), byteLoaded:0, launchDate:new Date().getTime(), bytesTotal:0, dateNoInterval:new Date().getTime() };
-   $$('#'+pIdDiv+' .caption_bot')[0].innerHTML = pFile;
+   document.querySelector('#'+pIdDiv+' .caption_bot').innerHTML = pFile;
    Uploader.updateProgress(pIdDiv, "0", "0ko");
    if (document.getElementById('img_upload'))
    {
-	   $('img_upload').onload = function ()
+	   document.querySelector('#img_upload').onload = function ()
 	   {
-		   $('img_upload').style.top = '44%';
-		   $('img_upload').style.left = '66%';
-	   	}
-	   $('img_upload').src= '../themes/main/default/back/imgs/loading.gif';
+		   document.querySelector('#img_upload').style.top = '44%';
+		   document.querySelector('#img_upload').style.left = '66%';
+	   };
+	   document.querySelector('#img_upload').src= '../themes/main/default/back/imgs/loading.gif';
    }
     if (document.getElementById("file_upload"))
     {
@@ -39,11 +39,11 @@ function uploadProgress(pBytesTotal, pBytesLoaded, pIdDiv)
     UPLOADS[pIdDiv].bytesTotal = pBytesTotal;
 
     var width = Math.floor((pBytesLoaded / pBytesTotal) * 100);
-    $$('#'+pIdDiv+' .button_clicker .text_button')[0].addClassName('disable');
+    document.querySelector('#'+pIdDiv+' .button_clicker .text_button').classList.add('disable');
 
     var fileSize = getConvertedOctet(pBytesTotal);
 
-    $$('#'+pIdDiv+' .caption_bot')[0].innerHTML = UPLOADS[pIdDiv].fileName+" ("+fileSize+")";
+    document.querySelector('#'+pIdDiv+' .caption_bot').innerHTML = UPLOADS[pIdDiv].fileName+" ("+fileSize+")";
 
     if(time >= 1000)
     {
@@ -60,10 +60,10 @@ function uploadComplete(pIdDiv, pIdUpload, pPathUpload, pFormName, pInputName)
 {
     var elapsed = (UPLOADS[pIdDiv].dateNoInterval - UPLOADS[pIdDiv].launchDate) / 1000;
 
-    Uploader.bar(pIdDiv).addClassName('success');
+    Uploader.bar(pIdDiv).classList.add('success');
 
     Uploader.updateProgress(pIdDiv, "100", getConvertedOctet(elapsed > 0 ? UPLOADS[pIdDiv].bytesTotal/ elapsed : 0));
-    var d= $one('#'+pIdDiv+' .delete_file');
+    var d= document.querySelector('#'+pIdDiv+' .delete_file');
     if(d)
     {
         d.setAttribute("href", d.getAttribute("href").replace(/\{id\}/, pIdUpload));
@@ -83,16 +83,16 @@ function uploadComplete(pIdDiv, pIdUpload, pPathUpload, pFormName, pInputName)
     else if (document.getElementById("file_upload"))
     {
         document.getElementById('file_upload').src= (typeof BASEURL != "undefined" ? BASEURL+"/" : "")+pPathUpload;
-        $one('#'+pIdDiv+' .caption_bot').innerHTML = "";
+        document.querySelector('#'+pIdDiv+' .caption_bot').innerHTML = "";
     }
     else
     {
-    	$one('#'+pIdDiv+' .see_file').style.display = "inline";
-        $one('#'+pIdDiv+' .caption_bot').innerHTML = "";
-        $one('#'+pIdDiv+' .see_file').href = pPathUpload;
+    	document.querySelector('#'+pIdDiv+' .see_file').style.display = "inline";
+        document.querySelector('#'+pIdDiv+' .caption_bot').innerHTML = "";
+        document.querySelector('#'+pIdDiv+' .see_file').href = pPathUpload;
     }
     
-	var inps = $$('input[name="'+pFormName+'['+pInputName+']"]');
+	var inps = document.querySelectorAll('#'+pFormName+'['+pInputName+']"]');
     for(var i = 0 ; i < inps.length ; i++)
     {
         inps[i].parentNode.removeChild(inps[i]);
@@ -106,10 +106,10 @@ function uploadComplete(pIdDiv, pIdUpload, pPathUpload, pFormName, pInputName)
 
 function uploadError(pParam, pIdDiv)
 {
-    Uploader.bar(pIdDiv).addClassName('fail');
+    Uploader.bar(pIdDiv).classList.add('fail');
     Uploader.bar(pIdDiv).style.width = "100%";
     Uploader.bar(pIdDiv).innerHTML = "<span>"+pParam+"</span>";//change here
-    $one('#'+pIdDiv+' .button_clicker .text_button').removeClassName('disable');
+    document.querySelector('#'+pIdDiv+' .button_clicker .text_button').classList.remove('disable');
 }
 
 function getConvertedOctet(pBytes)
@@ -132,8 +132,8 @@ function reloadCaptcha(pTarget)
 
 function AutoFillPlugin(pTarget)
 {
-	Event.observe(pTarget, "focus", this._focusHandler);
-	Event.observe(pTarget, "blur", this._blurHandler);
+	pTarget.addEventListener("focus", this._focusHandler);
+	pTarget.addEventListener("blur", this._blurHandler);
 	this._blurHandler({target:pTarget});
 }
 AutoFillPlugin.className = "autoFillBlur";
@@ -149,7 +149,7 @@ AutoFillPlugin.prototype =
 		if(e.target.value == e.target.getAttribute("title"))
 		{
 			e.target.value="";
-			e.target.removeClassName(AutoFillPlugin.className);
+			e.target.classList.remove(AutoFillPlugin.className);
 		}
 	},
 	_blurHandler:function(e)
@@ -157,7 +157,7 @@ AutoFillPlugin.prototype =
 		if(e.target.value == "")
 		{
 			e.target.value=e.target.getAttribute("title");
-			e.target.addClassName(AutoFillPlugin.className);
+			e.target.classList.add(AutoFillPlugin.className);
 		}
 	}
 };
@@ -166,7 +166,7 @@ function registerCtrlS(pHandler)
 {
 	if(!pHandler)
 		return;
-	Event.observe(window, "keydown", function(e)
+	window.addEventListener("keydown", function(e)
 	{
 		if(e.ctrlKey && e.keyCode==83)
 		{
@@ -208,7 +208,11 @@ FormValidator.prototype =
 	setInputs:function(pInputs)
 	{
 		for(var i in pInputs)
-			this.setInput(i, pInputs[i]);
+        {
+            if(!pInputs.hasOwnProperty(i))
+                continue;
+            this.setInput(i, pInputs[i]);
+        }
 	},
 
 	isValid:function()
@@ -219,6 +223,8 @@ FormValidator.prototype =
 		var inp, valid = true;
 		for(var i in this._inputs)
 		{
+            if(!this._inputs.hasOwnProperty(i))
+                continue;
 			inp = this._inputs[i];
 			if(inp["regExp"] && inp["regExp"] != "")
 			{
@@ -238,7 +244,7 @@ FormValidator.prototype =
 				}
 			}
 
-			if(inp["require"] & inp["require"]==="1")
+			if(inp["require"] && inp["require"]==="1")
 			{
 				if(!this._values[i] || this._values[i] == "")
 				{

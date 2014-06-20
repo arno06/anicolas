@@ -1,4 +1,11 @@
-{"seo":{}, "terms":{
+{"seo":{
+    "index":{
+        "index":{
+            "title":"Index - Index | local fr",
+            "description":"Index - Index | local fr"
+        }
+    }
+}, "terms":{
     "global":{
         "forms":{
             "inputRequire":"Champ obligatoire",

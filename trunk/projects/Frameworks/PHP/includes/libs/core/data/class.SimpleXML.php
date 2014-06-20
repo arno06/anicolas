@@ -1,5 +1,5 @@
 <?php
-// todo Voir pour ajouter une gestion de l'encodage des caract&egrave;res (cas o� le xml est en utf-8)
+// todo Voir pour ajouter une gestion de l'encodage des caract&egrave;res (cas où le xml est en utf-8)
 /**
  * Class SimpleXML
  * Permet de manipuler des données au format XML
@@ -11,26 +11,27 @@
 abstract class SimpleXML implements InterfaceData
 {
 
-	/**
-	 * Méthode de chargement de décodage d'un fichier XML
-	 * @param String $pFile
-	 * @return Array
-	 */
-	static public function import ($pFile)
+    /**
+     * Méthode de chargement de décodage d'un fichier XML
+     * @param String $pFile
+     * @return Array
+     * @throws Exception
+     */
+    static public function import ($pFile)
 	{
 		try
 		{
-			$contenu = 	File::read($pFile);
+			$content = 	File::read($pFile);
 		}
 		catch (Exception $e)
 		{
 			throw new Exception("Impossible de lire le fichier source <b>".$pFile."</b>");
 		}
-		return self::decode($contenu);
+		return self::decode($content);
     }
 
 	/**
-	 * Méthode de récupération d'un tableau associatif multidimensionnel &agrave; partir d'un contenu écrit au format XML
+	 * Méthode de récupération d'un tableau associatif multidimensionnel à partir d'un contenu écrit au format XML
 	 * @param String $pString		Contenu XML
 	 * @return Array
 	 */
@@ -54,7 +55,7 @@ abstract class SimpleXML implements InterfaceData
 		$return = "";
 		if($pEncoding)
 			$return = "<?xml version=\"1.0\" encoding=\"".Configuration::$site_encoding."\"?>";
-		$return .= self::getRecurciveNodes($pTableau);
+		$return .= self::getRecursiveNodes($pTableau);
 		return $return;
 	}
 
@@ -111,7 +112,7 @@ abstract class SimpleXML implements InterfaceData
 	 * @param array $pTableau		Tableau des données
 	 * @return String
 	 */
-	static private function getRecurciveNodes($pTableau)
+	static private function getRecursiveNodes($pTableau)
 	{
 		$nodes = "";
 		foreach($pTableau as $nodeName=>$node)
@@ -137,14 +138,14 @@ abstract class SimpleXML implements InterfaceData
 
 	/**
 	 * Méthode de récupération d'un noeud XML et de ses enfants
-	 * @param String $pNodeName		Nom du noeud &agrave; récupérer
+	 * @param String $pNodeName		Nom du noeud à récupérer
 	 * @param Array $pTableau		Tableau des attributs et enfants du noeud
 	 * @return String
 	 */
 	static public function getNode($pNodeName, $pTableau)
 	{
-		$infos = "<".$pNodeName;
-		$childs = array();
+		$info = "<".$pNodeName;
+		$children = array();
 		foreach($pTableau as $name=>$value)
 		{
 			if($name=="nodeValue")
@@ -153,16 +154,16 @@ abstract class SimpleXML implements InterfaceData
 				continue;
 			}
 			if(!is_array($value))
-				$infos .= " ".$name."=\"".$value."\"";
+				$info .= " ".$name."=\"".$value."\"";
 			else
-				$childs[$name] = $value;
+				$children[$name] = $value;
 		}
-		$infos .= ">";
+		$info .= ">";
 		if(isset($nodeValue))
-			$infos .= self::getEscapedString($nodeValue);
-		$infos .= self::getRecurciveNodes($childs);
-		$infos .= "</".$pNodeName.">";
-		return $infos;
+			$info .= self::getEscapedString($nodeValue);
+		$info .= self::getRecursiveNodes($children);
+		$info .= "</".$pNodeName.">";
+		return $info;
 	}
 
 	static public function xPath($pXPath, $pData)
@@ -223,7 +224,7 @@ abstract class SimpleXML implements InterfaceData
 
 	/**
 	 * Méthode de récupération d'une chaine de caract&egrave;res dont on souhaite protéger des caract&egrave;res d'échappements (balises...)
-	 * @param String $pString		Chaine &agrave; échappée
+	 * @param String $pString		Chaine à échappée
 	 * @return String
 	 */
 	static private function getEscapedString($pString)

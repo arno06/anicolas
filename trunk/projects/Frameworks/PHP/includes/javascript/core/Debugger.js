@@ -6,31 +6,32 @@ var Debugger =
 	current:"sortie",
 	__init:function()
 	{
-		if($one(".debugselected"))
+		if(document.querySelector(".debugselected"))
 			Debugger.current = document.querySelector(".debugselected a");
 		document.querySelectorAll("#debug_buttons div").forEach(function(div)
 		{
 			var listener = Debugger.__controlConsoleClickHandler;
-			if(div.hasClassName("vars"))
+			if(div.classList.contains("vars"))
 				listener = Debugger.__controlVarsClickHandler;
-			Event.observe(div, "click", listener);
+			div.addEventListener("click", listener);
 		});
         if(Debugger.error)
         {
-            document.querySelector("#debug .debug_console").scrollTop = document.querySelector("#debug .debug_console").scrollHeight;
+            var el = document.querySelector("#debug .debug_console");
+            el.scrollTop = el.scrollHeight;
             Debugger.fullscreen();
         }
-		Event.observe($("debug_toggle"), "click", Debugger.toggle);
-        Event.observe($("debug_fullscreen"), "click", Debugger.fullscreen);
-		Event.observe($("debug_close"), "click", Debugger.close);
-		Event.observe(window, "keydown", Debugger.keyDownHandler);
+		document.querySelector("#debug_toggle").addEventListener("click", Debugger.toggle);
+        document.querySelector("#debug_fullscreen").addEventListener("click", Debugger.fullscreen);
+		document.querySelector("#debug_close").addEventListener("click", Debugger.close);
+		window.addEventListener("keydown", Debugger.keyDownHandler);
 	},
 	keyDownHandler:function(e)
 	{
 		switch(e.keyCode)
 		{
 			case 113:
-				Event.stop(e);
+				e.preventDefault();
                 if(e.shiftKey)
                     Debugger.fullscreen();
                 else
@@ -43,36 +44,36 @@ var Debugger =
 		var t = document.getElementById("debug_toggle");
 		t.innerHTML = (t.innerHTML == "Agrandir"?"Minimiser":"Agrandir");
 		var value = t.innerHTML=="Minimiser"?"350px":"20px";
-		M4Tween.to($("debug"), .2,{"height":value});
+		M4Tween.to(document.querySelector("#debug"), .2,{"height":value});
 		try
 		{
-			Event.stop(e);
+			e.preventDefault();
 		}catch(e){}
 	},
     fullscreen:function(e)
     {
-        var value =  document.viewport.getHeight()+"px";
+        var value =  window.innerHeight+"px";
         var t = document.getElementById("debug_toggle");
         t.innerHTML = "Minimiser";
-        M4Tween.to($("debug"), .2,{"height":value});
+        M4Tween.to(document.querySelector("#debug"), .2,{"height":value});
         try
         {
-            Event.stop(e);
+            e.preventDefault();
         }catch(e){}
     },
 	close:function(e)
 	{
-		$("debug").style.display = "none";
-		Event.stop(e);
+		document.querySelector("#debug").style.display = "none";
+		e.preventDefault();
 	},
 	updateConsole:function()
 	{
-		$$("#debug_buttons div").each(function(button)
+		document.querySelectorAll("#debug_buttons div").forEach(function(button)
 		{
 			var display = "table-row";
-			if(button.hasClassName("disabled"))
+			if(button.classList.contains("disabled"))
 				display = "none";
-			$$(".debug_console table.console tr."+button.getAttribute("rel")).each(function(tr)
+			document.querySelectorAll(".debug_console table.console tr."+button.getAttribute("rel")).forEach(function(tr)
 			{
 				tr.style.display = display;
 			});
@@ -80,15 +81,15 @@ var Debugger =
 	},
 	__controlVarsClickHandler:function(e)
 	{
-		Event.stop(e);
+		e.preventDefault();
 		var t = e.target.nodeName.toLowerCase()!="div" ? e.target.parentNode : e.target;
-		$$("#debug_buttons div.vars").each(function(div)
+		document.querySelectorAll("#debug_buttons div.vars").forEach(function(div)
 		{
-			if(!div.hasClassName("disabled"))
-				div.addClassName("disabled");
+			if(!div.classList.contains("disabled"))
+				div.classList.add("disabled");
 		});
-		t.removeClassName("disabled");
-		$$(".debug_vars pre").each(function(pre)
+		t.classList.remove("disabled");
+		document.querySelectorAll(".debug_vars pre").forEach(function(pre)
 		{
 			if(pre.getAttribute("rel") == t.getAttribute("rel"))
 				pre.style.display = "block";
@@ -98,13 +99,11 @@ var Debugger =
 	},
 	__controlConsoleClickHandler:function(e)
 	{
-		Event.stop(e);
+		e.preventDefault();
 		var t = e.target.nodeName.toLowerCase()!="div" ? e.target.parentNode : e.target;
-		if(t.hasClassName("disabled"))
-			t.removeClassName("disabled");
-		else
-			t.addClassName("disabled");
+        t.classList.toggle("disabled");
 		Debugger.updateConsole();
 	}
 };
-Event.observe(window, "load", Debugger.__init);
+NodeList.prototype.forEach = Array.prototype.forEach;
+window.addEventListener("load", Debugger.__init);

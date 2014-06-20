@@ -9,24 +9,24 @@
 interface InterfaceDatabaseHandler
 {
 	/**
-	 * Méthode d'execution d'une requ�te SQL
-	 * @param String $pQuery				Requ�te SQL brute
-	 * @return ressource
+	 * Méthode d'execution d'une Requêtes SQL
+	 * @param String $pQuery				Requêtes SQL brute
+	 * @return resource
 	 */
 	public function execute($pQuery);
-	
+
 	
 	/**
-	 * Méthode permettant de récupérer les donnée d'une requ�tes SQL
+	 * Méthode permettant de récupérer les donnée d'une requêtes SQL
 	 * Renvoie les données renvoyées sous forme d'un tableau associatif
-	 * @param String $pQuery				Requ�te SQL brute
+	 * @param String $pQuery				Requêtes SQL brute
 	 * @return array
 	 */
 	public function getResult($pQuery);
 	
 	
 	/**
-	 * Méthode de récupération de lé clé primaire venant d'�tre générée par la base de données
+	 * Méthode de récupération de lé clé primaire venant d'être générée par la base de données
 	 * @return int
 	 */
     public function getInsertId();

@@ -1,14 +1,14 @@
 <?php
 /**
- * Class Dictionnary - Permet la gestion d'un fichier de langue global &agrave; l'application
+ * Class Dictionary - Permet la gestion d'un fichier de langue global &agrave; l'application
  * 
  * @TODO Voir pour une gestion mi-dynamique/mi static des balises "title" et "description" comme les "terms"
  * 
  * @author Arnaud NICOLAS - arno06@gmail.com
- * @version .2
+ * @version 1
  * @package application
  */
-class Dictionnary extends Singleton
+class Dictionary extends Singleton
 {
 	/**
 	 * Tableau des alias
@@ -118,7 +118,7 @@ class Dictionnary extends Singleton
 	}
 	
 	/**
-	 * Méthode de définition de l'objet Dictionnary en fonction des param&egrave;tres
+	 * Méthode de définition de l'objet Dictionary en fonction des param&egrave;tres
 	 * @param String $pLanguage		Langue en cours - fr/en/de
 	 * @param Array $pTerms			Tableau des termes accessibles de mani&egrave;re global &agrave; l'application
 	 * @param Array $pSeo			Tableau des informations relatives &agrave; la SEO (balise "title" et "description")
@@ -128,7 +128,7 @@ class Dictionnary extends Singleton
 	static public function defineLanguage($pLanguage, array $pTerms, array $pSeo, array $pAlias)
 	{
 		if(empty($pLanguage))
-			trigger_error("Impossible de définir le <b>Dictionnary</b>, <b>langue</b> non renseignée.", E_USER_ERROR);
+			trigger_error("Impossible de définir le <b>Dictionary</b>, <b>langue</b> non renseignée.", E_USER_ERROR);
 		self::$langue = $pLanguage;
 		$i = self::getInstance();
 		$i->table_alias = $pAlias;
@@ -139,7 +139,7 @@ class Dictionnary extends Singleton
 	/**
 	 * Singleton
 	 * @param String $pClassName [optional]
-	 * @return Dictionnary
+	 * @return Dictionary
 	 */
 	static public function getInstance($pClassName = "")
 	{

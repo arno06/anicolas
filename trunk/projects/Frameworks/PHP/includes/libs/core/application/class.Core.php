@@ -4,7 +4,7 @@
  * @see README
  *
  * @author Arnaud NICOLAS - arno06@gmail.com
- * @version 1.0
+ * @version 1.1.0
  * @package application
  */
 abstract class Core
@@ -12,7 +12,7 @@ abstract class Core
 	/**
 	 * Version en cours du framework
 	 */
-	const VERSION = "1.0.6";
+	const VERSION = "1.1.0";
 
 	/**
 	 * @var string
@@ -43,11 +43,15 @@ abstract class Core
      */
     static public $path_to_js = "includes/javascript";
 
-
 	/**
 	 * @var string
 	 */
 	static public $path_to_flash = "includes/flash";
+
+    /**
+     * @var string
+     */
+    static public $path_to_templates = "themes/main/default/front/views";
     
     /**
      * Définit le nom du controller
@@ -95,7 +99,6 @@ abstract class Core
      */
     static public function init() 
 	{
-		ini_set("session.cookie_domain", ".vidal.fr");
 		ini_set("session.use_trans_sid", 0);
 
         session_name(Configuration::$site_session);
@@ -109,12 +112,7 @@ abstract class Core
 								$_SERVER["HTTP_X_REQUESTED_WITH"]=="XMLHttpRequest"));
 		if(Configuration::$site_async)
 		{
-			if(isset($_POST))
-				$_POST = Encoding::fromUTF8($_POST);
-			Autoload::addScript("swfaddress/swfaddress.js");
-			Autoload::addScript("swfaddress/swfaddress-optimizer.js");
-			Autoload::addScript("prototype.js");
-			Autoload::addScript("cbi/Navigation.js");
+            trigger_error("TODO", E_USER_ERROR);
 		}
     }
     
@@ -129,8 +127,11 @@ abstract class Core
 		    self::deactivateDevMode();
 	    if(is_array(Configuration::$db)&&!empty(Configuration::$db))
         {
-            foreach(Configuration::$db as $name=>$infos)
-       		    DBManager::set($name, $infos);
+            foreach(Configuration::$db as $name=>$info)
+            {
+                echo($name);
+                DBManager::set($name, $info);
+            }
         }
         call_user_func_array(array(Configuration::$application_authentificationHandler,"getInstance"), array());
 	    if(self::devMode())
@@ -238,18 +239,16 @@ abstract class Core
         self::$path_to_application = "includes/applications/".Configuration::$site_application;
 
 		self::$isBackoffice = RewriteURLHandler::checkForBackoffice($url);
-
 	    
         Configuration::$application_rewriteURLHandler = ucfirst(Configuration::$site_application)."RewriteURLHandler";
         $path_to_rewriteURLHandler = self::$path_to_application."/src/application/rewriteurl/class.".Configuration::$application_rewriteURLHandler.".php";
         if(!file_exists($path_to_rewriteURLHandler))
         {
-        	$path_to_rewriteURLHandler = "includes/libs/cbi/application/rewriteurl/class.RewriteURLHandler.php";
+        	$path_to_rewriteURLHandler = "includes/libs/core/application/rewriteurl/class.RewriteURLHandler.php";
         	Configuration::$application_rewriteURLHandler = "RewriteURLHandler";
         }
         include_once($path_to_rewriteURLHandler);
-	    
-	    Configuration::$authentification_useGroup = Configuration::$authentification_useGroup&&self::$isBackoffice;
+
 	    Configuration::$site_multilanguage = Configuration::$site_multilanguage && !self::$isBackoffice;
 
 		$language = RewriteURLHandler::extractLanguage($url);
@@ -257,12 +256,10 @@ abstract class Core
             Configuration::$site_currentLanguage = $language;
 		else
 			Configuration::$site_currentLanguage = Configuration::$site_defaultLanguage;
-		self::setDictionnary();
+		self::setDictionary();
 		$parsedURL = call_user_func_array(array(Configuration::$application_rewriteURLHandler,'parse'), array($url));
         self::$url = $url;
-//    	preg_match('/(\/|\.[a-z]{2,4})$/',$_SERVER["REQUEST_URI"],$extract, PREG_OFFSET_CAPTURE);
-//    	if(empty($extract))
-//    		Header::location($_SERVER["REQUEST_URI"]."/");
+
 		self::$controller = str_replace("-", "_", $parsedURL["controller"]);
         self::$action = str_replace("-", "_", $parsedURL["action"]);
         if (Core::$isBackoffice)
@@ -273,9 +270,7 @@ abstract class Core
         $_GET = array_merge($parsedURL["parameters"], $_GET);
         self::$path_to_theme = Configuration::$server_url.$acces."themes/".Configuration::$site_application."/".Configuration::$site_theme."/".self::$module;
 
-
-	    if(!AuthentificationHandler::access(self::$controller, self::$action))
-		    Go::to404();
+        self::$path_to_templates = "themes/".Configuration::$site_application."/default/".self::$module."/views";
     }
 
     
@@ -312,11 +307,11 @@ abstract class Core
 	{
 		if(Core::$controller==="statique")
 		{
-			include_once("includes/libs/cbi/application/controller.statique.php");
+			include_once("includes/libs/core/application/controller.statique.php");
 			self::$instance_controller = new statique();
 			return self::$instance_controller;
 		}
-		$seo = Dictionnary::seoInfos(self::$controller, self::$action);
+		$seo = Dictionary::seoInfos(self::$controller, self::$action);
         $controller_file = self::$path_to_application."/modules/".self::$module."/controllers/controller.".self::$controller.".php";
         if (!file_exists($controller_file))
         {
@@ -350,16 +345,17 @@ abstract class Core
 	 * Méthode permettant de définir le dictionnaire en fonction d'un fichier de langue
 	 * @return void
 	 */
-	static public function setDictionnary()
+	static public function setDictionary()
 	{
+        $dictionary_path = self::$path_to_application."/localization/".Configuration::$site_currentLanguage.".json";
         try
 		{
-            $donneesLangue = SimpleJSON::import(self::$path_to_application."/langues/langue.".Configuration::$site_currentLanguage.".json");
+            $donneesLangue = SimpleJSON::import($dictionary_path);
         }
         catch(Exception $e)
 		{
 			if(Configuration::$site_devmode)
-            	die('Fichier de langue "<b>'.self::$path_to_application.'/langues/langue.'.Configuration::$site_currentLanguage.'.json</b>" introuvable');
+            	trigger_error('Fichier de langue "<b>'.$dictionary_path.'</b>" introuvable', E_USER_ERROR);
         	else
 			{
 				Configuration::$site_currentLanguage = Configuration::$site_defaultLanguage;
@@ -376,7 +372,7 @@ abstract class Core
 		if(isset($donneesLangue["alias"])&&is_array($donneesLangue["alias"]))
 			$alias = $donneesLangue["alias"];
 		
-		Dictionnary::defineLanguage(Configuration::$site_currentLanguage, $terms, $seo, $alias);
+		Dictionary::defineLanguage(Configuration::$site_currentLanguage, $terms, $seo, $alias);
 	}
 
     
@@ -450,7 +446,7 @@ abstract class Core
  			$module = "back";
  		else
  			$module = "front";
- 		$pSmarty->template_dir = Core::$path_to_application."/modules/".$module."/views";
+ 		$pSmarty->template_dir = Core::$path_to_templates;
  		$smartyDir = Core::$path_to_application."/_cache/".$module;
  		$pSmarty->cache_dir = $smartyDir;
  		$pSmarty->compile_dir = $smartyDir;
@@ -547,7 +543,7 @@ abstract class Core
 		{
 			$return = $pController->getGlobalVars();
 			$return = array_merge($return, Debugger::getGlobalVars());
-            if((isset($_POST)&&isset($_POST["o_html"])&&$_POST["o_html"]!="false") || (isset($pController->html) && $pController->html))
+            if((isset($_POST)&&isset($_POST["o_html"])&&$_POST["o_html"]!="false"))
 				$return["html"] = $pController->renderHTML($smarty, false);
 			$response = SimpleJSON::encode($return);
 			$type = "json";
@@ -571,6 +567,7 @@ abstract class Core
 	    self::$path_to_application = null;
 	    self::$path_to_js = null;
 	    self::$path_to_theme = null;
+        self::$path_to_templates = null;
         Singleton::dispose();
 		DBManager::dispose();
 	    exit();

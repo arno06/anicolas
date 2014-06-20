@@ -1,7 +1,7 @@
 <?php
 /**
  * Class Configuration
- * Sert de référence pour n'importe quelle propriété nécessaire &agrave; la configuration de l'application
+ * Sert de référence pour n'importe quelle propriété nécessaire à la configuration de l'application
  *
  * @author Arnaud NICOLAS - arno06@gmail.com
  * @version .6
@@ -16,7 +16,7 @@ abstract class Configuration
 
 	/**
 	 * Définit si le site utilise la navigation asynchrone par défaut
-	 * Int&egrave;gre SWFAddress automatiquement
+     * @tbd
 	 * @var bool
 	 */
 	static public $site_async = false;
@@ -33,7 +33,7 @@ abstract class Configuration
 	static public $site_application = "main";	
 	
 	/**
-	 * Th&egrave;me du site
+	 * Thème du site
 	 * @var String
 	 */
 	static public $site_theme = "default";
@@ -45,7 +45,7 @@ abstract class Configuration
 	static public $site_devmode = false;
 
 	/**
-	 * Définit si Query gén&egrave;re automatiquement des requ�tes Explain sur les Select
+	 * Définit si Query génère automatiquement des requêtes Explain sur les Select
 	 * @var bool
 	 */
 	static public $site_explainOnSelect = true;
@@ -63,7 +63,7 @@ abstract class Configuration
 	static public $site_emailContact = "";
 	
 	/**
-	 * Définit si l'url doit �tre traduite (controller/action) en fonction des alias du fichier de langue
+	 * Définit si l'url doit être traduite (controller/action) en fonction des alias du fichier de langue
 	 * @var Boolean
 	 */
 	static public $site_translateURL = false;
@@ -87,16 +87,16 @@ abstract class Configuration
 	static public $site_template404 = "template.404.tpl";
 	
 	/**
-	 * Nom d'acc&egrave;s pour les controllers Backoffice
+	 * Nom d'accès pour les controllers Backoffice
 	 * @var String
 	 */
 	static public $site_backoffice = "admin";
 	
 	/**
-	 * Nom attribué &agrave; la session de l'application
+	 * Nom attribué à la session de l'application
 	 * @var String
 	 */	
-	static public $site_session = "cbi_site";
+	static public $site_session = "fw_php";
 	
 	/**
 	 * Tableau des permissions disponibles sur le site
@@ -105,13 +105,13 @@ abstract class Configuration
 	static public $site_permissions = array();
 
 	/**
-	 * Définit si Smarty supprime les retours &agrave; la ligne &agrave; l'écriture des fichiers de cache des templates
+	 * Définit si Smarty supprime les retours à la ligne à l'écriture des fichiers de cache des templates
 	 * @var bool
 	 */
 	static public $site_inlineHTMLCode = false;
 	
 	/**
-	 * Domaine du serveur (exemple : cbi-multimedia.com)
+	 * Domaine du serveur
 	 * @var String
 	 */
 	static public $server_domain;
@@ -128,21 +128,11 @@ abstract class Configuration
 	 */
 	static public $server_url;
 
-
-    static public $server_dev;
-
-	/**
-	 * URL du serveur externe (concaténation du domaine et du dossier)
-	 * @var String
-	 */
-	static public $server_url_external;
-
 	/**
 	 * Définit l'adresse du serveur smtp
 	 * @var string
 	 */
-	static public $server_smtp = "smtp-av.nerim.net";
-
+	static public $server_smtp = "";
 
 	/**
 	 * Stock les informations des SGBD
@@ -153,18 +143,16 @@ abstract class Configuration
 			"host"=>"localhost",
 			"user"=>"root",
 			"password"=>"",
-			"name"=>"cbi-php-framework",
+			"name"=>"php-framework",
 			"handler"=>"MysqlHandler"
 		)
 	);
-	
-	
+
 	/**
 	 * Nom de la classe chargée de gérer les authentifications sur le site
 	 * @var String
 	 */
 	static public $application_authentificationHandler = "AuthentificationHandler";
-
 
 	/**
 	 * @var string
@@ -207,9 +195,4 @@ abstract class Configuration
 	 * @var string
 	 */
 	static public $authentification_fieldPermissions = "permissions_user";
-
-	/**
-	 * @var bool
-	 */
-	static public $authentification_useGroup = false;
 }
