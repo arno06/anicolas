@@ -80,7 +80,9 @@ class Query
 	 * @var String
 	 */
 	const IN                =   " IN ";
-
+    /**
+     * @var String
+     */
     const MATCH             =   " MATCH ";
 	
 	/**

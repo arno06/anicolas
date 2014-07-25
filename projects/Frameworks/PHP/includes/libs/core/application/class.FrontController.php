@@ -76,7 +76,7 @@ class FrontController extends EventDispatcher
 		
 		if(!$smarty->template_exists($this->template))
 		{
-			if(Configuration::$site_devmode)
+			if(Core::debug())
 				trigger_error("Le template <b>".$this->template."</b> est introuvable", E_USER_ERROR);
 			else
 				Go::to404();

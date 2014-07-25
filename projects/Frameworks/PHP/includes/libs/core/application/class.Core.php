@@ -1,10 +1,10 @@
 <?php
 /**
- * Core du framework - sert de noyau central &agrave; l'organisation Model View Controller
+ * Core du framework - sert de noyau central à l'organisation Model View Controller
  * @see README
  *
  * @author Arnaud NICOLAS - arno06@gmail.com
- * @version 1.1.0
+ * @version 2.0
  * @package application
  */
 abstract class Core
@@ -12,7 +12,7 @@ abstract class Core
 	/**
 	 * Version en cours du framework
 	 */
-	const VERSION = "1.1.0";
+	const VERSION = "2.0";
 
 	/**
 	 * @var string
@@ -105,8 +105,6 @@ abstract class Core
         session_start();
         set_error_handler("Debugger::errorHandler");
         set_exception_handler("Debugger::exceptionHandler");
-        self::createAlias("trace", "Debugger::trace", array(array("name"=>'$pMessage'), array("name"=>'$pOpen', "value"=>"false")));
-        self::createAlias("trace_r", "Debugger::trace_r", array(array("name"=>'$pMessage'), array("name"=>'$pOpen', "value"=>"false")));
 		self::$request_async = (isset($_SERVER["HTTP_X_PROTOTYPE_VERSION"])||
 								(isset($_SERVER["HTTP_X_REQUESTED_WITH"])&&
 								$_SERVER["HTTP_X_REQUESTED_WITH"]=="XMLHttpRequest"));
@@ -124,17 +122,16 @@ abstract class Core
     static public function defineGlobalObjects()
     {
 	    if(self::isBot())
-		    self::deactivateDevMode();
+		    self::deactivateDebug();
 	    if(is_array(Configuration::$db)&&!empty(Configuration::$db))
         {
             foreach(Configuration::$db as $name=>$info)
             {
-                echo($name);
                 DBManager::set($name, $info);
             }
         }
         call_user_func_array(array(Configuration::$application_authentificationHandler,"getInstance"), array());
-	    if(self::devMode())
+	    if(self::debug())
 	        Debugger::prepare();
     }
     
@@ -325,8 +322,8 @@ abstract class Core
             
         if (!class_exists(self::$controller))
         {
-            if (Configuration::$site_devmode)
-                die("Controller <b>".self::$controller."</b> introuvable");
+            if (Configuration::$application_debug)
+                trigger_error("Controller <b>".self::$controller."</b> introuvable", E_USER_ERROR);
             else
 	            Go::to404();
         }
@@ -354,7 +351,7 @@ abstract class Core
         }
         catch(Exception $e)
 		{
-			if(Configuration::$site_devmode)
+			if(Configuration::$application_debug)
             	trigger_error('Fichier de langue "<b>'.$dictionary_path.'</b>" introuvable', E_USER_ERROR);
         	else
 			{
@@ -401,9 +398,9 @@ abstract class Core
 	 * Méthode de vérification si l'application est disponible en mode développeur (en fonction du config.json et de l'authentification)
 	 * @return bool
 	 */
-	static public function devMode()
+	static public function debug()
 	{
-		return Configuration::$site_devmode||AuthentificationHandler::is(AuthentificationHandler::DEVELOPER);
+		return Configuration::$application_debug||AuthentificationHandler::is(AuthentificationHandler::DEVELOPER);
 	}
 
 	
@@ -411,9 +408,9 @@ abstract class Core
 	 * @static
 	 * @return void
 	 */
-	static public function deactivateDevMode()
+	static public function deactivateDebug()
 	{
-		Configuration::$site_devmode = false;
+        Configuration::$application_debug = false;
 		AuthentificationHandler::$permissions = array();
 	}
 
@@ -536,7 +533,7 @@ abstract class Core
 		{
 			Header::content_type("text/html");
 			$pController->renderHTML($smarty);
-			if(Core::devMode())
+			if(Core::debug())
 				Debugger::renderHTML($smarty);
 		}
 		else

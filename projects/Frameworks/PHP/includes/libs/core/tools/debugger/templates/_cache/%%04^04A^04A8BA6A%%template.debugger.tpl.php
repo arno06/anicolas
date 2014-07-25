@@ -1,4 +1,4 @@
-<?php /* Smarty version 2.6.18, created on 2014-04-14 16:26:48
+<?php /* Smarty version 2.6.18, created on 2014-07-25 10:10:20
          compiled from template.debugger.tpl */ ?>
 <?php if ($this->_tpl_vars['is_error']): ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
@@ -10,30 +10,31 @@
 "/>
 		<title>Une erreur est apparue !</title>
 		<script type="text/javascript" src="<?php echo $this->_tpl_vars['dir_to_js']; ?>
-/prototype.js"></script>
-		<script type="text/javascript" src="<?php echo $this->_tpl_vars['dir_to_js']; ?>
-/cbi/Debugger.js"></script>
-		<script type="text/javascript" src="<?php echo $this->_tpl_vars['dir_to_js']; ?>
-/Minuit4/M4Tween.js"></script>
+/core/Debugger.js"></script>
         <script type="text/javascript">Debugger.error = true;</script>
 	</head>
 	<body>
 <?php endif; ?>
 		<style type="text/css"><!--@import URL("<?php echo $this->_tpl_vars['dir_to_theme']; ?>
 /css/debugger.css");--></style>
-		<div id="debug" <?php if ($this->_tpl_vars['open']): ?>style="height:350px;"<?php endif; ?>><div id="debug_global">Temps d'exécution : <span id="debug_time"><?php echo $this->_tpl_vars['timeToGenerate']; ?>
-</span> sec  -  Mémoire utilisée : <span id="debug_memory"><?php echo $this->_tpl_vars['memUsage']; ?>
-</span></div>
-			<div id="debug_control">
-                <a id="debug_fullscreen">Fullscreen</a> - <a id="debug_toggle"><?php if ($this->_tpl_vars['open']): ?>Minimiser<?php else: ?>Agrandir<?php endif; ?></a> - <a id="debug_close">Fermer</a>
-			</div>
-			<div class="clean"></div>
-			<div id="debug_buttons">
+		<div id="debug"<?php if ($this->_tpl_vars['open'] || $this->_tpl_vars['is_error']): ?> class="<?php if ($this->_tpl_vars['is_error']): ?>fullscreen<?php else: ?>maximized<?php endif; ?>"<?php endif; ?>>
+            <div class="debug_bar">
+                <div class="debug_global">
+                    <span class="debug_time"><?php echo $this->_tpl_vars['timeToGenerate']; ?>
+</span>
+                    <span class="debug_memory"><?php echo $this->_tpl_vars['memUsage']; ?>
+</span>
+                </div>
+                <div class="debug_control">
+                    <a class="debug_fullscreen"></a><a class="debug_toggle"></a><a class="debug_close"></a>
+                </div>
+            </div>
+			<div class="debug_buttons">
 				<div rel="trace">
 					<span>&nbsp;</span>Traces&nbsp; <span class="count">(<?php echo $this->_tpl_vars['count']['trace']; ?>
 )</span>
 				</div>
-				<div rel="notice">
+                <div rel="notice">
 					<span>&nbsp;</span>Notices <span class="count">(<?php echo $this->_tpl_vars['count']['notice']; ?>
 )</span>
 				</div>

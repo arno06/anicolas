@@ -1,0 +1,24 @@
+{
+    "default":
+    {
+        "handler":"MysqlHandler",
+        "parameters":
+        {
+            "host":"localhost",
+            "user":"root",
+            "password":"",
+            "db":"vidalgp"
+        }
+    },
+    "vidalid":
+    {
+        "handler":"MysqlHandler",
+        "parameters":
+        {
+            "host":"172.24.171.249",
+            "user":"admvidalid",
+            "password":"wA4uphEjugut",
+            "db":"vidalid"
+        }
+    }
+}

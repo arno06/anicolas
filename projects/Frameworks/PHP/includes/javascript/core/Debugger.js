@@ -6,9 +6,9 @@ var Debugger =
 	current:"sortie",
 	__init:function()
 	{
-		if(document.querySelector(".debugselected"))
-			Debugger.current = document.querySelector(".debugselected a");
-		document.querySelectorAll("#debug_buttons div").forEach(function(div)
+		if(document.querySelector("#debug .debugselected"))
+			Debugger.current = document.querySelector("#debug .debugselected a");
+		document.querySelectorAll("#debug .debug_buttons div").forEach(function(div)
 		{
 			var listener = Debugger.__controlConsoleClickHandler;
 			if(div.classList.contains("vars"))
@@ -19,11 +19,10 @@ var Debugger =
         {
             var el = document.querySelector("#debug .debug_console");
             el.scrollTop = el.scrollHeight;
-            Debugger.fullscreen();
         }
-		document.querySelector("#debug_toggle").addEventListener("click", Debugger.toggle);
-        document.querySelector("#debug_fullscreen").addEventListener("click", Debugger.fullscreen);
-		document.querySelector("#debug_close").addEventListener("click", Debugger.close);
+		document.querySelector("#debug .debug_toggle").addEventListener("click", Debugger.toggle);
+        document.querySelector("#debug .debug_fullscreen").addEventListener("click", Debugger.fullscreen);
+		document.querySelector("#debug .debug_close").addEventListener("click", Debugger.close);
 		window.addEventListener("keydown", Debugger.keyDownHandler);
 	},
 	keyDownHandler:function(e)
@@ -41,25 +40,20 @@ var Debugger =
 	},
 	toggle:function(e)
 	{
-		var t = document.getElementById("debug_toggle");
-		t.innerHTML = (t.innerHTML == "Agrandir"?"Minimiser":"Agrandir");
-		var value = t.innerHTML=="Minimiser"?"350px":"20px";
-		M4Tween.to(document.querySelector("#debug"), .2,{"height":value});
-		try
-		{
-			e.preventDefault();
-		}catch(e){}
+        if(e)
+            e.preventDefault();
+        if(document.querySelector("#debug").classList.contains("fullscreen"))
+            document.querySelector("#debug").classList.remove("fullscreen");
+        else
+            document.querySelector("#debug").classList.toggle("maximized");
 	},
     fullscreen:function(e)
     {
-        var value =  window.innerHeight+"px";
-        var t = document.getElementById("debug_toggle");
-        t.innerHTML = "Minimiser";
-        M4Tween.to(document.querySelector("#debug"), .2,{"height":value});
-        try
-        {
+        if(e)
             e.preventDefault();
-        }catch(e){}
+        if(document.querySelector("#debug").classList.contains("maximized"))
+            document.querySelector("#debug").classList.remove("maximized");
+        document.querySelector("#debug").classList.toggle("fullscreen");
     },
 	close:function(e)
 	{
@@ -68,12 +62,12 @@ var Debugger =
 	},
 	updateConsole:function()
 	{
-		document.querySelectorAll("#debug_buttons div").forEach(function(button)
+		document.querySelectorAll("#debug .debug_buttons div").forEach(function(button)
 		{
 			var display = "table-row";
 			if(button.classList.contains("disabled"))
 				display = "none";
-			document.querySelectorAll(".debug_console table.console tr."+button.getAttribute("rel")).forEach(function(tr)
+			document.querySelectorAll("#debug .debug_console table.console tr."+button.getAttribute("rel")).forEach(function(tr)
 			{
 				tr.style.display = display;
 			});
@@ -83,7 +77,7 @@ var Debugger =
 	{
 		e.preventDefault();
 		var t = e.target.nodeName.toLowerCase()!="div" ? e.target.parentNode : e.target;
-		document.querySelectorAll("#debug_buttons div.vars").forEach(function(div)
+		document.querySelectorAll("#debug .debug_buttons div.vars").forEach(function(div)
 		{
 			if(!div.classList.contains("disabled"))
 				div.classList.add("disabled");

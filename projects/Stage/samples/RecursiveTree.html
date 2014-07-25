@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" Content="text/html; charset=ISO-8859-15"/>
+		<title>Recursive Tree - Stage.js</title>
+		<link href="../../common/docs/docs.css" rel="stylesheet" type="text/css">
+		<script src="../../Dependencies/src/?need=M4,Stage"></script>
+		<style type="text/css">
+			canvas{display:block;margin:0 auto;background: #eeeeff;}
+		</style>
+		<script type="text/javascript">
+
+			var stage, angle, branch, ratio, trunk, recursion, startAngle, drawCircle;
+
+			function init()
+			{
+                trunk = 100;
+                angle = 35;
+                branch = 4;
+                ratio = .66;
+                recursion = 5;
+                drawCircle = true;
+
+                stage = new Stage(800, 600, ".content");
+
+                refresh();
+
+                document.querySelectorAll('input[type="range"]').forEach(function(pInput)
+                {
+                    pInput.addEventListener('change', changeRangeHandler, false);
+                });
+                document.querySelectorAll('input[type="checkbox"]').forEach(function(pInput)
+                {
+                    pInput.addEventListener('change', changeCheckboxHandler, false);
+                });
+
+			}
+
+            function changeCheckboxHandler(e)
+            {
+                if(window[e.currentTarget.getAttribute('id')] == undefined)
+                    return;
+                window[e.currentTarget.getAttribute('id')] = e.currentTarget.checked||false;
+                refresh();
+            }
+
+            function changeRangeHandler(e)
+            {
+                if(!window[e.currentTarget.getAttribute('id')])
+                    return;
+                window[e.currentTarget.getAttribute('id')] = e.currentTarget.value;
+                refresh();
+            }
+
+            function refresh()
+            {
+                stage.resume();
+                stage.clear();
+
+                var from = new Vector(stage.width>>1, stage.height);
+                var to = new Vector(stage.width>>1, stage.height - trunk);
+
+                stage.beginFill("rgba(0, 0, 0, 0)");
+                if(drawCircle)
+                {
+                    stage.setLineStyle(1, "rgba(0, 0, 0, .2)");
+                    stage.drawCircle(from.x, from.y, trunk);
+                }
+                stage.setLineStyle(2, "rgb(0, 0, 0)");
+                stage.moveTo(from.x, from.y);
+                stage.lineTo(to.x, to.y);
+                stage.endFill();
+
+
+                recursiveBranch(to, -90,recursion);
+                stage.pause();
+            }
+
+            function recursiveBranch(pNode, pPreviousAngle, pDepth)
+            {
+                if(--pDepth<=0)
+                    return;
+                var lvl = recursion - pDepth;
+                var tr = trunk * (ratio/lvl);
+
+                if(drawCircle)
+                {
+                    stage.beginFill("rgba(0, 0, 0, 0)");
+                    stage.setLineStyle(1, "rgba(0, 0, 0, .2)");
+                    stage.drawCircle(pNode.x, pNode.y, tr);
+                    stage.endFill();
+                }
+
+                var startAngle = pPreviousAngle - (((branch-1)*angle)/2);
+                var a, A;
+                for(var i = 0;i<branch;i++)
+                {
+                    a = M4.geom.DEGREE_TO_RADIAN * (startAngle + (i*angle));
+                    A = (new Vector(Math.cos(a) * tr, Math.sin(a) * tr)).add(pNode);
+                    stage.setLineStyle(2, "rgb(0, 0, 0)");
+                    stage.moveTo(pNode.x, pNode.y);
+                    stage.lineTo(A.x, A.y);
+                    stage.endFill();
+                    recursiveBranch(A, startAngle + (i*angle), pDepth);
+                }
+            }
+
+			window.addEventListener("load", init, false);
+		</script>
+	</head>
+	<body>
+		<header>
+			<h1>Recursive Tree - Stage.js</h1>
+		</header>
+        <table class="controls">
+            <tr><td><label for="angle">Angle : </label></td><td><input type="range" id="angle" min="5" max="90" step="1" value="30"></td></tr>
+            <tr><td><label for="recursion">Recursion : </label></td><td><input type="range" id="recursion" min="1" max="10" step="1" value="5"></td></tr>
+            <tr><td><label for="trunk">Trunk : </label></td><td><input type="range" id="trunk" min="30" max="300" step="10" value="100"></td></tr>
+            <tr><td><label for="branch">Branch : </label></td><td><input type="range" id="branch" min="2" max="7" step="1" value="4"></td></tr>
+            <tr><td><label for="ratio">Ratio : </label></td><td><input type="range" id="ratio" min=".1" max="1.5" step=".1" value=".66"></td></tr>
+            <tr><td><label for="drawCircle">Circles : </label></td><td><input type="checkbox" id="drawCircle" value="1" checked></td></tr>
+        </table>
+		<div class="content">
+
+		</div>
+		<footer></footer>
+	</body>
+</html>

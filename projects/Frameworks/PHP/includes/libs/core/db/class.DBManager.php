@@ -26,13 +26,12 @@ class DBManager
 		return self::$handlers[$pName];
 	}
 
-	/**
-	 * @static
-	 * @param $pName
-	 * @param $pInfos
-	 * @return void
-	 */
-	static public function set($pName, $pInfo)
+    /**
+     * @static
+     * @param $pName
+     * @param $pInfo
+     */
+    static public function set($pName, $pInfo)
 	{
 		if(isset(self::$handlers[$pName]))
 			trigger_error("L'identifiant \"".$pName."\" est déj&agrave; utilisé. Impossible de stocker le gestionnaire créé.");

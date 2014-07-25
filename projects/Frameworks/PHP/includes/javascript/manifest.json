@@ -12,7 +12,6 @@
 	},
     "Debugger":
     {
-        "need":["M4Tween"],
         "src":
         [
             "core/Debugger.js"
