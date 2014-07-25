@@ -583,7 +583,6 @@ Class.define(Stage, [Container], {
 		};
         this.domElement.onmouseout = function(e)
         {
-            console.log("mouseout");
             ref.mouseX = e.offsetX|| e.layerX;
             ref.mouseY = e.offsetY|| e.layerY;
             ref.rightClick = e.button == MouseEvent.RIGHT_BUTTON;

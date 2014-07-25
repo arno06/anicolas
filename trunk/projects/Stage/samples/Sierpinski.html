@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" Content="text/html; charset=ISO-8859-15"/>
+		<title>ParticlesBix - Stage.js</title>
+		<link href="../../common/docs/docs.css" rel="stylesheet" type="text/css">
+		<script src="../../Dependencies/src/?need=Stage"></script>
+		<style type="text/css">
+			canvas{display:block;margin:0 auto;background: #eeeeff;}
+		</style>
+		<script type="text/javascript">
+
+			var stage, size, recursion;
+
+			function init()
+			{
+                size = 400;
+                recursion = 1;
+
+                stage = new Stage(800, 600, ".content");
+
+                refresh();
+                document.querySelector("#size").addEventListener("change", changeParametersHandler);
+                document.querySelector("#recursion").addEventListener("change", changeParametersHandler);
+			}
+
+            function changeParametersHandler(e)
+            {
+                window[e.currentTarget.getAttribute("id")] = e.currentTarget.value;
+                refresh();
+            }
+
+            function refresh()
+            {
+                var B = size>>1;
+                var C = Math.sqrt((size*size)-(B*B));
+
+                var center = new Vector(stage.width>>1, stage.height>>1);
+
+                var a = new Vector(center.x-B, center.y+(C>>1));
+                var b = new Vector(center.x+B, center.y+(C>>1));
+                var c = new Vector(center.x, center.y-(C>>1));
+
+                stage.resume();
+                stage.clear();
+                sierpinskiTriangle(new Triangle(a, b, c), recursion);
+                stage.pause();
+            }
+
+            function sierpinskiTriangle(pTriangle, pDepth)
+            {
+                if(pDepth<=0)
+                {
+                    pTriangle.draw(stage);
+                    return;
+                }
+
+                pDepth--;
+
+                var ab = new Vector((pTriangle.a.x + pTriangle.b.x) /2, (pTriangle.a.y + pTriangle.b.y) /2);
+                var ac = new Vector((pTriangle.a.x + pTriangle.c.x) /2, (pTriangle.a.y + pTriangle.c.y) /2);
+                var bc = new Vector((pTriangle.b.x + pTriangle.c.x) /2, (pTriangle.b.y + pTriangle.c.y) /2);
+
+                sierpinskiTriangle(new Triangle(pTriangle.a, ab, ac), pDepth);
+                sierpinskiTriangle(new Triangle(ab, pTriangle.b, bc), pDepth);
+                sierpinskiTriangle(new Triangle(ac, bc, pTriangle.c), pDepth);
+            }
+
+            function Triangle(pA, pB, pC)
+            {
+                this.a = pA;
+                this.b = pB;
+                this.c = pC;
+            }
+
+            Class.define(Triangle, [Class], {
+                draw:function(pContext)
+                {
+                    pContext.beginFill("rgb(0, 0, 0)");
+                    pContext.moveTo(this.a.x, this.a.y);
+                    pContext.lineTo(this.b.x, this.b.y);
+                    pContext.lineTo(this.c.x, this.c.y);
+                    pContext.lineTo(this.a.x, this.a.y);
+                    pContext.endFill();
+                }
+            });
+
+			window.addEventListener("load", init, false);
+		</script>
+	</head>
+	<body>
+		<header>
+			<h1>Triangle de Sierpinski - Stage.js</h1>
+		</header>
+        <table class="controls">
+            <tr><td><label for="size">Triangle.size : </label></td><td><input type="range" id="size" min="200" max="600" step="50" value="400"></td></tr>
+            <tr><td><label for="recursion">Recursion : </label></td><td><input type="range" id="recursion" min="0" max="10" step="1" value="1"></td></tr>
+        </table>
+		<div class="content">
+
+		</div>
+		<footer></footer>
+	</body>
+</html>

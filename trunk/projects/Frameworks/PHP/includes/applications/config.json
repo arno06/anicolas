@@ -3,11 +3,10 @@
         "async": "",
         "application": "main",
         "theme": "default",
-        "devmode": true,
         "explainOnSelect": "",
         "multilanguage": "",
         "emailContact": "me@arnaud-nicolas.fr",
-        "translateURL": "",
+        "translateURL": false,
         "defaultLanguage": "fr",
         "currentLanguage": "fr",
         "template404": "template.404.tpl",
@@ -21,6 +20,7 @@
     "db": false,
     "application":
     {
+        "debug":true,
         "autoload":
         {
             "packages":

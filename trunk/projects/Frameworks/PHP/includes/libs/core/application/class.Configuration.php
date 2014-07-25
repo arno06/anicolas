@@ -37,12 +37,6 @@ abstract class Configuration
 	 * @var String
 	 */
 	static public $site_theme = "default";
-	
-	/**
-	 * Définit si le site est en mode développement ou production
-	 * @var Boolean
-	 */
-	static public $site_devmode = false;
 
 	/**
 	 * Définit si Query génère automatiquement des requêtes Explain sur les Select
@@ -170,6 +164,11 @@ abstract class Configuration
      * @var array
      */
     static public $application_autoload = array();
+
+    /**
+     * @var bool
+     */
+    static public $application_debug = false;
 
 	/**
 	 * @var string

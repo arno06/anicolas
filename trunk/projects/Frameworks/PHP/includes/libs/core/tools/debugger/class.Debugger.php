@@ -2,11 +2,11 @@
 /**
  * Class Debugger - Permet de centraliser les éventuelles "sorties" permettant de debugger l'application
  * 	
- * 			G&egrave;re :
+ * 			Gère :
  * 				- les Erreurs
  * 				- les Exceptions
  * 				- les Sorties
- * 				- la liste des Requ�tes SQL
+ * 				- la liste des Requêtes SQL
  * 				- les variables globales $_GET, $_POST, $_SESSION
  * 
  * @author Arnaud NICOLAS - arno06@gmail.com
@@ -37,6 +37,11 @@ class Debugger extends Singleton
 	 * @var Boolean
 	 */
 	static private $open = false;
+
+    /**
+     * @var string
+     */
+    static private $state = "odd";
 
 	/**
 	 * @var string
@@ -72,6 +77,8 @@ class Debugger extends Singleton
         if (!isset($time[1])) $time[1] = "000";
 		$decalage = (60 * 60) * ((date("I") == 0) ?1:2);
 		self::getInstance()->count[$pClass]++;
+        $pClass .= " ".self::$state;
+        self::$state = self::$state == "odd"?"even":"odd";
 		self::getInstance()->consoles .= "<tr class='".$pClass."'><td class='date'>".(gmdate("H:i:s", $time[0] + $decalage).",".$time[1])."</td><td class='".$pClass."'></td><td class='message'>".$pMessage."</td><td class='file'>".$pFile.":".$pLine."</td></tr>";
 	}
 
@@ -175,7 +182,7 @@ class Debugger extends Singleton
 		$i->count["session"] = count($_SESSION);
 		return array(
 			"console"=>$i->consoles,
-			"timeToGenerate"=>round($i->timeToGenerate,3),
+			"timeToGenerate"=>(round($i->timeToGenerate,3))." sec",
 			"memUsage"=>$i->memUsage,
 			"vars"=>array("get"=>print_r($_GET, true),
 							"post"=>print_r($_POST, true),
@@ -199,7 +206,7 @@ class Debugger extends Singleton
 		$i = self::getInstance();
 		if(!$pEndTime)
 			$pEndTime = microtime(true);
-		$i->timeToGenerate = $pEndTime - $pStartTime;
+		$i->timeToGenerate = ($pEndTime - $pStartTime);
 	}
 
 	/**
@@ -264,7 +271,7 @@ class Debugger extends Singleton
 		self::addToConsole($type, $pErrorMessage, $pErrorFile, $pErrorLine);
 		if($stopApplication)
 		{
-			if(!Core::devMode())
+			if(!Core::debug())
 			{
                 Logs::write($pErrorMessage." ".$pErrorFile." ".$pErrorLine, $pErrorLevel);
 			}
@@ -322,4 +329,19 @@ class Debugger extends Singleton
 	{
 		return "[Objet Debugger]";
 	}
+}
+
+
+/**
+ * Aliases
+ */
+
+function trace($pString, $pOpen = false)
+{
+    Debugger::trace($pString,$pOpen);
+}
+
+function trace_r($pData, $pOpen = false)
+{
+    Debugger::trace_r($pData, $pOpen);
 }
