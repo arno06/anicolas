@@ -20,6 +20,9 @@ class ModelAuthentification extends BaseModel
 
     static public function isUser($pLogin, $pMdp)
     {
+        if(empty($pLogin)||empty($pMdp))
+            return false;
+
         $instance = self::getInstance();
 
         if($result = $instance->one(Query::condition()->andWhere(Configuration::$authentification_fieldLogin, Query::EQUAL, $pLogin)))

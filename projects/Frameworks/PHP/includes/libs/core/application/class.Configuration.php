@@ -30,8 +30,8 @@ abstract class Configuration
 	 * Liste des applications disponibles
 	 * @var String
 	 */
-	static public $site_application = "main";	
-	
+	static public $site_application = "main";
+
 	/**
 	 * Thème du site
 	 * @var String
@@ -43,7 +43,7 @@ abstract class Configuration
 	 * @var bool
 	 */
 	static public $site_explainOnSelect = true;
-	
+
 	/**
 	 * Définit si le site est multilangue
 	 * @var Boolean
@@ -55,43 +55,43 @@ abstract class Configuration
 	 * @var string
 	 */
 	static public $site_emailContact = "";
-	
+
 	/**
 	 * Définit si l'url doit être traduite (controller/action) en fonction des alias du fichier de langue
 	 * @var Boolean
 	 */
 	static public $site_translateURL = false;
-	
+
 	/**
 	 * Définit la langue par défaut
 	 * @var String
 	 */
 	static public $site_defaultLanguage = "fr";
-	
+
 	/**
 	 * Définit la langue en cours
 	 * @var String
 	 */
 	static public $site_currentLanguage = "fr";
-	
+
 	/**
 	 * Nom du controller s'occupant de gérer la page d'erreur 404
 	 * @var String
 	 */
 	static public $site_template404 = "template.404.tpl";
-	
+
 	/**
 	 * Nom d'accès pour les controllers Backoffice
 	 * @var String
 	 */
 	static public $site_backoffice = "admin";
-	
+
 	/**
 	 * Nom attribué à la session de l'application
 	 * @var String
-	 */	
+	 */
 	static public $site_session = "fw_php";
-	
+
 	/**
 	 * Tableau des permissions disponibles sur le site
 	 * @var array
@@ -103,19 +103,19 @@ abstract class Configuration
 	 * @var bool
 	 */
 	static public $site_inlineHTMLCode = false;
-	
+
 	/**
 	 * Domaine du serveur
 	 * @var String
 	 */
 	static public $server_domain;
-	
+
 	/**
 	 * Dossier de base dans lequel se trouve le framework
 	 * @var String
 	 */
 	static public $server_folder;
-	
+
 	/**
 	 * URL du serveur (concaténation du domaine et du dossier)
 	 * @var String

@@ -1,5 +1,5 @@
 {include file="includes/template.head.tpl"}
-	<div id="bloc-identification">
+	<div id="connexion">
 	<h1>Identification</h1>
 	{if $content.error!=""}
 	<div class='error'>{$content.error}</div>
