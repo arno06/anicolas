@@ -1,7 +1,5 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr">
+<!DOCTYPE html>
+<html>
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset={$configuration.site_encoding}" />
 		<base href="{$configuration.server_url}{$configuration.site_backoffice}/"/>
@@ -14,13 +12,8 @@
 {foreach from="$scripts" item=script}
 		<script type="text/javascript" src="{$script}"></script>
 {/foreach}
-    <script>
-        if (typeof jQuery != "undefined")
-            jQuery.noConflict();
-    </script>
 	</head>
 	<body>
-		<div id="loading_screen" style="opacity:1;filter:opacity(alpha=100);"></div>
 
 {include file="includes/template.menu.tpl"}
 

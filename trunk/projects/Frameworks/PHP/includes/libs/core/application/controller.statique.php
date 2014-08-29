@@ -4,7 +4,7 @@
  *
  *
  * @author Arnaud NICOLAS - arno06@gmail.com
- * @version .3
+ * @version 1.0
  * @package application
  * @subpackage controller
  */

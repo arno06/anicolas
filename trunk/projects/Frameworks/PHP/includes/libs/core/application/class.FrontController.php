@@ -95,6 +95,8 @@ class FrontController extends EventDispatcher
 		{
 			$smarty->assign_by_ref($n, $v);
 		}
+        if(!Core::debug())
+            $smarty->load_filter('output', 'gzip');
 		return $smarty->fetch($this->template, null, null, $pDisplay);
  	}
 

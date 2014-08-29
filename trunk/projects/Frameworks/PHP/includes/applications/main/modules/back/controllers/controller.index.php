@@ -22,7 +22,7 @@ class index extends FrontController implements InterfaceController
 		if($form->isValid())
 		{
 			$data = $form->getValues();
-            if(AuthentificationHandler::getInstance()->setAdminSession($data["login"], md5($data["mdp"])))
+            if(AuthentificationHandler::getInstance()->setAdminSession($data["login"], $data["mdp"]))
             {
                 Go::toBack();
             }
@@ -39,7 +39,7 @@ class index extends FrontController implements InterfaceController
 	
 	public function deconnexion()
 	{
-        AuthentificationHandler::logout();
+        AuthentificationHandler::unsetUserSession();
 		Go::toBack();
 	}
 }

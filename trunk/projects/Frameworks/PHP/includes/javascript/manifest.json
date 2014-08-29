@@ -3,13 +3,6 @@
 	{
 		"relative":"./"
 	},
-	"M4Tween":
-	{
-		"src":
-		[
-			"Minuit4/M4Tween.js"
-		]
-	},
     "Debugger":
     {
         "src":
