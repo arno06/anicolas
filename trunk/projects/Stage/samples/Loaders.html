@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title></title>
+        <script src="../../Dependencies/src/?need=M4,Stage,M4Tween"></script>
+        <script>
+
+            function init()
+            {
+                document.querySelectorAll('*[data-role="loader"]').forEach(function(pItem)
+                {
+                    new CircleLoader(pItem);
+                });
+            }
+
+            function CircleLoader(pEl)
+            {
+                this.reversed = (pEl.dataset.reversed||0)=="1";
+                this.endCoef = this.reversed?1:0;
+                this.startCoef = this.reversed?1:0;
+                this.container = pEl;
+                this.stage = new Stage(this.container.dataset.size||100, this.container.dataset.size||100, this.container);
+
+                if(this.container.dataset.debug==="1")
+                    this.stage.addChild(new FPS());
+
+//                this.stage.addEventListener(Event.ENTER_FRAME, this.onFrameHandler.proxy(this), false);
+
+                var ref = this;
+                if(this.reversed)
+                    this.undoCircle();
+                else
+                    this.doCircle();
+            }
+
+            Class.define(CircleLoader, [Class], {
+                doCircle:function()
+                {
+                    this.endCoef = 0;
+                    this.startCoef = 0;
+                    M4Tween.to(this,.7, {endCoef:1, useStyle:false})
+                            .onUpdate(this.onFrameHandler.proxy(this))
+                            .onComplete(this.undoCircle.proxy(this));
+                },
+                undoCircle:function()
+                {
+                    M4Tween.to(this,.7, {startCoef:1, useStyle:false})
+                            .onUpdate(this.onFrameHandler.proxy(this))
+                            .onComplete(this.doCircle.proxy(this));
+                },
+                onFrameHandler:function()
+                {
+                    var size = this.container.dataset.size;
+                    var d_size= size>>1;
+                    var width = this.container.dataset.width||10;
+
+                    this.stage.clear();
+                    this.stage.beginFill(this.container.dataset.color||"rgb(0, 0, 0)");
+                    var startAngle = -90 + (360 * this.startCoef);
+                    var endAngle = -90 + (360 * this.endCoef);
+                    var startPoint = new Vector(Math.cos(startAngle*M4.geom.DEGREE_TO_RADIAN), Math.sin(startAngle*M4.geom.DEGREE_TO_RADIAN));
+                    var endPoint = new Vector(Math.cos(endAngle*M4.geom.DEGREE_TO_RADIAN), Math.sin(endAngle*M4.geom.DEGREE_TO_RADIAN));
+                    this.stage.moveTo(d_size + (startPoint.x*d_size), d_size + (startPoint.y*d_size));
+                    this.stage.drawArc(this.container.dataset.size>>1, this.container.dataset.size>>1, d_size, startAngle, endAngle, false);
+                    this.stage.lineTo(d_size + (endPoint.x*(d_size-width)), d_size + (endPoint.y*(d_size-width)));
+                    this.stage.drawArc(this.container.dataset.size>>1, this.container.dataset.size>>1, d_size-width,endAngle, startAngle, true);
+                    this.stage.lineTo(d_size + (startPoint.x*d_size), d_size + (startPoint.y*d_size));
+                    this.stage.endFill();
+                }
+            });
+
+            window.addEventListener('load', init, false);
+        </script>
+    </head>
+    <body>
+        <div data-role="loader" data-size="50" data-color="#297FB8" data-debug="0" data-width="5" style="position:relative;">
+            <div data-role="loader" data-size="40" data-color="#3598DC" data-debug="0" data-width="5" data-reversed="1" style="position:absolute;left:5px;top:5px;"></div>
+        </div>
+    </body>
+</html>
