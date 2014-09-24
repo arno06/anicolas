@@ -14,9 +14,10 @@ class Go
 	 */
 	static public function to404()
 	{
+        $controller = Core::$isBackoffice?new Configuration::$application_backController:new Configuration::$application_frontController;
 		Header::http("1.0 404 Not Found");
         Header::status("404 Not Found");
-		Core::execute(new Configuration::$application_frontController(), null, Configuration::$site_template404);
+		Core::execute($controller, null, Configuration::$site_template404);
         Core::endApplication();
 	}
 

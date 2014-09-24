@@ -3,7 +3,7 @@
  * Controller de frontoffice de base
  * 
  * @author Arnaud NICOLAS - arno06@gmail.com
- * @version .4
+ * @version 1.0
  * @package application
  * @subpackage controller
  */
@@ -110,7 +110,7 @@ class FrontController extends EventDispatcher
 			$is[$name] = AuthentificationHandler::is($name);
 		return array(
 			"path_to_theme"=>Core::$path_to_theme,
-			"path_to_js"=>Core::$path_to_js,
+			"path_to_components"=>Core::$path_to_components,
 			"scripts"=>Autoload::scripts(),
 			"styles"=>Autoload::styles(),
 			"head"=>$this->head,

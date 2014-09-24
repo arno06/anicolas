@@ -17,7 +17,16 @@
     "server": {
         "smtp": ""
     },
-    "db": false,
+    "db": {
+        "default":
+        {
+            "handler":"MysqlHandler",
+            "user":"root",
+            "password":"",
+            "host":"localhost",
+            "name":"data_asip"
+        }
+    },
     "application":
     {
         "debug":true,
@@ -37,7 +46,7 @@
     {
         "tableName": "%s_user",
         "tableId": "id_user",
-        "fieldPassword": "mdp_user",
+        "fieldPassword": "password_user",
         "fieldLogin": "login_user",
         "fieldPermissions": "permissions_user",
         "useGroup": ""

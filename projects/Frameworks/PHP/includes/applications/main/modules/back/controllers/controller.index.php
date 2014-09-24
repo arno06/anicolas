@@ -9,10 +9,12 @@ class index extends FrontController implements InterfaceController
 	public function index()
 	{
         if(!AuthentificationHandler::is(AuthentificationHandler::ADMIN))
-            Go::toBack("index", "connexion");
+            Go::toBack("index", "login");
+        $menu = new Menu(Core::$path_to_application.'/modules/back/menu.json');
+        $menu->redirectToDefaultItem(true);
 	}
 	
-	public function connexion()
+	public function login()
 	{
 
         if(AuthentificationHandler::is(AuthentificationHandler::ADMIN))
@@ -37,7 +39,7 @@ class index extends FrontController implements InterfaceController
 		$this->addForm("login", $form);
 	}
 	
-	public function deconnexion()
+	public function logout()
 	{
         AuthentificationHandler::unsetUserSession();
 		Go::toBack();

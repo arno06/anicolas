@@ -9,18 +9,24 @@ BO.init = function(e)
 BO.aDeleteClickHandler = function(e)
 {
 	if(!confirm("Etes-vous sur de vouloir supprimer cet enregistrement ?"))
-		Event.stop(e);
+    {
+        e.stopImmediatePropagation();
+        e.preventDefault();
+        e.stopPropagation();
+    }
 };
 
 BO.aBlankClick = function(e)
 {
 	window.open(e.target.href, "_blank");
-		Event.stop(e);
+    e.stopImmediatePropagation();
+    e.preventDefault();
+    e.stopPropagation();
 };
 
 BO.tdListeClickHandler = function(e)
 {
-	var a = e.target.up("tr").down(".a-edit");
+	var a = e.target.parentNode.parentNode("tr").querySelector(".a-edit");
 	if(a)
 	{
 		window.location.href=a.href;
@@ -33,4 +39,6 @@ BO.tdListeClickHandler = function(e)
 	}
 };
 
-Event.observe(window, "load", BO.init);
+NodeList.prototype.forEach = Array.prototype.forEach;
+
+window.addEventListener('load', BO.init, false);

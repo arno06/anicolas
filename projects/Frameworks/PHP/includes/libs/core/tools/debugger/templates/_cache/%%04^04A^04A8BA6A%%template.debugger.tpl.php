@@ -1,22 +1,21 @@
-<?php /* Smarty version 2.6.18, created on 2014-07-25 10:10:20
+<?php /* Smarty version 2.6.18, created on 2014-09-17 09:41:55
          compiled from template.debugger.tpl */ ?>
 <?php if ($this->_tpl_vars['is_error']): ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
-		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <base href="<?php echo $this->_tpl_vars['server_url']; ?>
 "/>
 		<title>Une erreur est apparue !</title>
-		<script type="text/javascript" src="<?php echo $this->_tpl_vars['dir_to_js']; ?>
-/core/Debugger.js"></script>
+		<script type="text/javascript" src="<?php echo $this->_tpl_vars['dir_to_components']; ?>
+/debugger/Debugger.js"></script>
         <script type="text/javascript">Debugger.error = true;</script>
 	</head>
 	<body>
 <?php endif; ?>
-		<style type="text/css"><!--@import URL("<?php echo $this->_tpl_vars['dir_to_theme']; ?>
-/css/debugger.css");--></style>
+		<style type="text/css"><!--@import URL("<?php echo $this->_tpl_vars['dir_to_components']; ?>
+/debugger/debugger.css");--></style>
 		<div id="debug"<?php if ($this->_tpl_vars['open'] || $this->_tpl_vars['is_error']): ?> class="<?php if ($this->_tpl_vars['is_error']): ?>fullscreen<?php else: ?>maximized<?php endif; ?>"<?php endif; ?>>
             <div class="debug_bar">
                 <div class="debug_global">

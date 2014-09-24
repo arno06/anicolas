@@ -36,17 +36,11 @@ abstract class Core
      * @var String
      */
     static public $path_to_theme = "themes/main/default/front";
-    
-    /**
-     * Définit le chemin vers le dossier contenant les librairies JavaScript
-     * @var String
-     */
-    static public $path_to_js = "includes/javascript";
 
-	/**
-	 * @var string
-	 */
-	static public $path_to_flash = "includes/flash";
+    /**
+     * @var string
+     */
+    static public $path_to_components = "includes/components";
 
     /**
      * @var string
@@ -228,8 +222,7 @@ abstract class Core
 			Configuration::$server_url .= Configuration::$site_application."/";
 			$acces = "../";
 		}
-        self::$path_to_js = Configuration::$server_url.$acces.self::$path_to_js;
-        self::$path_to_flash = Configuration::$server_url.$acces.self::$path_to_flash;
+        self::$path_to_components = Configuration::$server_url.$acces.self::$path_to_components;
 
 		self::defineGlobalObjects();
 
@@ -451,9 +444,9 @@ abstract class Core
     
 	/***
 	 * Méthode permettant d'afficher simplement un contenu sans passer par le syst&egrave;me de templating
-	 * Sert notamment dans le cadre de requ�tes asychrones (avec du Flash ou du JS par exemple)
+	 * Sert notamment dans le cadre de requêtes asychrones (avec du Flash ou du JS par exemple)
 	 * @param string $pContent			Contenu &agrave; afficher
-	 * @param string $pType [optional]	Type de contenu &agrave; afficher - doit �tre spécifié pour assurer une bonne comptatilité &agrave; l'affichage
+	 * @param string $pType [optional]	Type de contenu &agrave; afficher - doit être spécifié pour assurer une bonne comptatilité &agrave; l'affichage
 	 * @return void
 	 */
     static public function performResponse($pContent, $pType="text")
@@ -476,29 +469,6 @@ abstract class Core
         echo $pContent;
         self::endApplication();
     }
-	
-
-    /**
-     * Méthode de création d'un alias pour une méthode
-     * @param string $pNewName	Nouveau nom de la méthode
-     * @param string $pMethod	Nom de la méthode existante
-     * @param array $pArgu		Liste des arguments attendus
-     * @return void
-     */
-    static private function createAlias($pNewName, $pMethod, $pArgu = array())
-    {
-    	$arg = array();
-    	$values = array();
-    	foreach($pArgu as $argument)
-    	{
-    		array_push($arg, $argument["name"].(isset($argument["value"])?"=".$argument["value"]:""));
-    		array_push($values, $argument["name"]);
-    	}
-    	$arg = implode($arg, ",");
-    	$values = implode ($values, ",");
-		eval("function ".$pNewName.'('.$arg.'){return '.$pMethod.'('.$values.');}');
-    }
-	
 
 	/**
 	 * Méthode de vérification de l'existance de variables GET
@@ -562,7 +532,7 @@ abstract class Core
 	    self::$isBackoffice = null;
 	    self::$module = null;
 	    self::$path_to_application = null;
-	    self::$path_to_js = null;
+	    self::$path_to_components = null;
 	    self::$path_to_theme = null;
         self::$path_to_templates = null;
         Singleton::dispose();

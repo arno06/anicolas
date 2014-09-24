@@ -1,11 +1,11 @@
 <?php
 /**
- * Class Dictionary - Permet la gestion d'un fichier de langue global &agrave; l'application
+ * Class Dictionary - Permet la gestion d'un fichier de langue global à l'application
  * 
  * @TODO Voir pour une gestion mi-dynamique/mi static des balises "title" et "description" comme les "terms"
  * 
  * @author Arnaud NICOLAS - arno06@gmail.com
- * @version 1
+ * @version 1.0
  * @package application
  */
 class Dictionary extends Singleton
@@ -34,6 +34,9 @@ class Dictionary extends Singleton
 	 */
 	static public $langue;
 
+    /**
+     * Undefined data
+     */
     const UNDEFINED = "Undefined";
 
 	/**
@@ -47,8 +50,8 @@ class Dictionary extends Singleton
 	
 	/**
 	 * Méthode de récupération d'un terme se trouvant dans le fichier de langue
-	 * Le param&egrave;tre attendu correspond &agrave; la concaténation des différents identifiants de niveau d'acc&egrave;s
-	 * @param object $pId
+	 * Le paramètre attendu correspond à la concaténation des différents identifiants de niveau d'accès
+	 * @param string $pId
 	 * @return String
 	 */
 	static public function term($pId)
@@ -91,7 +94,7 @@ class Dictionary extends Singleton
 	}
 	
 	/**
-	 * Méthode de récupération du vrai nom d'un controller ou d'une action &agrave; partir de son alias dans la langue en cours
+	 * Méthode de récupération du vrai nom d'un controller ou d'une action à partir de son alias dans la langue en cours
 	 * Renvoi la valeur du controller tel qu'il existe
 	 * @param String $pValue		Valeur de l'alias
 	 * @return String
@@ -118,10 +121,10 @@ class Dictionary extends Singleton
 	}
 	
 	/**
-	 * Méthode de définition de l'objet Dictionary en fonction des param&egrave;tres
+	 * Méthode de définition de l'objet Dictionary en fonction des paramètres
 	 * @param String $pLanguage		Langue en cours - fr/en/de
-	 * @param Array $pTerms			Tableau des termes accessibles de mani&egrave;re global &agrave; l'application
-	 * @param Array $pSeo			Tableau des informations relatives &agrave; la SEO (balise "title" et "description")
+	 * @param Array $pTerms			Tableau des termes accessibles de manière global à l'application
+	 * @param Array $pSeo			Tableau des informations relatives à la SEO (balise "title" et "description")
 	 * @param Array $pAlias			Tableau des alias pour la gestion de la réécriture d'url dynamique
 	 * @return void
 	 */

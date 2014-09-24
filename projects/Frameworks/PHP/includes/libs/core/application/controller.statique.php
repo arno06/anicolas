@@ -61,7 +61,7 @@ class statique extends FrontController
             Core::$isBackoffice = true;
         $form = new Form($form);
         $captcha = $form->getInput($input);
-        if(empty($captcha) || $captcha["balise"] != Form::TAG_CAPTCHA)
+        if(empty($captcha) || $captcha["tag"] != Form::TAG_CAPTCHA)
             Go::to404();
 
         $avaibles = array("backgroundColor", "fontSizeMax", "fontSizeMin", "width", "height", "rotation","transparent");
@@ -127,7 +127,7 @@ class statique extends FrontController
 
             $input = $datas[$_GET["input_name"]];
 
-            if($input["balise"]!=Form::TAG_INPUT || $input["attributes"]["type"]!="text")
+            if($input["tag"]!=Form::TAG_INPUT || $input["attributes"]["type"]!="text")
             {
                 $response["error"] = "Champs cibl&eacute; n'est pas un input type 'text'";
                 $this->response($response);
@@ -180,12 +180,19 @@ class statique extends FrontController
         $datas = null;
         $response = array("error"=>"");
         if(!isset($_POST["form_name"])||empty($_POST["form_name"]))
+        {
             $response["error"] = '$_POST["form_name"] require';
+            $this->response($response);
+        }
         if(!isset($_POST["input_name"])||empty($_POST["input_name"]))
+        {
             $response["error"] = '$_POST["input_name"] require';
+            $this->response($response);
+        }
+
         $file = $_FILES[$_POST["input_name"]];
         if(!isset($file)||empty($file))
-            $response["error"] = "Aucun fichier n'a &eacute;t&eacute; transmis";
+            $response["error"] = "Aucun fichier n'a été transmis";
         if(empty($response["error"]))
         {
             Configuration::$site_application = $_POST["application"];
@@ -216,9 +223,9 @@ class statique extends FrontController
 
             $input = $datas[$_POST["input_name"]];
 
-            if($input["balise"]!=Form::TAG_UPLOAD && ($input["balise"]!="input"&&$input["attributes"]["type"]!="file"))
+            if($input["tag"]!=Form::TAG_UPLOAD && ($input["tag"]!="input"&&$input["attributes"]["type"]!="file"))
             {
-                $response["error"] = "Champs cibl&eacute; n'est pas un input type 'file'";
+                $response["error"] = "Le champ ciblé n'est pas un input type 'file'";
                 $this->response($response);
             }
 
@@ -234,7 +241,7 @@ class statique extends FrontController
                 $upload->resizeImage($input["resize"][0],$input["resize"][1]);
             if(!$upload->isMimeType($input["fileType"]))
             {
-                $response["error"] = "Type de fichier non-autoris&eacute; ".$input["fileType"];
+                $response["error"] = "Type de fichier non-autorisé (".$input["fileType"].")";
                 $this->response($response);
             }
             try
@@ -259,6 +266,6 @@ class statique extends FrontController
 
     private function response($response)
     {
-        Core::performResponse(json_encode($response), "JSON");
+        Core::performResponse(json_encode($response), "json");
     }
 }

@@ -3,11 +3,11 @@
  * Controller de backoffice de base
  * 
  * @author Arnaud NICOLAS - arno06@gmail.com
- * @version .4
+ * @version 1.0
  * @package application
  * @subpackage controller
  */
-abstract class BackController extends FrontController implements InterfaceController
+class BackController extends FrontController implements InterfaceController
 {
 
 	/**
@@ -23,12 +23,12 @@ abstract class BackController extends FrontController implements InterfaceContro
 	/**
 	 * @type String
 	 */
-	const EVENT_SUCCESSFUL_MODIFY   = "BOEvent_successful_modify";
+	const EVENT_SUCCESSFUL_EDIT   = "BOEVENT_SUCCESSFUL_EDIT";
 
 	/**
 	 * @type String
 	 */
-	const EVENT_FAILED_MODIFY       = "BOEvent_failed_modify";
+	const EVENT_FAILED_EDIT       = "BOEVENT_FAILED_EDIT";
 
 	/**
 	 * @type String
@@ -42,7 +42,7 @@ abstract class BackController extends FrontController implements InterfaceContro
 	protected $model;
 
 	/**
-	 * Nom du formulaire &agrave; récupérer pour l'ajout et la modification
+	 * Nom du formulaire à récupérer pour l'ajout et la modification
 	 * @var String
 	 */
 	protected $formName;
@@ -54,13 +54,13 @@ abstract class BackController extends FrontController implements InterfaceContro
 	protected $className;
 
 	/**
-	 * Tableau des champs &agrave; afficher dans la liste des enregistrements
+	 * Tableau des champs à afficher dans la liste des enregistrements
 	 * @var array
 	 */
 	protected $listTitle = array();
 
 	/**
-	 * Nombre d'entrée &agrave; afficher par page dans la liste des enregistrements
+	 * Nombre d'entrée à afficher par page dans la liste des enregistrements
 	 * @var int
 	 */
 	protected $nbItemsByPage = 15;
@@ -72,11 +72,6 @@ abstract class BackController extends FrontController implements InterfaceContro
 	protected $usePaginationOnList = true;
 
 	/**
-	 * @var BOHasList
-	 */
-	protected $has;
-
-	/**
 	 * @var BOLabelList
 	 */
 	protected $titles;
@@ -86,9 +81,19 @@ abstract class BackController extends FrontController implements InterfaceContro
 	 */
 	protected $h1;
 
+    /**
+     * @var Menu
+     */
+    protected $menu;
+
+    /**
+     * @var BOActionList
+     */
+    protected $actions;
+
 	/**
 	 * Constructor
-	 * Se doit d'�tre appeler dans la classe fille
+	 * Se doit d'être appeler dans la classe fille
 	 * Vérifie si l'utilisateur est identifié
 	 * Définie le nom du controller (de la classe courante)
 	 */
@@ -97,11 +102,16 @@ abstract class BackController extends FrontController implements InterfaceContro
 		if(!AuthentificationHandler::is(AuthentificationHandler::ADMIN))
 			Go::toBack();
 		$this->className = get_class($this);
-		Autoload::addScript("prototype.js");
-		Autoload::addScript("cbi/Backoffice.js");
+		Autoload::addScript("Backoffice");
 		$this->h1 = new BOLabelList("h1", ucfirst($this->className));
 		$this->titles = new BOLabelList("titles", ucfirst($this->className));
-		$this->has = new BOHasList();
+        $this->actions = new BOActionList();
+        $this->actions->enable('view', 'view', true);
+        $this->actions->enable('edit', 'edit', true);
+        $this->actions->enable('delete', 'delete', true);
+        $this->actions->enable('listing', 'listing', false);
+        $this->actions->enable('add', 'add', false);
+        $this->menu = new Menu(Core::$path_to_application.'/modules/back/menu.json');
 	}
 
 	/**
@@ -111,7 +121,8 @@ abstract class BackController extends FrontController implements InterfaceContro
 	 */
 	public function renderHTML($pSmarty = null, $pDisplay = true)
 	{
-		$this->addContent("has", $this->has->toArray());
+		$this->addContent("actions", $this->actions->toArray());
+        $this->addContent('menu_items', $this->menu->retrieveItems());
 		return parent::renderHTML($pSmarty, $pDisplay);
 	}
 
@@ -122,7 +133,7 @@ abstract class BackController extends FrontController implements InterfaceContro
 	 */
 	public function index()
 	{
-		Go::toBack($this->className,"lister");
+		Go::toBack($this->className, "listing");
 	}
 
 	/**
@@ -132,24 +143,32 @@ abstract class BackController extends FrontController implements InterfaceContro
 	 * Déclenche l'ajout dans le model
 	 * @return void
 	 */
-	public function ajouter()
+	public function add()
 	{
-		if(!$this->has->add)
+		if(!$this->actions->isEnabled('add'))
 			Go::to404();
-		$this->setTitle($this->titles->add);
-		$this->setTemplate("default", "ajouter");
-		$form = new Form($this->formName);
+		$this->setTitle($this->titles->get('add'));
+		$this->setTemplate("default", "form");
+        try
+        {
+            $form = new Form($this->formName);
+        }
+        catch(Exception $e)
+        {
+            $form = new Form($this->formName, false);
+            $inputs = $this->model->generateInputsFromDescribe();
+            foreach($inputs as $nam=>$inp)
+            {
+                $form->setInput($nam, $inp);
+            }
+        }
 
 		if($form->isValid())
 		{
 			if($this->model->insert($form->getValues()))
 			{
-                $id = $this->model->getInsertId();
                 $this->addContent("confirmation", Dictionary::term("backoffice.forms.addDone"));
-                if ($id && $this->has->modify)
-                    $this->dispatchEvent(new Event(self::EVENT_SUCCESSFUL_ADD, $id));
-                else
-                    $this->dispatchEvent(new Event(self::EVENT_SUCCESSFUL_ADD));
+                $this->dispatchEvent(new Event(self::EVENT_SUCCESSFUL_ADD));
 			}
 			else
 			{
@@ -161,8 +180,8 @@ abstract class BackController extends FrontController implements InterfaceContro
 		}
 		else
 			$this->addContent("error", $form->getError());
-		$this->addForm("ajouter", $form);
-		$this->addContent("h1", $this->h1->add);
+		$this->addForm("instance", $form);
+		$this->addContent("h1", $this->h1->get('add'));
 	}
 
 	/**
@@ -171,12 +190,12 @@ abstract class BackController extends FrontController implements InterfaceContro
 	 * @param String $pCondition		Condition souhaitée pour la requête SQL
 	 * @return void
 	 */
-	public function lister($pCondition = null)
+	public function listing($pCondition = null)
 	{
-		if(!$this->has->listing)
+		if(!$this->actions->isEnabled("listing"))
 			Go::to404();
-		$this->setTitle($this->titles->listing);
-		$this->setTemplate("default", "lister");
+		$this->setTitle($this->titles->get('listing'));
+		$this->setTemplate("default", "listing");
 		$this->addContent("titles", $this->listTitle);
 		$this->addContent("id", $this->model->id);
 		if(!$pCondition)
@@ -203,7 +222,7 @@ abstract class BackController extends FrontController implements InterfaceContro
 		else
 			$data =  $this->model->all($pCondition);
 		$this->addContent("liste", $data);
-		$this->addContent("h1", $this->h1->listing);
+		$this->addContent("h1", $this->h1->get('listing'));
 	}
 
 	/**
@@ -211,52 +230,62 @@ abstract class BackController extends FrontController implements InterfaceContro
 	 * Récup&egrave;re les données via le model et les injecte dans le formulaire
 	 * @return boolean
 	 */
-	public function modifier()
+	public function edit()
 	{
-		if(!$this->has->modify)
+		if(!$this->actions->isEnabled('edit'))
 			Go::to404();
-		$this->setTitle($this->titles->modify);
-		if(!Form::isNumeric($_GET["id"]))
-			Go::toBack($this->className);
+		$this->setTitle($this->titles->get('edit'));
 
-		$form = new Form($this->formName);
+        try
+        {
+            $form = new Form($this->formName);
+        }
+        catch(Exception $e)
+        {
+            $form = new Form($this->formName, false);
+            $inputs = $this->model->generateInputsFromDescribe();
+            foreach($inputs as $nam=>$inp)
+            {
+                $form->setInput($nam, $inp);
+            }
+        }
 
-		$donnee = $this->model->getTupleById($_GET["id"]);
-		if(!$donnee)
+		$data = $this->model->getTupleById($_GET["id"]);
+		if(!$data)
 			Go::toBack($this->className);
-		$form->injectValues($donnee);
+		$form->injectValues($data);
 
 		if($form->isValid())
 		{
 			if($this->model->updateById($_GET["id"],$form->getValues()))
 			{
-				$this->addContent("confirmation", Dictionary::term("backoffice.forms.modificationDone"));
-				$this->dispatchEvent(new Event(self::EVENT_SUCCESSFUL_MODIFY));
+				$this->addContent("confirmation", Dictionary::term("backoffice.forms.editDone"));
+				$this->dispatchEvent(new Event(self::EVENT_SUCCESSFUL_EDIT));
 			}
 			else
 			{
 				$this->addContent("error", Dictionary::term("backoffice.forms.errorSQL"));
-				$this->dispatchEvent(new Event(self::EVENT_FAILED_MODIFY));
+				$this->dispatchEvent(new Event(self::EVENT_FAILED_EDIT));
 			}
 			$id = $_GET["id"];
 			$form->setUploadFileName($id);
 		}
 		else
 			$this->addContent("error", $form->getError());
-		$this->setTemplate("default", "modifier");
+		$this->setTemplate("default", "form");
 		$this->addContent("id", $this->model->id);
-		$this->addForm("modifier", $form);
-		$this->addContent("h1", $this->h1->modify);
+		$this->addForm("instance", $form);
+		$this->addContent("h1", $this->h1->get('edit'));
 	}
 
 	/**
 	 * Méthode de suppression d'une entrée
-	 * Renvoie systématiquement &agrave; l'action "lister"
+	 * Renvoie systématiquement à l'action "lister"
 	 * @return void
 	 */
-	public function supprimer()
+	public function delete()
 	{
-		if(!$this->has->delete)
+		if(!$this->actions->isEnabled('delete'))
 			Go::to404();
 		if(!Form::isNumeric($_GET["id"]))
 			Go::toBack($this->className);
@@ -264,6 +293,21 @@ abstract class BackController extends FrontController implements InterfaceContro
 		$this->dispatchEvent(new Event(self::EVENT_SUCCESSUL_DELETE));
 		Go::toBack($this->className);
 	}
+
+    public function view()
+    {
+        if(!$this->actions->isEnabled('view'))
+            Go::to404();
+        $this->setTitle($this->titles->get('view'));
+
+        $data = $this->model->getTupleById($_GET["id"]);
+        if(!$data)
+            Go::to404();
+
+        $this->setTemplate("default", "view");
+        $this->addContent("data", $data);
+        $this->addContent("h1", $this->h1->get('view'));
+    }
 
 	/**
 	 * @param string $pField
@@ -277,68 +321,65 @@ abstract class BackController extends FrontController implements InterfaceContro
 	}
 }
 
-/**
- * @package backoffice
- */
-class BOLabelList
+Class BOActionList
 {
-	/**
-	 * @var string
-	 */
-	public $add;
+    private $actions = array();
 
-	/**
-	 * @var string
-	 */
-	public $modify;
+    public function enable($pActionName, $pAction = null, $pApplyToEntry = false)
+    {
+        if(!$pAction)
+            $pAction = $pActionName;
+        $this->actions[$pActionName] = array('name'=>$pAction, 'applyToEntry'=>$pApplyToEntry);
+    }
 
-	/**
-	 * @var string
-	 */
-	public $listing;
+    public function disable($pActionName)
+    {
+        if(isset($this->actions[$pActionName]))
+            unset($this->actions[$pActionName]);
+    }
 
-	/**
-	 * @param string $pId
-	 * @param string $pClass
-	 */
-	public function __construct($pId, $pClass)
-	{
-		$this->add = sprintf(Dictionary::term("backoffice.".$pId.".add"), $pClass);
-		$this->modify = sprintf(Dictionary::term("backoffice.".$pId.".modify"), $pClass);
-		$this->listing = sprintf(Dictionary::term("backoffice.".$pId.".listing"), $pClass);
-	}
+    public function isEnabled($pActionName)
+    {
+        return isset($this->actions[$pActionName]);
+    }
+
+    public function toArray()
+    {
+        return $this->actions;
+    }
 }
 
 /**
  * @package backoffice
  */
-class BOHasList
+class BOLabelList
 {
-	/**
-	 * @var bool
-	 */
-	public $add = true;
+    /**
+     * @var string
+     */
+    private $className;
 
-	/**
-	 * @var bool
-	 */
-	public $modify = true;
+    /**
+     * @var string
+     */
+    private $id;
 
-	/**
-	 * @var bool
+    /**
+	 * @param string $pId
+	 * @param string $pClass
 	 */
-	public $listing = true;
-
-	/**
-	 * @var bool
-	 */
-	public $delete = true;
-
-	/**
-	 * @return array
-	 */
-	public function toArray()
+	public function __construct($pId, $pClass)
 	{
-		return array("add"=>$this->add, "modify"=>$this->modify, "listing"=>$this->listing, "delete"=>$this->delete);
+        $this->id = $pId;
+        $this->className = $pClass;
 	}
+
+    /**
+     * @param string $pName
+     * @return mixed
+     */
+    public function get($pName)
+    {
+        return sprintf(Dictionary::term('backoffice.'.$this->id.'.'.$pName), $this->className);
+    }
 }
