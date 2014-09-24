@@ -94,7 +94,7 @@ class Form
 	/**
 	 * @var bool
 	 */
-	private $datasCleaned = false;
+	private $dataCleaned = false;
 	
 	/**
 	 * Nom du formulaire JSON
@@ -124,6 +124,9 @@ class Form
 	 */
 	protected $hasDatePicker = false;
 
+    /**
+     * @var bool
+     */
     protected $hasColorPicker = false;
 
 	/**
@@ -182,8 +185,9 @@ class Form
 	 * Récupére et parse le fichier JSON de configuration du formulaire
 	 * @param  $pName
 	 * @param bool $pReal
+     * @throws Exception
 	 */
-	public function __construct($pName, $pReal = true)
+    public function __construct($pName, $pReal = true)
 	{
         $this->name = $pName;
 		if(!$pReal)
@@ -199,10 +203,10 @@ class Form
 		}
 		catch (Exception $e)
 		{
-			die("Le formulaire <b>".$pName."</b> est introuvable");
+            throw new Exception("Le formulaire <b>".$pName."</b> est introuvable");
 		}
 		if(!$this->data)
-			trigger_error("Impossible de parser le fichier de déclaration du formulaire <b>".$pName."</b>, veuillez vérifier le formatage des données (guillements, virgules, accents...).", E_USER_ERROR);
+            throw new Exception("Impossible de parser le fichier de déclaration du formulaire <b>".$pName."</b>, veuillez vérifier le formatage des données (guillements, virgules, accents...).");
 	}
 
 	/**
@@ -227,9 +231,9 @@ class Form
 	 */
 	private function cleanDatas()
 	{
-		if($this->datasCleaned)
+		if($this->dataCleaned)
 			return;
-		$this->datasCleaned = true;
+		$this->dataCleaned = true;
 		$default = array(
 			"label"=>"",
 			"require"=>false,
@@ -257,9 +261,9 @@ class Form
 				if(!isset($input[$n]))
 					$input[$n] = $v;
 			}
-			if(isset($spe[$input["balise"]]))
+			if(isset($spe[$input["tag"]]))
 			{
-				foreach($spe[$input["balise"]] as $n=>$v)
+				foreach($spe[$input["tag"]] as $n=>$v)
 				{
 					if(!isset($input[$n]))
 						$input[$n] = $v;
@@ -366,7 +370,7 @@ class Form
 		
 		foreach($this->data as $name=>&$data)
 		{
-			if($data["balise"] == Form::TAG_CAPTCHA)
+			if($data["tag"] == Form::TAG_CAPTCHA)
 			{
 				$data["label"] = "Captcha";
 				$c = new Captcha($data["length"], $name);
@@ -405,14 +409,14 @@ class Form
 					break;
 				}
 			}
-            if ($data["balise"] == self::TAG_CHECKBOXGROUP)
+            if ($data["tag"] == self::TAG_CHECKBOXGROUP)
             {
                 if(!isset($this->post[$name]))
                 {
                     $this->post[$name] = array();
                 }
             }
-			if($data["balise"]==self::TAG_UPLOAD&&$data["require"])
+			if($data["tag"]==self::TAG_UPLOAD&&$data["require"])
 			{
 				if(!isset($data["isUpload"])&&!$data["attributes"]["value"]&&!$this->post[$name])
 				{
@@ -482,7 +486,7 @@ class Form
 				continue;
 			}
 			$regExp = $this->getRegExp($data["regExp"]);
-			if($data["balise"] == self::TAG_SELECT
+			if($data["tag"] == self::TAG_SELECT
 				&& isset($data["attributes"]["multiple"])
 				&& $data["attributes"]["multiple"]=="multiple")
 			{
@@ -690,11 +694,11 @@ class Form
 		$this->cleanDatas();
 		if(isset($this->post))
 			$this->injectValues($this->post);
-		Autoload::addScript("core/Form.js");
+		Autoload::addScript("Form");
 		$this->countMendatory = 0;
 		foreach($this->data as $name=>&$data)
 		{
-			switch($data["balise"])
+			switch($data["tag"])
 			{
                 case self::TAG_RICHEDITOR:
                     /** @ todo **/
@@ -703,7 +707,9 @@ class Form
                 break;
 				case self::TAG_UPLOAD:
                     trace("you must handle upload");
-					Autoload::addScript("swfobject.js");
+					Autoload::addScript("Uploader");
+                    Autoload::addScript("M4Tween");
+                    Autoload::addStyle('includes/components/uploader/Uploader.css', false);
 					$this->hasUpload = true;
 				break;
 				case self::TAG_INPUT:
@@ -714,7 +720,9 @@ class Form
 					if(isset($data["attributes"]["type"])
 					   && $data["attributes"]["type"]=="file")
 					{
-						Autoload::addScript("swfobject.js");
+                        Autoload::addScript("Uploader");
+                        Autoload::addScript("M4Tween");
+                        Autoload::addStyle('includes/components/uploader/Uploader.css', false);
 						$this->hasUpload = true;
 					}else if(isset($data["attributes"]["type"])
 					   && $data["attributes"]["type"]=="submit"
@@ -724,8 +732,7 @@ class Form
 					}
 				break;
 				case self::TAG_DATEPICKER:
-//					Autoload::addScript("datepicker/js/datepicker.packed.js");
-					Autoload::addScript("datepicker/js/datepicker.min.js");
+					Autoload::addScript("Pikaday");
 					$this->hasDatePicker = true;
 				break;
                 case self::TAG_COLORPICKER:
@@ -771,7 +778,7 @@ class Form
 					if(isset($data["chosen"]) && $data["chosen"]==true)
 					{
 						Autoload::addScript("chosen/chosen.min.js");
-						Autoload::addStyle(Core::$path_to_js."/chosen/style/chosen.css", false);
+						Autoload::addStyle(Core::$path_to_components."/chosen/style/chosen.css", false);
 					}
 				break;
 			}
@@ -815,6 +822,10 @@ class Form
 		}
 	}
 
+    /**
+     * @param array $pParams
+     * @param Smarty $pSmarty
+     */
     public function isChecked(array $pParams = null, &$pSmarty = null)
     {
         $name = "";
@@ -832,6 +843,10 @@ class Form
 		}
     }
 
+    /**
+     * @param array $pParams
+     * @param Smarty $pSmarty
+     */
     public function getOptions(array $pParams = null, &$pSmarty = null)
     {
         $name = "";
@@ -849,6 +864,10 @@ class Form
 		}
     }
 
+    /**
+     * @param array $pParams
+     * @param Smarty $pSmarty
+     */
     public function getLabel(array $pParams = null, &$pSmarty = null)
 	{
 		$name = "";
@@ -869,7 +888,7 @@ class Form
 	
 	/**
 	 * @param array|null $pParams
-	 * @param null $pSmarty
+	 * @param Smarty $pSmarty
 	 * @param bool $pReturn
 	 * @return string|void
 	 */
@@ -883,8 +902,7 @@ class Form
 			extract($pParams, EXTR_REFS);
 
 		if($this->hasDatePicker)
-//			$output .= '<link type="text/css" rel="stylesheet" href="'.Core::$path_to_js.'/datepicker/css/datepicker.css"/>';
-			$output .= '<link type="text/css" rel="stylesheet" href="'.Core::$path_to_js.'/datepicker/css/datepicker.min.css"/>';
+			$output .= '<link type="text/css" rel="stylesheet" href="'.Core::$path_to_components.'/pikaday/pikaday.css"/>';
 		if(!$noForm)
 		{
 			$n = array();
@@ -917,12 +935,12 @@ class Form
 			$require = "";
 			if($d["require"]==true)
 				$require = "*";
-			if(!isset($d["balise"]))
+			if(!isset($d["tag"]))
 				continue;
-			if($d["balise"] == "input"
+			if($d["tag"] == "input"
 				&& $d["attributes"]["type"] == "file")
 			{
-				$d["balise"] = self::TAG_UPLOAD;
+				$d["tag"] = self::TAG_UPLOAD;
 			}
 
 			$id = "inp_".$this->name."_".$n;
@@ -935,8 +953,8 @@ class Form
 				$name = $this->name."[".$n."]";
 			$d["form_name"] = $this->name;
 			$d["field_name"] = $n;
-			if(call_user_func_array(array($helper,"has"), array($d["balise"])))
-				$output .= call_user_func_array($helper."::get", array($d["balise"], array($name, $id, $d, $require)));
+			if(call_user_func_array(array($helper,"has"), array($d["tag"])))
+				$output .= call_user_func_array($helper."::get", array($d["tag"], array($name, $id, $d, $require)));
 		}
 
 		if(!$noForm)
@@ -1022,30 +1040,6 @@ class Form
 	{
 		return $this->data;
 	}
-
-    public function isCompleted()
-    {
-        foreach($this->data as $inp)
-        {
-            if (isset($inp['require']) && $inp['require'])
-            {
-                $val = trim($inp["attributes"]["value"]);
-                if (empty($val))
-                    return false;
-            }
-        }
-        return true;
-    }
-
-    public function copy($pName)
-    {
-        $f = new Form($pName, false);
-        foreach($this->data as $key=>$input)
-        {
-            $f->setInput($key, $input);
-        }
-        return $f;
-    }
 }
 
 class FormHelpers
@@ -1085,24 +1079,25 @@ class FormHelpers
 		{
 			$pLabel = "&nbsp;";
 			$pFor = "";
-            return "";
 		}
 		elseif ($pColon)
 			$pLabel .= " :";
 		return "<label for='".$pFor."'>".$pLabel."</label>";
 	}
 
-	static public function getComponent($pComponent)
+	static public function getComponent($pComponent, $pClassName = "")
 	{
-		return '<div class="input">'.$pComponent.'</div>';
+        $className = isset($pClassName) && !empty($pClassName)?" ".$pClassName:"";
+        $className = "input".$className;
+		return '<div class="'.$className.'">'.$pComponent.'</div>';
 	}
 
-	static public function has($pBalise)
+	static public function has($ptag)
 	{
-		return array_key_exists(strtolower($pBalise), self::$helpers);
+		return array_key_exists(strtolower($ptag), self::$helpers);
 	}
 
-	static public function get($pBalise, $pParams)
+	static public function get($ptag, $pParams)
 	{
 		$class = "component"." ".$pParams[1];
 		if(isset($pParams[2]["attributes"]["type"])
@@ -1114,7 +1109,7 @@ class FormHelpers
         if(isset($pParams[2]["inline"])
             && $pParams[2]["inline"])
             $class .= " inline";
-		return "<div class='".$class."'>".call_user_func_array(array("self", self::$helpers[$pBalise]), $pParams)."<div class='inp_separator'></div></div>";
+		return "<div class='".$class."'>".call_user_func_array(array("self", self::$helpers[$ptag]), $pParams)."<div class='inp_separator'></div></div>";
 	}
 
 	static private function checkboxgroup($pName, $pId,$pData, $pRequire = "")
@@ -1157,16 +1152,15 @@ class FormHelpers
 	static private function upload($pName, $pId, $pData, $pRequire = "")
 	{
 		self::$ct_upload++;
-		$extra = $file = $style = $value = "";
+		$file = $style = $value = "";
         $server_url = Configuration::$server_url;
         if(Configuration::$site_application!="main")
             $server_url .= "../";
 
-        $disabled = isset($pData["attributes"]["disabled"]) && $pData["attributes"]["disabled"] == "disabled";
+        $disabled = isset($pData["attributes"]["disabled"]) && $pData["attributes"]["disabled"] == "disabled"?"disabled":"";
 
 		if(isset($pData["attributes"]["value"])&&!empty($pData["attributes"]["value"]))
 		{
-			$style = " style='display:inline'";
 			$value = $pData["attributes"]["value"];
 			$file = $server_url;
             $m = (isset($pData["model"]) && !empty($pData["model"])) ? $pData["model"] : "ModelUpload";
@@ -1174,50 +1168,10 @@ class FormHelpers
 				$file .= $m::getPathById($value);
 			else
 				$file .= $value;
-            
-            $extra = '<br/>&nbsp;&nbsp;<a href="'.$file.'" class="target-blank">'.Dictionary::term("global.forms.seeFile").'</a>';
 		}
-
-		if (!isset($pData["notAsync"])||!$pData["notAsync"])
-		{
-            $button = $pId.'_button_'.self::$ct_upload;
-            $swf = '<div class="uploader" id="container_upload_'.$pId.'">';
-            if (!$disabled)
-            {
-                $swf .= '
-                    <div class="progress">
-                        <div class="bar" style="">
-                            <span class="caption_top">'.Dictionary::term('global.forms.upload.noFile').'</span>
-                        </div>
-                    </div>
-                    <div class="button_clicker" style=""><div class="flash"><div id="'.$button.'"></div></div><div class="text_button">'.Dictionary::term('global.forms.upload.browse').'</div></div>';
-                $swf .= self::script("window.params_".$button." = {server_url:'http://".Configuration::$server_domain."/".Configuration::$server_folder."/',application:'".Configuration::$site_application."',file_type:'".$pData["fileType"]."',script_upload:'".Configuration::$server_url."statique/upload-async/', form_name:'".$pData["form_name"]."', input_name:'".$pData["field_name"]."', id_div:'container_upload_".$pId."', is_backoffice:'".Core::$isBackoffice."'};swfobject.embedSWF('".Core::$path_to_flash."/upload/browser.swf', '".$button."', '100%', '100%', '9.0.0','', params_".$button.",{'wmode':'transparent'});");
-                $swf .= '<div class="clean"></div>
-                    <span class="caption_bot"></span>';
-            }
-
-            if (!Core::$isBackoffice && strpos($pName, "avatar_upload") !== false)
-            {
-                $swf .= '<img id="file_upload" src="'.(($file && $file != $server_url) ? $file : $server_url.'images/avatar/').'" alt="">';
-            }
-            else
-                $swf .='<a href="'.$file.'" class="see_file"'.$style.' target="_blank">'.Dictionary::term('global.forms.upload.seeFile').'</a>&nbsp;';
-
-			if(isset($pData["deleteFile"]) && !empty($pData["deleteFile"]))
-			{
-				if(!empty($value) && is_numeric($value))
-					$pData["deleteFile"] = preg_replace("/\{id\}/", $value, $pData["deleteFile"]);
-				$swf .='<a href="'.$pData["deleteFile"].'" class="delete_file"'.$style.'>'.Dictionary::term('global.forms.upload.deleteFile').'</a>';
-			}
-			if(!empty($value) && !$disabled)
-				$swf .= "<input type='hidden' name='".$pName."' value='".$value."'/>";
-			
-			$swf .= '</div>';
-		}
-		else
-			$swf = "<input type='file' name='".$pName."'/>".$extra;
+        $comp = "<input ".$disabled." type='file' name='".$pName."_input' data-form_name='".$pData["form_name"]."' data-input_name='".$pData["field_name"]."' data-application='".Configuration::$site_application."' data-value='".$value."' data-file='".$file."'>";
 		$input = self::getLabel($pData["label"].$pRequire, $pId);
-		$input .= self::getComponent($swf);
+		$input .= self::getComponent($comp, 'upload');
 		return $input;
 	}
 
@@ -1235,7 +1189,6 @@ class FormHelpers
 		$component = "<input ";
 		$attributes = $pData["attributes"];
 		if(!isset($attributes["id"]) || empty($attributes["id"]))
-//			$attributes["id"] = $pId."-dpicker-".self::$ct_datepicker;
 			$attributes["id"] = $pId."-dpicker";
 		$attributes["name"] = $pName;
 		$attributes["type"] = "text";
@@ -1247,11 +1200,7 @@ class FormHelpers
 		foreach($attributes as $name=>$value)
 			$component .= $name."='".$value."' ";
 		$component .= "/>";
-		$format = "%Y-%m-%d";
-		if(isset($pData["format"])&&!empty($pData["format"]))
-			$format = $pData["format"];
-//			$format = preg_replace("/\-/", "-ds-", $pData["format"]);
-		$extra = self::script('var opts = {"formElements":{"'.$attributes["id"].'":"'.$format.'"}};datePickerController.createDatePicker(opts);','',true);
+		$extra = self::script("var picker = new Pikaday({ field: document.getElementById('".$attributes["id"]."') });",'',true);
 		$input = self::getLabel($pData["label"].$pRequire, $pId);
 		$input .= self::getComponent($component.$extra);
 		return $input;
@@ -1287,7 +1236,12 @@ class FormHelpers
 	{
 		if(!isset($pData["options"])||!is_array($pData["options"]))
 			return "";
-		$group = "<div class='radiogroup'>";
+        $style = "overflow:auto;";
+        if(isset($pData["height"]))
+            $style .= "height:".$pData["height"].";";
+        if(isset($pData["width"]))
+            $style .= "width:".$pData["width"].";";
+		$group = "<div class='radiogroup' style='".$style."'>";
 		$i = 0;
 		$style = "";
 		if(isset($pData["display"])&&$pData["display"]=="block")
@@ -1300,7 +1254,7 @@ class FormHelpers
 				$label = $opt["label"];
 				$i++;
 				$select = "";
-				if($pData["attributes"]["value"]==$value)
+				if(isset($pData['attributes']) && isset($pData['attributes']['value']) && $pData["attributes"]["value"]==$value)
 					$select = ' checked="checked"';
                 if (isset($opt["disabled"]) && $opt["disabled"] == "disabled")
                     $select .= " disabled=\"disabled\"";
@@ -1317,47 +1271,8 @@ class FormHelpers
 
 	static private function richeditor($pName, $pId, $pData, $pRequire = "")
 	{
-
-        $input = self::getLabel($pData["label"].$pRequire, $pId);
-        if (isset($pData["editor"]) && $pData["editor"] == "ckeditor")
-        {
-            $attributes_autorisees = array("height", "customConfig");
-            $component = '<textarea name="'.$pName.'" id="'.$pId.'"';
-            $params = "";
-            $textareaValue = (isset($pData["attributes"]["value"])) ? $pData["attributes"]["value"] : "";
-            foreach($pData["attributes"] as $n=>$value)
-            {
-                if(!in_array($n, $attributes_autorisees))
-                    continue;
-                $params .= empty($params) ? ", {" : ",";
-                $params .= $n.":'".$value."'";
-            }
-            $component .= ">".$textareaValue."</textarea>";
-            if (!empty($params)) $params .= "}";
-            $component .= "<script>CKEDITOR.replace('".$pName."'".$params.");</script>";
-            $input .= self::getComponent($component);
-        }
-        else
-        {
-            $attributes_autorisees = array("height", "toolbarSet", "value");
-            $folder = Core::$path_to_js."/fckeditor/";
-            require_once("includes/javascript/fckeditor/fckeditor_php5.php");
-            $fck = new FCKeditor($pName);
-            $fck->ToolbarSet = "Basic";
-            $fck->BasePath = $folder;
-            foreach($pData["attributes"] as $n=>$value)
-            {
-                if(!in_array($n, $attributes_autorisees))
-                    continue;
-                $method = ucfirst($n);
-                $fck->$method = $value;
-            }
-            if(isset($pData["attributes"]["value"]))
-                $fck->Value = $pData["attributes"]["value"];
-            $input .= self::getComponent($fck->CreateHtml());
-        }
-
-		return $input;
+        trigger_error('To Be Implemented', E_USER_ERROR);
+		return false;
 	}
 
 	static private function captcha($pName, $pId, $pData, $pRequire = "")
@@ -1377,9 +1292,9 @@ class FormHelpers
 		if(!empty($pData["label"]))
 			$label = $pData["label"].$pRequire;
 		$input = self::getLabel($label, $pId, !$inline);
-		if($pData["balise"] == Form::TAG_SELECT && isset($pData["attributes"]["multiple"]) && $pData["attributes"]["multiple"] == "multiple")
+		if($pData["tag"] == Form::TAG_SELECT && isset($pData["attributes"]["multiple"]) && $pData["attributes"]["multiple"] == "multiple")
 			$pName .= "[]";
-		$component = '<'.$pData["balise"].' name="'.$pName.'" id="'.$pId.'"';
+		$component = '<'.$pData["tag"].' name="'.$pName.'" id="'.$pId.'"';
 		foreach($pData["attributes"] as $prop=>$value)
 		{
 			if($prop == "id" || $prop == "name")
@@ -1388,7 +1303,7 @@ class FormHelpers
 				$component .= ' '.$prop.'="'.$value.'"';
 			else
 			{
-				switch($pData["balise"])
+				switch($pData["tag"])
 				{
 					case Form::TAG_INPUT:
 						if($pData["attributes"]["type"]=="checkbox"
@@ -1414,7 +1329,7 @@ class FormHelpers
 			}
 		}
 
-		switch($pData["balise"])
+		switch($pData["tag"])
 		{
 			case "input":
 				$component .= "/>";

@@ -72,7 +72,7 @@ abstract class SimpleCSV implements InterfaceData
 	static public function decode($pString)
 	{
 		$return = array();
-		$dataArray = explode("\r\n",$pString);
+		$dataArray = explode("\n",$pString);
 		$champs = explode(self::SEPARATOR, $dataArray[0]);
 		unset($dataArray[0]);
 		$max = count($dataArray);

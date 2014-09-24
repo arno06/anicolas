@@ -28,7 +28,8 @@ require_once("includes/libs/core/application/class.FrontController.php");
 require_once("includes/libs/core/application/rewriteurl/interface.InterfaceRewriteURLHandler.php");
 require_once("includes/libs/core/application/rewriteurl/class.RewriteURLHandler.php");
 require_once("includes/libs/smarty/Smarty.class.php");
-
+echo PHP_SAPI;
+exit();
 Core::setConfiguration();
 Core::init();
 Core::parseURL();

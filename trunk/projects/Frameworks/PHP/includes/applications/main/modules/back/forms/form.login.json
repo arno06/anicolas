@@ -1,28 +1,28 @@
 {
 	"login":{
 		"require":true,
-		"label":"Login",
 		"regExp":"TextNoHtml",
-		"balise":"input",
+		"tag":"input",
 		"attributes":{
+            "placeholder":"Login",
 			"type":"text"
 		}
 	},
 	"mdp":{
 		"require":true,
-		"label":"Mot de passe",
 		"regExp":"TextNoHtml",
-		"balise":"input",
+		"tag":"input",
 		"attributes":{
+            "placeholder":"Mot de passe",
 			"type":"password"
 		}
 	},
 	"submit":{
-		"balise":"input",
+		"tag":"input",
 		"attributes":{
 			"type":"submit",
-			"value":"Valider",
-			"class":"button-medium"
+			"value":"Login",
+			"class":"button"
 		}
 	}
 }

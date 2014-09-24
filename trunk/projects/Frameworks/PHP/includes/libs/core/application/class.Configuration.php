@@ -160,6 +160,11 @@ abstract class Configuration
 	static public $application_frontController = "FrontController";
 
     /**
+     * @var BackController
+     */
+    static public $application_backController = "BackController";
+
+    /**
      * Tableau des packages supplémentaires
      * @var array
      */

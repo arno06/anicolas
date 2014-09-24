@@ -6,7 +6,7 @@
  * @version .5
  * @package application
  */
-abstract class BaseModel
+class BaseModel
 {
 	/**
 	 * Nom du champs servant de clé primaire
@@ -29,6 +29,16 @@ abstract class BaseModel
 	 * @var array
 	 */
 	private $joins;
+
+    /**
+     * @param $pTable
+     * @param $pId
+     */
+    public function __construct($pTable, $pId)
+    {
+        $this->table = $pTable;
+        $this->id = $pId;
+    }
 	
 	/**
 	 * Méthode d'insertion de données dans la table du model
@@ -211,4 +221,49 @@ abstract class BaseModel
 	{
 		return $this->prepareJoin(Query::select($pFields, $this->table))->setCondition($pCond)->execute($this->handler);
 	}
+
+    /**
+     *
+     */
+    public function generateInputsFromDescribe()
+    {
+        $result = Query::execute('DESCRIBE '.$this->table, $this->handler);
+        $inputs = array();
+
+        trace_r($result);
+
+        foreach($result as &$field)
+        {
+            $name = $field['Field'];
+            switch($field['Type'])
+            {
+                case "date":
+                    $input = array(
+                        'tag'=>'datepicker',
+                        'attributes'
+                    );
+                    break;
+                default:
+                    $input = array(
+                        'tag'=>'input',
+                        'attributes'=>array(
+                            'type'=>'text'
+                        )
+                    );
+                    break;
+            }
+            $input['label']=$name;
+            $inputs[$name] = $input;
+        }
+        $inputs['submit'] = array(
+            'label'=>'',
+            'tag'=>'input',
+            'attributes'=>array(
+                'type'=>'submit',
+                'value'=>'Valider',
+                'class'=>'button'
+            )
+        );
+        return $inputs;
+    }
 }

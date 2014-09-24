@@ -190,8 +190,8 @@ class Upload
 	{
 		$this->newSize = array($pWidth, $pHeight);
 	}
-	
-	
+
+
 	/**
 	 * Méthode permettant d'ajouter une nouvelle miniature dans la liste de traitement
 	 * @deprecated

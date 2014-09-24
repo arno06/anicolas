@@ -66,16 +66,18 @@
     "backoffice":{
         "h1":{
             "add":"%s - Ajouter",
-            "modify":"%s - Modifier",
-            "listing":"%s - Lister"
+            "edit":"%s - Modifier",
+            "listing":"%s - Lister",
+            "view":"D&#233;tails - %s"
         },
         "titles":{
             "add":"Ajouter une entr&#233;e - %s",
-            "modify":"modifier une entr&#233;e - %s",
-            "listing":"Liste les entr&#233;es - %s"
+            "edit":"modifier une entr&#233;e - %s",
+            "listing":"Liste les entr&#233;es - %s",
+            "view":"D&#233;tails - %s"
         },
         "forms":{
-            "modificationDone":"Modifications effectu&#233;es.",
+            "editDone":"Modifications effectu&#233;es.",
             "addDone":"Enregistrement effectu&#233;.",
             "errorSQL":"Une erreur est apparue lors de l'enregistrement dans la base de donn&#233;es."
         }

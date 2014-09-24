@@ -175,7 +175,7 @@ class Autoload extends Singleton
 	{
         if(preg_match("/\.js$/", $pScript))
         {
-            $script = (strpos($pScript, "http") === 0) ? $pScript : Core::$path_to_js . "/" . $pScript;
+            $script = (strpos($pScript, "http") === 0) ? $pScript : Core::$path_to_components . "/" . $pScript;
             if(!in_array($script, self::getInstance()->scripts, true))
                 self::getInstance()->scripts[] = $script;
         }

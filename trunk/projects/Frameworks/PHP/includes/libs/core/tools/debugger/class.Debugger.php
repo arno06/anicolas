@@ -159,7 +159,7 @@ class Debugger extends Singleton
 			$smarty->assign_by_ref($n, $v);
 		$smarty->assign("is_error", $pError);
  		$smarty->assign("dir_to_theme", "http://".Configuration::$server_domain."/".(isset(Configuration::$server_folder)?Configuration::$server_folder."/":"")."includes/libs/core/tools/debugger");
- 		$smarty->assign("dir_to_js", Core::$path_to_js);
+ 		$smarty->assign("dir_to_components", Core::$path_to_components);
         $smarty->assign("server_url", Configuration::$server_url);
 		return $smarty->fetch("template.debugger.tpl", null, null, $pDisplay);
 	}
@@ -232,7 +232,7 @@ class Debugger extends Singleton
 	 * @param Number $pErrorLevel						Niveau d'erreur
 	 * @param String $pErrorMessage						Message renvoyé
 	 * @param String $pErrorFile						Adresse du fichier qui a déclenché l'erreur
-	 * @param Number $pErrorLine						Ligne o� se trouve l'erreur
+	 * @param Number $pErrorLine						Ligne où se trouve l'erreur
 	 * @param object $pErrorContext						Contexte
 	 * @return void
 	 */
@@ -259,9 +259,10 @@ class Debugger extends Singleton
 			case E_USER_NOTICE:
 				$type = "notice";
 			break;
+            default:
 			case self::E_USER_EXCEPTION:
 				$stopApplication = true;
-				$type = "exception";
+				$type = "error";
 			break;
 		}
 		$pErrorFile = pathinfo($pErrorFile);
@@ -336,11 +337,19 @@ class Debugger extends Singleton
  * Aliases
  */
 
+/**
+ * @param $pString
+ * @param bool $pOpen
+ */
 function trace($pString, $pOpen = false)
 {
     Debugger::trace($pString,$pOpen);
 }
 
+/**
+ * @param $pData
+ * @param bool $pOpen
+ */
 function trace_r($pData, $pOpen = false)
 {
     Debugger::trace_r($pData, $pOpen);

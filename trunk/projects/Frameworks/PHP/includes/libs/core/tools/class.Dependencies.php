@@ -8,7 +8,7 @@
  */
 class Dependencies
 {
-    const MANIFEST = "includes/javascript/manifest.json";
+    const MANIFEST = "includes/components/manifest.json";
 
     const NEED_SEPARATOR = ',';
 
@@ -64,20 +64,26 @@ class Dependencies
         {
             if(isset($this->manifest[$lib]))
             {
-                if(!isset($this->manifest[$lib]["src"])||!is_array($this->manifest[$lib]["src"]))
+                if(!isset($this->manifest[$lib]['javascript'])
+                    ||!isset($this->manifest[$lib]['javascript']["src"])
+                    ||!is_array($this->manifest[$lib]['javascript']["src"]))
                 {
                     $this->output .= $this->log($lib." is not available", "warn");
                     continue;
                 }
 
-                $files = $this->manifest[$lib]["src"];
+                $files = $this->manifest[$lib]['javascript']["src"];
 
                 for($i = 0, $max = count($files); $i<$max;$i++)
                 {
                     $absolute_link = preg_match('/^http\:\/\//', $files[$i], $matches);
                     if(!$absolute_link)
+                    {
                         $files[$i] = dirname(self::MANIFEST)."/".$config["relative"].$files[$i];
-                    $this->output .= File::read($files[$i])."\r\n";
+                        $this->output .= File::read($files[$i])."\r\n";
+                    }
+                    else
+                        $this->output .= Request::load($files[$i]);
                 }
             }
             else
@@ -107,9 +113,12 @@ class Dependencies
             if(isset($this->manifest[$lib]))
             {
                 array_unshift($pFinalList, $lib);
-                if(!isset($this->manifest[$lib]["need"])||!is_array($this->manifest[$lib]["need"])||empty($this->manifest[$lib]["need"]))
+                if(!isset($this->manifest[$lib]['javascript'])
+                    ||!isset($this->manifest[$lib]['javascript']["need"])
+                    ||!is_array($this->manifest[$lib]['javascript']["need"])
+                    ||empty($this->manifest[$lib]['javascript']["need"]))
                     continue;
-                $dep = array_reverse($this->manifest[$lib]["need"]);
+                $dep = array_reverse($this->manifest[$lib]['javascript']["need"]);
                 $this->calculateNeeds($dep, $pFinalList);
             }
             else

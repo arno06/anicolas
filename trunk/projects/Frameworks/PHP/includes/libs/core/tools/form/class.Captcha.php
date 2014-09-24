@@ -12,7 +12,7 @@ class Captcha
 	/**
 	 * @type string
 	 */
-	const DEFAULT_FONT = "includes/libs/cbi/tools/form/font.LinLibertine.ttf";
+	const DEFAULT_FONT = "includes/libs/core/tools/form/font.LinLibertine.ttf";
 
 	/**
 	 * @type string
