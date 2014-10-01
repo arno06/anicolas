@@ -10,5 +10,4 @@ except:
 
 parsed = json.loads(f.read())
 for name in parsed:
-    print(name)
     DBManager.set(name, parsed[name]['handler'], parsed[name]['parameters'])
