@@ -287,8 +287,6 @@ class BackController extends FrontController implements InterfaceController
 	{
 		if(!$this->actions->isEnabled('delete'))
 			Go::to404();
-		if(!Form::isNumeric($_GET["id"]))
-			Go::toBack($this->className);
 		$this->model->deleteById($_GET["id"]);
 		$this->dispatchEvent(new Event(self::EVENT_SUCCESSUL_DELETE));
 		Go::toBack($this->className);
