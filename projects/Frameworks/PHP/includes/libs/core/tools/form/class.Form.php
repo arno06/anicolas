@@ -1297,6 +1297,7 @@ class FormHelpers
 		$component = '<'.$pData["tag"].' name="'.$pName.'" id="'.$pId.'"';
 		foreach($pData["attributes"] as $prop=>$value)
 		{
+            $value = str_replace('"', "&quot;", $value);
 			if($prop == "id" || $prop == "name")
 				continue;
 			if($prop!="value")
