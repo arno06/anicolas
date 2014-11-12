@@ -8,25 +8,27 @@
  */
 class Autoload extends Singleton
 {
-	/**
-	 * @type string
-	 */
-	const FOLDER_LIBS = "includes/libs/core/";
+    static public $folder = "";
 
 	/**
 	 * @type string
 	 */
-	const FOLDER_APPLICATION = "includes/applications/%s/src/";
+	const FOLDER_LIBS = "/includes/libs/core/";
 
 	/**
 	 * @type string
 	 */
-	const FOLDER_MODEL_LIBS = "includes/libs/core/models/";
+	const FOLDER_APPLICATION = "/includes/applications/%s/src/";
 
 	/**
 	 * @type string
 	 */
-	const FOLDER_MODEL_APPLICATION = "includes/applications/%s/models/";
+	const FOLDER_MODEL_LIBS = "/includes/libs/core/models/";
+
+	/**
+	 * @type string
+	 */
+	const FOLDER_MODEL_APPLICATION = "/includes/applications/%s/models/";
 
 	/**
 	 * @var array
@@ -56,8 +58,8 @@ class Autoload extends Singleton
 	/**
 	 * @var array
 	 */
-	private $exeptions = array("PHPMailer"=>"includes/libs/phpMailer/class.phpmailer.php",
-								"Spreadsheet_Excel_Reader"=>"includes/libs/excel/class.Spreadsheet_Excel_Reader.php");
+	private $exeptions = array("PHPMailer"=>"/includes/libs/phpMailer/class.phpmailer.php",
+								"Spreadsheet_Excel_Reader"=>"/includes/libs/excel/class.Spreadsheet_Excel_Reader.php");
 
 	
 	/**
@@ -97,7 +99,7 @@ class Autoload extends Singleton
         Debugger::trace("loading  : ".$pClassName);
         if(array_key_exists($pClassName, $this->exeptions))
         {
-	        require_once($this->exeptions[$pClassName]);
+	        require_once(self::$folder.$this->exeptions[$pClassName]);
             return true;
         }
 		$type = "class";
@@ -113,13 +115,13 @@ class Autoload extends Singleton
 					return true;
 			break;
 			case "model":
-				$path = sprintf(self::FOLDER_MODEL_APPLICATION, Configuration::$site_application)."model.".$pClassName.".php";
+				$path = self::$folder.sprintf(self::FOLDER_MODEL_APPLICATION, Configuration::$site_application)."model.".$pClassName.".php";
 				if(file_exists($path))
 				{
 					require_once($path);
 					return true;
 				}
-                $path = self::FOLDER_MODEL_LIBS."model.".$pClassName.".php";
+                $path = self::$folder.self::FOLDER_MODEL_LIBS."model.".$pClassName.".php";
 				if(file_exists($path))
 				{
 					require_once($path);
@@ -155,7 +157,7 @@ class Autoload extends Singleton
 	{
 		for($i = 0;$i<$this->countPackages;$i++)
 		{
-			$path = $pBaseFolder.$this->packageFolders[$i].$pClass.".php";
+			$path = self::$folder.$pBaseFolder.$this->packageFolders[$i].$pClass.".php";
 			if(file_exists($path))
 			{
 				require_once($path);

@@ -17,7 +17,7 @@ abstract class Core
 	/**
 	 * @var string
 	 */
-	const PATH_TO_CONFIG = "includes/applications/config.json";
+	const PATH_TO_CONFIG = "/includes/applications/config.json";
 	
     /**
      * Définit si l'application vise le backoffice
@@ -136,8 +136,10 @@ abstract class Core
      * @param String $pConfigurationFile			Url du fichier de configuration
      * @return Void
      */
-    static public function setConfiguration($pConfigurationFile = "includes/applications/config.json")
+    static public function setConfiguration($pConfigurationFile = null)
     {
+        if($pConfigurationFile == null)
+            $pConfigurationFile = Autoload::$folder.self::PATH_TO_CONFIG;
         $configurationData = array();
         try
 		{
@@ -145,10 +147,10 @@ abstract class Core
         }
         catch(Exception $e)
 		{
-            if ($pConfigurationFile == self::PATH_TO_CONFIG)
+            if ($pConfigurationFile == Autoload::$folder.self::PATH_TO_CONFIG)
                 die("Impossible de charger le fichier de configuration de base : <b>".$pConfigurationFile."</b>");
         }
-        if (!is_array($configurationData) && $pConfigurationFile == self::PATH_TO_CONFIG)
+        if (!is_array($configurationData) && $pConfigurationFile == Autoload::$folder.self::PATH_TO_CONFIG)
             trigger_error('Impossible de parser le fichier de configuration de base <b>includes/applications/config.json</b>. Veuillez vérifier le formatage des données (guillements, virgules, accents...).', E_USER_ERROR);
         foreach ($configurationData as $prefix=>$property)
 		{
@@ -200,7 +202,6 @@ abstract class Core
 		    Configuration::$server_url .= Configuration::$server_folder."/";
 
     	$url = isset($pUrl)&&!is_null($pUrl)?$pUrl:$_SERVER["REQUEST_URI"];
-
         if (preg_match("/([^\?]*)\?.*$/", $url, $matches))
         {
             $url = $matches[1];
@@ -214,7 +215,7 @@ abstract class Core
         
 		$application = self::extractApplication($url);
         Configuration::$site_application = $application;
-        self::setConfiguration("includes/applications/".Configuration::$site_application."/config.json");
+        self::setConfiguration(Autoload::$folder."/includes/applications/".Configuration::$site_application."/config.json");
 
         $acces = "";
 		if (Configuration::$site_application != "main")
@@ -226,7 +227,7 @@ abstract class Core
 
 		self::defineGlobalObjects();
 
-        self::$path_to_application = "includes/applications/".Configuration::$site_application;
+        self::$path_to_application = Autoload::$folder."/includes/applications/".Configuration::$site_application;
 
 		self::$isBackoffice = RewriteURLHandler::checkForBackoffice($url);
 	    
@@ -234,7 +235,7 @@ abstract class Core
         $path_to_rewriteURLHandler = self::$path_to_application."/src/application/rewriteurl/class.".Configuration::$application_rewriteURLHandler.".php";
         if(!file_exists($path_to_rewriteURLHandler))
         {
-        	$path_to_rewriteURLHandler = "includes/libs/core/application/rewriteurl/class.RewriteURLHandler.php";
+        	$path_to_rewriteURLHandler = Autoload::$folder."/includes/libs/core/application/rewriteurl/class.RewriteURLHandler.php";
         	Configuration::$application_rewriteURLHandler = "RewriteURLHandler";
         }
         include_once($path_to_rewriteURLHandler);
@@ -312,7 +313,6 @@ abstract class Core
 	            Go::to404();
         } else
             include_once ($controller_file);
-            
         if (!class_exists(self::$controller))
         {
             if (Configuration::$application_debug)
@@ -361,7 +361,6 @@ abstract class Core
 			$seo = $donneesLangue["seo"];
 		if(isset($donneesLangue["alias"])&&is_array($donneesLangue["alias"]))
 			$alias = $donneesLangue["alias"];
-		
 		Dictionary::defineLanguage(Configuration::$site_currentLanguage, $terms, $seo, $alias);
 	}
 

@@ -10,7 +10,7 @@
 	</head>
 	<body>
 {/if}
-		<style type="text/css"><!--@import URL("{$dir_to_components}/debugger/debugger.css");--></style>
+		<style type="text/css"><!--@import URL("{$dir_to_components}/debugger/Debugger.css");--></style>
 		<div id="debug"{if $open||$is_error} class="{if $is_error}fullscreen{else}maximized{/if}"{/if}>
             <div class="debug_bar">
                 <div class="debug_global">
