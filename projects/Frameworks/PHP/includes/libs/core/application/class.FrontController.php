@@ -73,7 +73,6 @@ class FrontController extends EventDispatcher
 		if($smarty==null)
 			$smarty = new Smarty();
 		Core::setupSmarty($smarty);
-		
 		if(!$smarty->template_exists($this->template))
 		{
 			if(Core::debug())
