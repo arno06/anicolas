@@ -205,10 +205,11 @@ body{
                         }
 
                         div.input{
+                            textarea,
                             input[type='text']{
                                 padding:5px;
                                 outline:none;
-                                width:100%;
+                                width:calc(100% - 7px);
                                 border:solid 1px #ffffff;
                                 background: #f8f8f8;
                                 &:focus{
@@ -216,6 +217,7 @@ body{
                                     background:#ffffff;
                                 }
                             }
+                            textarea{height:200px;resize:vertical;}
                         }
                     }
                 }

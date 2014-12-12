@@ -175,16 +175,22 @@ body #content .details.form form div.component label {
   text-align: right;
   font-size: 13px;
 }
+body #content .details.form form div.component div.input textarea,
 body #content .details.form form div.component div.input input[type='text'] {
   padding: 5px;
   outline: none;
-  width: 100%;
+  width: calc(93%);
   border: solid 1px #ffffff;
   background: #f8f8f8;
 }
+body #content .details.form form div.component div.input textarea:focus,
 body #content .details.form form div.component div.input input[type='text']:focus {
   border: solid 1px #999;
   background: #ffffff;
+}
+body #content .details.form form div.component div.input textarea {
+  height: 200px;
+  resize: vertical;
 }
 body #content .details table.data.secondary th {
   padding: 10px 0;

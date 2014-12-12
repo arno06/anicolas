@@ -243,6 +243,11 @@ class BaseModel
                         'attributes'
                     );
                     break;
+                case "text":
+                    $input = array(
+                        'tag'=>'textarea'
+                    );
+                    break;
                 default:
                     $input = array(
                         'tag'=>'input',
