@@ -1,4 +1,4 @@
-<?php /* Smarty version 2.6.18, created on 2014-09-17 09:41:55
+<?php /* Smarty version 2.6.18, created on 2014-12-02 14:57:12
          compiled from template.debugger.tpl */ ?>
 <?php if ($this->_tpl_vars['is_error']): ?>
 <!DOCTYPE html>
@@ -15,7 +15,7 @@
 	<body>
 <?php endif; ?>
 		<style type="text/css"><!--@import URL("<?php echo $this->_tpl_vars['dir_to_components']; ?>
-/debugger/debugger.css");--></style>
+/debugger/Debugger.css");--></style>
 		<div id="debug"<?php if ($this->_tpl_vars['open'] || $this->_tpl_vars['is_error']): ?> class="<?php if ($this->_tpl_vars['is_error']): ?>fullscreen<?php else: ?>maximized<?php endif; ?>"<?php endif; ?>>
             <div class="debug_bar">
                 <div class="debug_global">

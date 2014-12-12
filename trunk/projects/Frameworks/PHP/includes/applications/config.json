@@ -17,19 +17,10 @@
     "server": {
         "smtp": ""
     },
-    "db": {
-        "default":
-        {
-            "handler":"MysqlHandler",
-            "user":"root",
-            "password":"",
-            "host":"localhost",
-            "name":"data_asip"
-        }
-    },
+    "db": false,
     "application":
     {
-        "debug":true,
+        "debug":false,
         "autoload":
         {
             "packages":

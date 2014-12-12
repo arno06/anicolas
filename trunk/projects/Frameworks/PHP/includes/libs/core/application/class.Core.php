@@ -298,7 +298,7 @@ abstract class Core
 	{
 		if(Core::$controller==="statique")
 		{
-			include_once("includes/libs/core/application/controller.statique.php");
+			include_once(Autoload::$folder."includes/libs/core/application/controller.statique.php");
 			self::$instance_controller = new statique();
 			return self::$instance_controller;
 		}
