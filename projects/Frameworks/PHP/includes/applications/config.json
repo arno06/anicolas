@@ -17,21 +17,19 @@
     "server": {
         "smtp": ""
     },
-    "db": false,
+    "db": {
+        "default":
+        {
+            "handler":"core\\db\\handler\\MysqlHandler",
+            "host":"localhost",
+            "user":"root",
+            "password":"",
+            "name":"fwphp"
+        }
+    },
     "application":
     {
-        "debug":false,
-        "autoload":
-        {
-            "packages":
-            {
-                "someAddtionalPackage":
-                {
-                    "models":"includes/libs/additionalPackage/models/",
-                    "class":"includes/libs/additionalPackage/"
-                }
-            }
-        }
+        "debug":true
     },
     "authentification":
     {
