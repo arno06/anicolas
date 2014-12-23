@@ -8,6 +8,8 @@ require_once(__DIR__."/includes/libs/core/application/class.Singleton.php");
 require_once(__DIR__."/includes/libs/core/application/class.Header.php");
 require_once(__DIR__."/includes/libs/core/application/class.Autoload.php");
 
+use core\application\Autoload;
+
 Autoload::$folder = __DIR__;
 spl_autoload_register(array(Autoload::getInstance(), "load"));
 
@@ -30,6 +32,7 @@ require_once(__DIR__."/includes/libs/core/application/rewriteurl/interface.Inter
 require_once(__DIR__."/includes/libs/core/application/rewriteurl/class.RewriteURLHandler.php");
 require_once(__DIR__."/includes/libs/smarty/Smarty.class.php");
 
+use core\application\Core;
 Core::setConfiguration();
 Core::init();
 Core::parseURL();

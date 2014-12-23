@@ -1586,7 +1586,7 @@ class Smarty
 
         if (!$_return) {
             if (!$params['quiet']) {
-                $this->trigger_error('unable to read resource: "' . $params['resource_name'] . '"');
+                $this->trigger_error('unable to read resource: "' . $params['resource_name'] . '"', E_USER_ERROR);
             }
         } else if ($_return && $this->security) {
             require_once(SMARTY_CORE_DIR . 'core.is_secure.php');

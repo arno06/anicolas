@@ -7,7 +7,6 @@
 
 /**
  * write out a file to disk
- * 20/09/2010   Arno06@gmail.com    Supressions d'espaces inutiles
  *
  * @param string $filename
  * @param string $contents
@@ -34,11 +33,6 @@ function smarty_core_write_file($params, &$smarty)
             return false;
         }
     }
-	if(Configuration::$site_inlineHTMLCode)
-	{
-		$params['contents'] = preg_replace("/[\r|\n]/","",$params['contents']);
-		$params['contents'] = preg_replace("/>[\s]+</","><",$params['contents']);
-	}
     fwrite($fd, $params['contents']);
     fclose($fd);
 

@@ -2007,7 +2007,7 @@ class PHPMailer {
         // do not change urls for absolute images (thanks to corvuscorax)
         /*
           	FIXE Mars 2010
-          	Arno NICOLAS - arno06@gmail.com
+          	Arno NICOLAS <arno06@gmail.com>
           	- $this->AddEmbeddedImage(URL ABSOLUE, md5($filename), $filename, 'base64',$mimeType)
           	+ $this->AddEmbeddedImage(URL RELATIVE, md5($filename), $filename, 'base64',$mimeType)
          */
