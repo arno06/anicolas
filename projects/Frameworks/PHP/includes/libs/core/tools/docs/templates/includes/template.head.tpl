@@ -91,6 +91,17 @@
                 .content h2{
                     font-weight:normal;
                     font-size:30px;
+                    display:inline-block;
+                }
+
+                .content span.scope, .content span.type{
+                    font-style:italic;
+                    color:#666;
+                }
+
+                .content .property{
+                    border-top: dashed 1px #aaa;
+                    margin-top:25px;
                 }
 
                 .content h3{
@@ -122,7 +133,7 @@
                     padding:0;
                 }
 
-                .content .method .description{
+                .content .method .description, .content .property .description{
                     font-size:14px;
                 }
 

@@ -7,7 +7,7 @@ namespace core\tools
 	 * Class Request - permet de gérer une surcouche nécessaire &agrave; CURL pour se simplifier les traitements
 	 *
 	 * @author Arnaud NICOLAS <arno06@gmail.com>
-	 * @version .1
+	 * @version 1.0
 	 * @package core\tools
 	 */
 	class Request
@@ -15,7 +15,7 @@ namespace core\tools
 		/**
 		 * @var resource
 		 */
-		private $curlRessource;
+		private $curlResource;
 
 		/**
 		 * @var string
@@ -29,7 +29,7 @@ namespace core\tools
 		 */
 		public function __construct($pUrl)
 		{
-			$this->curlRessource = curl_init();
+			$this->curlResource = curl_init();
 			$this->setUrl($pUrl);
 			$this->setOption(CURLOPT_HEADER, 0);
 		}
@@ -43,12 +43,13 @@ namespace core\tools
 		public function setUrl($pUrl)
 		{
 			$this->url = $pUrl;
-			curl_setopt($this->curlRessource, CURLOPT_URL, $pUrl);
+			curl_setopt($this->curlResource, CURLOPT_URL, $pUrl);
 		}
 
 
 		/**
-		 * @param  $pData
+		 * Définit les données à envoyer en POST
+		 * @param array $pData
 		 * @return void
 		 */
 		public function setDataPost($pData)
@@ -57,9 +58,13 @@ namespace core\tools
 			$this->setOption(CURLOPT_POSTFIELDS, $pData);
 		}
 
-		public function getRessource()
+		/**
+		 * Récupère la CURL Resource définie pour la requête en cours
+		 * @return resource
+		 */
+		public function getResource()
 		{
-			return $this->curlRessource;
+			return $this->curlResource;
 		}
 
 
@@ -71,7 +76,7 @@ namespace core\tools
 		 */
 		public function setOption($pCode, $pValue)
 		{
-			curl_setopt($this->curlRessource, $pCode, $pValue);
+			curl_setopt($this->curlResource, $pCode, $pValue);
 		}
 
 		/**
@@ -82,20 +87,19 @@ namespace core\tools
 		public function execute()
 		{
 			ob_start();
-			$return = curl_exec($this->curlRessource);
+			$return = curl_exec($this->curlResource);
 			$datas = ob_get_contents();
 			ob_end_clean();
-			$number = curl_getinfo($this->curlRessource, CURLINFO_HTTP_CODE);
-			curl_close($this->curlRessource);
-			if($number != 200)
-				return false;
+			$number = curl_getinfo($this->curlResource, CURLINFO_HTTP_CODE);
+			curl_close($this->curlResource);
 			if(!$return)
 				throw new Exception("Impossible d'accéder &agrave; l'url : <b>".$this->url."</b>");
 			return $datas;
 		}
 
 		/**
-		 * Méthode d'exécution d'une requête http
+		 * Exécute une requête HTTP via CURL
+		 * Renvoie le résultat
 		 * @throws Exception
 		 * @param  string   $pUrl
 		 * @return string
@@ -115,14 +119,17 @@ namespace core\tools
 		}
 
 
+		/**
+		 * Exécute un ensemble de requête GET via les méthodes curl_multi_*
+		 * @param string[] $pUrlArr
+		 * @return array
+		 */
 		static public function multiLoad($pUrlArr)
 		{
 			$requests = array();
 			foreach($pUrlArr as $url)
 			{
-				/**
-				 * @var Request
-				 */
+				/** @var Request $r */
 				$r = new Request($url);
 				$r->setOption(CURLOPT_RETURNTRANSFER, 1);
 				$requests[] = $r;
@@ -131,7 +138,7 @@ namespace core\tools
 			$mh = curl_multi_init();
 
 			foreach($requests as $r)
-				curl_multi_add_handle($mh, $r->getRessource());
+				curl_multi_add_handle($mh, $r->getResource());
 
 			$active = null;
 			//execute the handles
@@ -149,11 +156,10 @@ namespace core\tools
 
 			$return = array();
 			foreach($requests as $r)
-				$return[] = curl_multi_getcontent($r->getRessource());
-
+				$return[] = curl_multi_getcontent($r->getResource());
 
 			foreach($requests as $r)
-				curl_multi_remove_handle($mh, $r->getRessource());
+				curl_multi_remove_handle($mh, $r->getResource());
 
 			curl_multi_close($mh);
 

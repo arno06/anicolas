@@ -10,6 +10,9 @@ namespace core\application
 	 */
 	class Autoload extends Singleton
 	{
+		/**
+		 * @var string
+		 */
 		static public $folder = '';
 
 		/**
@@ -50,7 +53,8 @@ namespace core\application
 
 
 		/**
-		 * @param string $pClassName
+		 * Identifie la classe à charger en fonction de son package
+		 * @param string $pClassName	Nom de la classe préfixé de son package
 		 * @return bool
 		 */
 		public function load($pClassName)
@@ -115,7 +119,7 @@ namespace core\application
 
 
 		/**
-		 * @static
+		 *
 		 * @param string $pScript
 		 * @return void
 		 */

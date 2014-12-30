@@ -9,9 +9,19 @@
     <div class="description">
         {'<br/>'|implode:$details.details.description}
     </div>
+    {foreach from=$details.properties item="prop"}
+        <div class="property" id="prop_{$prop.name}">
+            <h2>${$prop.name}</h2>
+            <span class="scope">{if $prop.protected}protected{/if}{if $prop.public}public{/if}</span>
+            <span class="type">&lt;{$prop.details.type}&gt;</span>
+            <div class="description">{"<br/>"|implode:$prop.details.description}</div>
+            {if isset($prop.value) && !empty($prop.value)}<pre>{$prop.value}</pre>{/if}
+        </div>
+    {/foreach}
     {foreach from=$details.methods item="method"}
         <div class="method" id="method_{$method.name}">
             <h2>{$method.name}</h2>
+            <span class="scope">{if $method.protected}protected{/if}{if $method.public}public{/if}</span>
             <div class="description">{"<br/>"|implode:$method.details.description}</div>
             <div class="call">
                 <h3>Appel</h3>
@@ -30,7 +40,7 @@
             </div>
             <div class="return">
                 <h3>Réponse</h3>
-                <div class="vartype"><span>{if isset($method.details.return.type)}{$method.details.return.type}{else}void{/if}</span></div>
+                <div class="vartype"><span>{if isset($method.details.return.type) && $method.details.return.type != false}{$method.details.return.type}{else}void{/if}</span></div>
             </div>
         </div>
     {/foreach}
