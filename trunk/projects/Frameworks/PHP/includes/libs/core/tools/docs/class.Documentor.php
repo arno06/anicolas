@@ -29,26 +29,31 @@ namespace core\tools\docs
             $reflec = new \ReflectionClass($pClassName);
             $classInfo = array('details'=>$this->parseDocComment($reflec->getDocComment()),
                                 'methods'=>array());
-            $methods = $reflec->getMethods();
-
-            for($i = 0, $max = count($methods); $i<$max;$i++)
+            $allMethods = $reflec->getMethods(\ReflectionMethod::IS_PUBLIC|\ReflectionMethod::IS_PROTECTED);
+            $methods = array();
+            for($i = 0, $max = count($allMethods); $i<$max;$i++)
             {
-                $method = $methods[$i];
-
-                if($method->isAbstract()
-                    || $method->isPrivate()
-                    || $method->isAbstract())
-                {
-                    continue;
-                }
-
-                $classInfo['methods'][] = array('name'=>$method->getName(), 'details'=>$this->parseDocComment($method->getDocComment()));
+                $method = $allMethods[$i];
+                $methods[] = array('name'=>$method->getName(), 'details'=>$this->parseDocComment($method->getDocComment()), 'public'=>$method->isPublic(), 'protected'=>$method->isProtected());
             }
+            $this->sortName($methods);
+            $classInfo['methods'] = $methods;
+
+            $allProps = $reflec->getProperties(\ReflectionProperty::IS_PUBLIC|\ReflectionProperty::IS_PROTECTED);
+            $props = array();
+            for($i = 0, $max = count($allProps); $i<$max;$i++)
+            {
+                $prop = $allProps[$i];
+                $props[] = array('name'=>$prop->getName(), 'value'=>($prop->isPublic()?print_r($prop->getValue(), true):""),'details'=>$this->parseDocComment($prop->getDocComment()), 'public'=>$prop->isPublic(), 'protected'=>$prop->isProtected());
+            }
+
+            $this->sortName($props);
+            $classInfo['properties'] = $props;
 
             return $classInfo;
         }
 
-        public function parsePackage($pPath, $pPackage)
+        public function parsePackage($pPath, $pPackage, $pOrigin = true)
         {
             $classes = array();
             $excluded_ext = '/\.(tpl|tpl\.php|ttf)$/';
@@ -63,15 +68,24 @@ namespace core\tools\docs
                         continue;
 
                     include_once($file);
-
-                    $parts = explode('.', $file);
-
-                    $className = $pPackage.'\\'.$parts[1];
-                    $details = $this->parseClass($className);
-                    $classes[$className] = $details;
                     continue;
                 }
-                $this->parsePackage($folder['path'], $pPackage.'\\'.$name);
+                $this->parsePackage($folder['path'], $pPackage.'\\'.$name, false);
+            }
+
+            if($pOrigin)
+            {
+                $declared_classes = get_declared_classes();
+
+                foreach($declared_classes as $classe)
+                {
+                    if(preg_match('/^'.$pPackage.'/', $classe, $matches))
+                    {
+                        $details = $this->parseClass($classe);
+                        $classes[$classe] = $details;
+                    }
+
+                }
             }
 
             $this->packages = array_merge($this->packages, $classes);
@@ -91,9 +105,9 @@ namespace core\tools\docs
             $smarty->cache_dir = $smartyDir;
             $smarty->compile_dir = $smartyDir;
 
-            trace_r($this->packages);
-
             $classIndex = array();
+
+            trace_r($this->packages);
 
             foreach($this->packages as $className=>$details)
             {
@@ -113,12 +127,7 @@ namespace core\tools\docs
                 file_put_contents($pFolder.$file, Encoding::BOM().$smarty->fetch("template.class_details.tpl"));
             }
 
-
-            function documentor_cmp_fn($a, $b)
-            {
-                return strcmp($a['name'], $b['name']);
-            }
-            usort($classIndex, 'core\\tools\\docs\\documentor_cmp_fn');
+            $this->sortName($classIndex);
 
             $prefixed_ndx = array();
             foreach($classIndex as $class)
@@ -136,6 +145,18 @@ namespace core\tools\docs
 
             $smarty->clear_all_assign();
             file_put_contents($pFolder.'/index.html', Encoding::BOM().$smarty->fetch("template.index.tpl"));
+        }
+
+        private function sortName(&$pArray)
+        {
+            if(!function_exists('core\\tools\\docs\\documentor_cmp_fn'))
+            {
+                function documentor_cmp_fn($a, $b)
+                {
+                    return strcmp(strtolower($a['name']), strtolower($b['name']));
+                }
+            }
+            usort($pArray, 'core\\tools\\docs\\documentor_cmp_fn');
         }
 
         public function parseDocComment($pComments)
@@ -169,25 +190,13 @@ namespace core\tools\docs
                 );
             }
 
-            $return = false;
-            if(preg_match('/@return\s*([a-z\|]+)\s*/i', $pComments, $matches))
-            {
-                $return = array(
-                    "type"=>$matches[1]
-                );
-            }
+            $return = array('type'=>$this->extractDocVar('return', $pComments));
 
-            $version = false;
-            if(preg_match('/@version\s*([0-9a-f\.]+)\s*/i', $pComments, $matches))
-            {
-                $version = $matches[1];
-            }
+            $version = $this->extractDocVar('version', $pComments);
 
-            $alias = false;
-            if(preg_match('/@alias\s*([0-9a-z\_]+)\s*/i', $pComments, $matches))
-            {
-                $alias = $matches[1];
-            }
+            $alias = $this->extractDocVar('alias', $pComments);
+
+            $type = $this->extractDocVar('var', $pComments);
 
             $date = false;
             if(preg_match('/@date\s*([0-9]{4})([0-9]{2})([0-9]{2})\s*/i', $pComments, $matches))
@@ -213,8 +222,18 @@ namespace core\tools\docs
                 "date"=>$date,
                 'alias'=>$alias,
                 'annexe'=>$annexe,
-                'author'=>$author
+                'author'=>$author,
+                'type'=>$type
             );
+        }
+
+        private function extractDocVar($pVarName, $pComments)
+        {
+            if(preg_match('/@'.$pVarName.'\s*([0-9a-z\_]+)\s*/i', $pComments, $matches))
+            {
+                return $matches[1];
+            }
+            return false;
         }
     }
 }
