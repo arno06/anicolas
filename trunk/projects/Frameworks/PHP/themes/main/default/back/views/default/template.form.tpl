@@ -3,6 +3,11 @@
 <div class="back">
     <a href="{$controller}/" class="button {if not isset($content.actions.listing)}disabled{/if}">Retour à la liste</a>
 </div>
+{if $content.error}
+    <div class="error">
+        {$content.error}
+    </div>
+{/if}
 <div class="details form">
     {form_instance->display}
 </div>

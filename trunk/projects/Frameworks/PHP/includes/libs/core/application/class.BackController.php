@@ -110,7 +110,8 @@ namespace core\application
 		{
 			if(!AuthentificationHandler::is(AuthentificationHandler::ADMIN))
 				Go::toBack();
-			$this->className = get_class($this);
+			$class = explode("\\", get_class($this));
+			$this->className = end($class);
 			Autoload::addScript("Backoffice");
 			$this->h1 = new BOLabelList("h1", ucfirst($this->className));
 			$this->titles = new BOLabelList("titles", ucfirst($this->className));

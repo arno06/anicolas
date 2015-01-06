@@ -1,4 +1,6 @@
 <?php
+use core\application\Core;
+
 function smarty_function_rewriteurl($params, &$smarty)
 {
 	$controller = "";
