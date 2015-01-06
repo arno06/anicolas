@@ -1125,7 +1125,7 @@ namespace core\db
 			$this->values = array();
 			for($i = 0, $max = count($pTuples); $i<$max; $i++)
 			{
-				$pTuples[$i] = array_map("Query::escapeValue", $pTuples[$i]);
+				$pTuples[$i] = array_map("core\\db\\Query::escapeValue", $pTuples[$i]);
 				array_push($this->values, "(".implode($pTuples[$i], ",").")");
 			}
 		}
