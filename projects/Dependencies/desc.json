@@ -1,8 +1,0 @@
-{
-	"name":"Javascript's dependencies Handler",
-	"description":"With a simple manifest file, it checks, loads, compresses the needed files and return the result.",
-	"todo":["Minified/uglified ?"],
-	"tech":["PHP"],
-	"url":"./src/?need=WrongLib,M4,M4Tween",
-	"img":""
-}
