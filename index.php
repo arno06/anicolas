@@ -21,7 +21,7 @@ foreach($base_folders as $f)
 ?><!DOCTYPE html>
 <html>
 	<head>
-		<title>Hi, i'm Arnaud NICOLAS</title>
+		<title>Hi, I'm Arnaud NICOLAS</title>
 		<link rel="shortcut icon" type="image/png" href="favicon.png" />
 		<!-- Hi again, since you're here you deserve a little gift : http://imgur.com/LZ8bW -->
 		<link href='http://fonts.googleapis.com/css?family=Quicksand:400,700' rel='stylesheet' type='text/css'>
@@ -172,7 +172,7 @@ foreach($base_folders as $f)
 			</div>
 			<div class="square more">
 				<div class="content">
-					<p>I'm a <span>webdevelopper</span> and i currently work in Paris as <span>Technical Lead</span>.</p>
+					<p>I'm a <span>web developer</span> and I currently work in Paris as <span>Technical Lead</span>.</p>
 					<div class="actions">
 						<a href="http://code.google.com/p/anicolas/" class="gc" target="_blank"><span>{P}</span></a>
 						<a href="http://fr.linkedin.com/pub/arnaud-nicolas/11/561/62a" class="in" target="_blank"><span>in</span></a>
